@@ -4,11 +4,11 @@
 
 namespace GHUD {
 	inline namespace Resources {
-		class Texture {
-		public:
-			ResourceObject* GetTexture() {}
-		private:
-			ResourceObject* m_ResourcePtr;
+		struct TextureObject {
+			ResourceObject m_TextureAtlas{};
+			fvec2 m_SubSize{ 0.5f, 0.5f };
+			uint32 m_GridCountHorizontal = 2;
+			uint32 m_GridCountVertical = 4;
 		};
 	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <cassert>
 
 namespace GHUD {
 	using byte = unsigned char;
@@ -30,69 +31,53 @@ namespace GHUD {
 
     template<typename T>
     struct Vec<T, 2> {
-        T x, y;
+        T x{}, y{};
+        Vec() = default;
 
         constexpr T& operator[](size_t i) noexcept {
-            switch (i) {
-            case 1: return y;
-            default: return x;
-            }
+            assert(i <= N && "Array index out of vector range");
+            return *reinterpret_cast<T*>(this + i * sizeof(T));
         }
         constexpr const T& operator[](size_t i) const noexcept {
-            switch (i) {
-            case 1: return y;
-            default: return x;
-            }
+            assert(i <= N && "Array index out of vector range");
+            return *reinterpret_cast<const T*>(this + i * sizeof(T));
         }
     };
 
     template<typename T>
     struct Vec<T, 3> {
-        T x, y, z;
+        T x{}, y{}, z{};
+        Vec() = default;
 
         constexpr T& operator[](size_t i) noexcept {
-            switch (i) {
-            case 1: return y;
-            case 2: return z;
-            default: return x;
-            }
+            assert(i <= N && "Array index out of vector range");
+            return *reinterpret_cast<T*>(this + i * sizeof(T));
         }
-
         constexpr const T& operator[](size_t i) const noexcept {
-            switch (i) {
-            case 1: return y;
-            case 2: return z;
-            default: return x;
-            }
+            assert(i <= N && "Array index out of vector range");
+            return *reinterpret_cast<const T*>(this + i * sizeof(T));
         }
     };
 
     template<typename T>
     struct Vec<T, 4> {
-        T x, y, z, w;
+        T x{}, y{}, z{}, w{};
+        Vec() = default;
 
         constexpr T& operator[](size_t i) noexcept {
-            switch (i) {
-            case 1: return y;
-            case 2: return z;
-            case 3: return w;
-            default: return x;
-            }
+            assert(i <= N && "Array index out of vector range");
+            return *reinterpret_cast<T*>(this + i * sizeof(T));
         }
-
         constexpr const T& operator[](size_t i) const noexcept {
-            switch (i) {
-            case 1: return y;
-            case 2: return z;
-            case 3: return w;
-            default: return x;
-            }
+            assert(i <= N && "Array index out of vector range");
+            return *reinterpret_cast<const T*>(this + i * sizeof(T));
         }
     };
 
     template<>
     struct Vec<uint8, 4> {
-        uint8 r, g, b, a;
+        uint8 r{}, g{}, b{}, a{};
+        Vec() = default;
 
         constexpr Vec(float r, float g, float b, float a) : 
             r{ static_cast<uint8>((static_cast<uint32>(r * 255.0) & 0x000000FF)) },
@@ -115,35 +100,26 @@ namespace GHUD {
         {};
 
         constexpr uint8& operator[](size_t i) noexcept {
-            switch (i) {
-            case 1: return g;
-            case 2: return b;
-            case 3: return a;
-            default: return r;
-            }
+            assert(i <= 4 && "Array index out of vector range");
+            return *reinterpret_cast<uint8*>(this + i);
         }
-
         constexpr const uint8& operator[](size_t i) const noexcept {
-            switch (i) {
-            case 1: return g;
-            case 2: return b;
-            case 3: return a;
-            default: return r;
-            }
+            assert(i <= 4 && "Array index out of vector range");
+            return *reinterpret_cast<const uint8*>(this + i);
         }
     };
 
     template<>
     struct Vec<uint8, 3> {
-        uint8 r, g, b;
-
+        uint8 r{}, g{}, b{};
+        Vec() = default;
         constexpr Vec(float r, float g, float b) :
             r{ static_cast<uint8>((static_cast<uint32>(r * 255.0) & 0x000000FF)) },
             g{ static_cast<uint8>((static_cast<uint32>(g * 255.0) & 0x000000FF)) },
             b{ static_cast<uint8>((static_cast<uint32>(b * 255.0) & 0x000000FF)) } 
         {};
-        constexpr Vec(uint8 r, uint8 g, uint8 b) : r{ r }, g{ g }, b{ b } {};
         constexpr Vec(const Vec<float, 3>& col) : Vec(col.x, col.y, col.z) {};
+        constexpr Vec(uint8 r, uint8 g, uint8 b) : r{ r }, g{ g }, b{ b } {};
         constexpr Vec(uint32 col) : 
             r{ static_cast<uint8>((col & 0xFF000000) >> 24) },
             g{ static_cast<uint8>((col & 0x00FF0000) >> 16) },
@@ -151,19 +127,12 @@ namespace GHUD {
         {};
 
         constexpr uint8& operator[](size_t i) noexcept {
-            switch (i) {
-            case 1: return g;
-            case 2: return b;
-            default: return r;
-            }
+            assert(i <= 3 && "Array index out of vector range");
+            return *reinterpret_cast<uint8*>(this + i);
         }
-
         constexpr const uint8& operator[](size_t i) const noexcept {
-            switch (i) {
-            case 1: return g;
-            case 2: return b;
-            default: return r;
-            }
+            assert(i <= 3 && "Array index out of vector range");
+            return *reinterpret_cast<const uint8*>(this + i);
         }
     };
 
@@ -173,7 +142,6 @@ namespace GHUD {
         for (size_t i = 0; i < N; i++) {
             result[i] = a[i] + b[i];
         }
-
         return result;
     }
 
@@ -183,7 +151,6 @@ namespace GHUD {
         for (size_t i = 0; i < N; i++) {
             result[i] = a[i] - b[i];
         }
-
         return result;
     }
 
@@ -193,7 +160,6 @@ namespace GHUD {
         for (size_t i = 0; i < N; i++) {
             result[i] = a[i] * b[i];
         }
-
         return result;
     }
 
@@ -203,7 +169,6 @@ namespace GHUD {
         for (size_t i = 0; i < N; i++) {
             result[i] = a[i] / b[i];
         }
-
         return result;
     }
 
@@ -213,7 +178,6 @@ namespace GHUD {
         for (size_t i = 0; i < N; i++) {
             result[i] = a[i] + b;
         }
-
         return result;
     }
 
@@ -223,7 +187,6 @@ namespace GHUD {
         for (size_t i = 0; i < N; i++) {
             result[i] = a[i] - b;
         }
-
         return result;
     }
 
@@ -233,7 +196,6 @@ namespace GHUD {
         for (size_t i = 0; i < N; i++) {
             result[i] = a[i] * b;
         }
-
         return result;
     }
 
@@ -243,7 +205,6 @@ namespace GHUD {
         for (size_t i = 0; i < N; i++) {
             result[i] = a[i] / b;
         }
-
         return result;
     }
 
@@ -253,6 +214,6 @@ namespace GHUD {
     using dvec2 = Vec<double, 2>;
     using dvec3 = Vec<double, 3>;
     using dvec4 = Vec<double, 4>;
-    using rgba = Vec<uint8, 4>;
-    using rgb = Vec<uint8, 3>;
+    using RGBAColor = Vec<uint8, 4>;
+    using RGBColor = Vec<uint8, 3>;
 }

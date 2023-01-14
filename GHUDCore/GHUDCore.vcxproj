@@ -107,6 +107,7 @@
     <ClInclude Include="include\ghudcpp\draw\state.h" />
     <ClInclude Include="include\ghudcpp\ghud.h" />
     <ClInclude Include="include\ghudcpp\platform.h" />
+    <ClInclude Include="include\ghudcpp\resources\font_object.h" />
     <ClInclude Include="include\ghudcpp\resources\resource_object.h" />
     <ClInclude Include="include\ghudcpp\resources\texture_object.h" />
     <ClInclude Include="include\ghudcpp\types.h" />

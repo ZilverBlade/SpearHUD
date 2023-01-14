@@ -29,5 +29,8 @@
       <Filter>resources</Filter>
     </ClInclude>
     <ClInclude Include="include\ghudcpp\types.h" />
+    <ClInclude Include="include\ghudcpp\resources\font_object.h">
+      <Filter>resources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
