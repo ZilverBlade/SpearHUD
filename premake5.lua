@@ -22,6 +22,8 @@ project "GHUDCore"
    
    files {
       "./GHUDCore/include/ghudcpp/**.h",
+      "./GHUDCore/include/ghudcpp/draw/**.h",
+      "./GHUDCore/include/ghudcpp/resources/**.h",
       "./GHUDCore/src/**.cpp",
    }
 
@@ -72,7 +74,9 @@ project "GHUDVulkan"
    }
 
    includedirs {
-      VULKAN_SDK.."/Include"
+      VULKAN_SDK.."/Include",
+	  "./GHUDCore/include",
+	  "./GHUDVulkan/include"
    }
    libdirs {
       VULKAN_SDK.."/Lib"

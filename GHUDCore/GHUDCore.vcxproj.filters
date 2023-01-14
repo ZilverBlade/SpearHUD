@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="draw">
+      <UniqueIdentifier>{53D7957C-3F0E-970D-E8FA-7C10D410130F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{202B5BA7-8C95-0F1E-D5D3-C0C3417DED72}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ghudcpp\context.h" />
+    <ClInclude Include="include\ghudcpp\core.h" />
+    <ClInclude Include="include\ghudcpp\draw\draw_list.h">
+      <Filter>draw</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\draw\element.h">
+      <Filter>draw</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\draw\state.h">
+      <Filter>draw</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\ghud.h" />
+    <ClInclude Include="include\ghudcpp\platform.h" />
+    <ClInclude Include="include\ghudcpp\resources\resource_object.h">
+      <Filter>resources</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\resources\texture_object.h">
+      <Filter>resources</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\types.h" />
+  </ItemGroup>
+</Project>
