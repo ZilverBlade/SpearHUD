@@ -14,7 +14,9 @@ namespace GHUD {
 	public:
 		VkContext(VkContextCreateInfo createInfo);
 		virtual void Render(DrawList* drawList) override;
+		ResourceObject CreateTexture(const VkDescriptorImageInfo& imageInfo);
 	private:
-
+		VkDescriptorPool m_DescriptorPool;
+		VkDevice device;
 	};
 }

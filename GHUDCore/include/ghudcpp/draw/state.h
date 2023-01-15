@@ -7,6 +7,7 @@ namespace GHUD {
 	enum class PressState {
 		None,
 		Hovering,
+		Clicked,
 		Pressed,
 		Selected
 	};

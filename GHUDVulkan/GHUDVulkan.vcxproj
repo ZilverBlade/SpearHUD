@@ -102,10 +102,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\ghudvk\context.h" />
     <ClInclude Include="include\ghudvk\core.h" />
     <ClInclude Include="include\ghudvk\platform.h" />
+    <ClInclude Include="include\ghudvk\vk_context.h" />
     <ClInclude Include="include\ghudvk\vk_resources.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="include\ghudvk\vk_context.cpp" />
+    <ClCompile Include="src\vk_context_impl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

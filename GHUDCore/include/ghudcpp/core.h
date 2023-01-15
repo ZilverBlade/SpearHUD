@@ -16,7 +16,6 @@ namespace GHUD {
 	};
 	class NonMovableClass {
 	public:
-		NonCopyableClass() = default;
 		NonMovableClass(NonMovableClass&&) = delete;
 		NonMovableClass&& operator =(NonMovableClass&&) = delete;
 	};

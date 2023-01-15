@@ -99,11 +99,11 @@ namespace GHUD {
             a{ static_cast<uint8>(col & 0x000000FF) } 
         {};
 
-        constexpr uint8& operator[](size_t i) noexcept {
+        inline uint8& operator[](size_t i) noexcept {
             assert(i <= 4 && "Array index out of vector range");
             return *reinterpret_cast<uint8*>(this + i);
         }
-        constexpr const uint8& operator[](size_t i) const noexcept {
+        inline const uint8& operator[](size_t i) const noexcept {
             assert(i <= 4 && "Array index out of vector range");
             return *reinterpret_cast<const uint8*>(this + i);
         }
@@ -126,11 +126,11 @@ namespace GHUD {
             b{ static_cast<uint8>((col & 0x0000FF00) >> 8) } 
         {};
 
-        constexpr uint8& operator[](size_t i) noexcept {
+        inline uint8& operator[](size_t i) noexcept {
             assert(i <= 3 && "Array index out of vector range");
             return *reinterpret_cast<uint8*>(this + i);
         }
-        constexpr const uint8& operator[](size_t i) const noexcept {
+        inline const uint8& operator[](size_t i) const noexcept {
             assert(i <= 3 && "Array index out of vector range");
             return *reinterpret_cast<const uint8*>(this + i);
         }

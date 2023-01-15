@@ -3,66 +3,78 @@
 #include <ghudcpp/draw/element.h>
 #include <unordered_map>
 namespace GHUD {
-	class DrawIterator {
+	template<typename T>
+	class ElementIterator {
 	public:
-		constexpr DrawIterator(Element::Base** elementArray, size_t index) : m_ElementArray(elementArray), m_IterIndex(index) {}
-		constexpr inline DrawIterator& operator++() { m_IterIndex++; return *this; }
-		inline DrawIterator operator++(int) { DrawIterator tmp = *this; ++(*this); return tmp; }
-		constexpr inline friend bool operator== (const DrawIterator& a, const DrawIterator& b) { return a.m_IterIndex == b.m_IterIndex; };
-		constexpr inline friend bool operator!= (const DrawIterator& a, const DrawIterator& b) { return a.m_IterIndex != b.m_IterIndex; };
-
-		constexpr inline Element::Base* operator*() const {
-			return m_ElementArray[m_IterIndex];
+		struct ElementInfo {
+			T m_Element;
+			const size_t m_ID;
+		};
+		constexpr ElementIterator(T* elementArray, size_t index) : m_ElementArray(elementArray), m_IterIndex(index) {}
+		constexpr inline ElementIterator& operator++() noexcept { m_IterIndex++; return *this; }
+		inline ElementIterator operator++(int) noexcept { ElementIterator tmp = *this; ++(*this); return tmp; }
+		constexpr inline friend bool operator== (const ElementIterator& a, const ElementIterator& b) noexcept { return a.m_IterIndex == b.m_IterIndex; };
+		constexpr inline friend bool operator!= (const ElementIterator& a, const ElementIterator& b) noexcept { return a.m_IterIndex != b.m_IterIndex; };
+		constexpr inline ElementInfo operator*() const noexcept {
+			return { m_ElementArray[m_IterIndex], m_IterIndex };
 		}
 	private:
-		Element::Base** m_ElementArray;
+		T* m_ElementArray;
 		size_t m_IterIndex;
 	};
 
-	class DrawAllocator {
+	template <typename T>
+	class ElementVectorBase {
 	public:
-		constexpr inline DrawAllocator() {
-			m_Elements = reinterpret_cast<Element::Base**>(malloc(1));
+		constexpr inline ElementVectorBase() noexcept {
+			m_Elements = reinterpret_cast<T*>(malloc(1));
 			m_WholeSize = 1;
 		}
-		inline ~DrawAllocator() {
+		inline ~ElementVectorBase() noexcept {
 			this->Clear();
 		}
-		constexpr inline void PushBack(Element::Base* element) {
+		constexpr inline void PushBack(const T& element) noexcept {
 			m_Size++;
-			size_t arraySize = m_Size * sizeof(element);
+			size_t arraySize = m_Size * sizeof(T);
 			if (arraySize > m_WholeSize) {
-				this->Allocate(arraySize);
+				this->Allocate(4 * sizeof(T));
 			}
 			m_Elements[m_Size - 1] = element;
 		}
-		constexpr inline void Allocate(size_t size) {
-			m_WholeSize += sizeof(Element::Base*);
-			m_Elements = reinterpret_cast<Element::Base**>(realloc(m_Elements, m_Size * sizeof(Element::Base*)));
+		constexpr inline void Allocate(size_t size) noexcept {
+			m_WholeSize += size; // allocate enough for 4 future elements
+			m_Elements = reinterpret_cast<T*>(realloc(m_Elements, m_WholeSize));
 		}
-		constexpr inline Element::Base* At(size_t index) const {
+		constexpr inline T& At(size_t index) const noexcept {
 			assert(index <= m_Size && "Index out of array bounds");
 			return m_Elements[index];
 		}
-		constexpr inline size_t Size() const {
+		constexpr inline size_t Size() const noexcept {
 			return m_Size;
 		}
-		constexpr inline Element::Base* operator[](size_t i) noexcept {
+		constexpr inline T& operator[](size_t i) noexcept {
 			return this->At(i);
 		}
-		constexpr inline  inline void Clear() {
-			for (size_t i = 0; i < m_Size; i++) {
-				delete m_Elements[i];
-			}
+		virtual inline void Clear() = 0;
+
+		inline T& First() noexcept { return m_Elements[0]; }
+		inline T& Last() noexcept { return m_Elements[m_Size]; }
+
+		inline ElementIterator<T> begin() noexcept { return ElementIterator<T>(m_Elements, 0); }
+		inline ElementIterator<T> end() noexcept { return ElementIterator<T>(m_Elements, m_Size); }
+	protected:
+		size_t m_Size = 0;
+		size_t m_WholeSize = 0;
+		T* m_Elements{};
+	};
+
+	template <typename T>
+	class ElementVector : public ElementVectorBase<T> {
+	public:
+		virtual inline void Clear() override {
 			free(m_Elements);
 			m_Size = 0;
 			m_WholeSize = 0;
 		}
-		inline DrawIterator begin() { return DrawIterator(m_Elements, 0); }
-		inline DrawIterator end() { return DrawIterator(m_Elements, m_Size); }
-	private:
-		size_t m_Size = 0;
-		size_t m_WholeSize = 0;
-		Element::Base** m_Elements{};
 	};
 }

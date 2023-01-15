@@ -24,6 +24,9 @@
     <ClInclude Include="include\ghudcpp\core.h">
       <Filter>include\ghudcpp</Filter>
     </ClInclude>
+    <ClInclude Include="include\ghudcpp\draw\draw_allocator.h">
+      <Filter>include\ghudcpp\draw</Filter>
+    </ClInclude>
     <ClInclude Include="include\ghudcpp\draw\draw_list.h">
       <Filter>include\ghudcpp\draw</Filter>
     </ClInclude>
@@ -50,9 +53,6 @@
     </ClInclude>
     <ClInclude Include="include\ghudcpp\types.h">
       <Filter>include\ghudcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ghudcpp\draw\draw_allocator.h">
-      <Filter>include\ghudcpp\draw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
