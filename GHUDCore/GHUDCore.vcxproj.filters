@@ -1,36 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="draw">
-      <UniqueIdentifier>{53D7957C-3F0E-970D-E8FA-7C10D410130F}</UniqueIdentifier>
+    <Filter Include="include">
+      <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="resources">
-      <UniqueIdentifier>{202B5BA7-8C95-0F1E-D5D3-C0C3417DED72}</UniqueIdentifier>
+    <Filter Include="include\ghudcpp">
+      <UniqueIdentifier>{C3EDE82F-2F79-56F4-388A-D9E8A494B2F4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ghudcpp\draw">
+      <UniqueIdentifier>{2047EE01-0CD6-77CB-B5F4-8BC6A1628871}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ghudcpp\resources">
+      <UniqueIdentifier>{0D83820E-7945-B698-C2F5-44252EF78E76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\ghudcpp\context.h" />
-    <ClInclude Include="include\ghudcpp\core.h" />
+    <ClInclude Include="include\ghudcpp\context.h">
+      <Filter>include\ghudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\core.h">
+      <Filter>include\ghudcpp</Filter>
+    </ClInclude>
     <ClInclude Include="include\ghudcpp\draw\draw_list.h">
-      <Filter>draw</Filter>
+      <Filter>include\ghudcpp\draw</Filter>
     </ClInclude>
     <ClInclude Include="include\ghudcpp\draw\element.h">
-      <Filter>draw</Filter>
+      <Filter>include\ghudcpp\draw</Filter>
     </ClInclude>
     <ClInclude Include="include\ghudcpp\draw\state.h">
-      <Filter>draw</Filter>
+      <Filter>include\ghudcpp\draw</Filter>
     </ClInclude>
-    <ClInclude Include="include\ghudcpp\ghud.h" />
-    <ClInclude Include="include\ghudcpp\platform.h" />
+    <ClInclude Include="include\ghudcpp\ghud.h">
+      <Filter>include\ghudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\platform.h">
+      <Filter>include\ghudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\resources\font_object.h">
+      <Filter>include\ghudcpp\resources</Filter>
+    </ClInclude>
     <ClInclude Include="include\ghudcpp\resources\resource_object.h">
-      <Filter>resources</Filter>
+      <Filter>include\ghudcpp\resources</Filter>
     </ClInclude>
     <ClInclude Include="include\ghudcpp\resources\texture_object.h">
-      <Filter>resources</Filter>
+      <Filter>include\ghudcpp\resources</Filter>
     </ClInclude>
-    <ClInclude Include="include\ghudcpp\types.h" />
-    <ClInclude Include="include\ghudcpp\resources\font_object.h">
-      <Filter>resources</Filter>
+    <ClInclude Include="include\ghudcpp\types.h">
+      <Filter>include\ghudcpp</Filter>
     </ClInclude>
+    <ClInclude Include="include\ghudcpp\draw\draw_allocator.h">
+      <Filter>include\ghudcpp\draw</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\draw_impl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

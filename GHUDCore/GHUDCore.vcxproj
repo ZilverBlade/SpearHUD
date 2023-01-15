@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClInclude Include="include\ghudcpp\context.h" />
     <ClInclude Include="include\ghudcpp\core.h" />
+    <ClInclude Include="include\ghudcpp\draw\draw_allocator.h" />
     <ClInclude Include="include\ghudcpp\draw\draw_list.h" />
     <ClInclude Include="include\ghudcpp\draw\element.h" />
     <ClInclude Include="include\ghudcpp\draw\state.h" />
@@ -111,6 +112,9 @@
     <ClInclude Include="include\ghudcpp\resources\resource_object.h" />
     <ClInclude Include="include\ghudcpp\resources\texture_object.h" />
     <ClInclude Include="include\ghudcpp\types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\draw_impl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

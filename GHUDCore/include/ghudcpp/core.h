@@ -10,11 +10,13 @@
 namespace GHUD {
 	class NonCopyableClass {
 	public:
+		NonCopyableClass() = default;
 		NonCopyableClass(const NonCopyableClass&) = delete;
 		NonCopyableClass& operator =(const NonCopyableClass&) = delete;
 	};
 	class NonMovableClass {
 	public:
+		NonCopyableClass() = default;
 		NonMovableClass(NonMovableClass&&) = delete;
 		NonMovableClass&& operator =(NonMovableClass&&) = delete;
 	};

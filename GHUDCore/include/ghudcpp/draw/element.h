@@ -19,11 +19,11 @@ namespace GHUD {
 			Rotor
 		};
 
-		struct ElementBase {
+		struct Base {
 			const Element::Type m_Type = Type::None;
 			uint64 m_UserDefinedID = 0;
 			uint64 m_TabIndex = 0;
-			ElementBase(Element::Type type) : m_Type(type) {}
+			Base(Element::Type type) : m_Type(type) {}
 			inline PressState GetPressState() const {
 				return m_State.m_PressState;
 			}
@@ -38,23 +38,23 @@ namespace GHUD {
 			fvec2 m_Scale = { 1.0f, 1.0f };
 		};
 
-		struct Rect : public ElementBase {
-			Rect() : ElementBase(Type::Rect) {}
+		struct Rect : public Base {
+			Rect() : Base(Type::Rect) {}
 			Transform m_Transform{};
 			TextureObject m_Atlas{};
 			RGBAColor m_Color{};
 		};
 
-		struct Rotor : public ElementBase {
-			Rotor() : ElementBase(Type::Rotor) {}
+		struct Rotor : public Base {
+			Rotor() : Base(Type::Rotor) {}
 			Transform m_Transform{};
 			float m_Rotation;
 			ResourceObject m_Atlas;
 			RGBAColor m_Color;
 		};
 
-		struct Text : public ElementBase {
-			Text() : ElementBase(Type::Rect) {}
+		struct Text : public Base {
+			Text() : Base(Type::Rect) {}
 			Transform m_Transform{};
 			FontObject m_Atlas{};
 			RGBAColor m_Color{};
