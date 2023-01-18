@@ -3,18 +3,16 @@ workspace "GammaHUD"
    preferredtoolarchitecture "x86_64"
    configurations { "Debug", "Release" }
 
-local outputSubfolder = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-
 local VULKAN_SDK = os.getenv("VULKAN_SDK") -- 
 
 project "GHUDCore"
    location "./GHUDCore"
    debugdir "./"
-   local bin = "./GHUDCore/bin/"..outputSubfolder
+   local bin = "./GHUDCore/lib"
 
    kind "StaticLib"
    language "C++"
-   cppdialect "C++17"
+   cppdialect "C++14"
    targetdir (bin)
 
    flags { "MultiProcessorCompile" }
@@ -41,6 +39,7 @@ project "GHUDCore"
       }
 	
    filter "configurations:Debug"
+      targetname "GHUDCore_d"
       defines { "_DEBUG", "_LIB" }
       runtime "Debug"
       symbols "On"
@@ -48,6 +47,7 @@ project "GHUDCore"
 	  }
 
    filter "configurations:Release"
+      targetname "GHUDCore"
 	  defines { "NDEBUG" }
       runtime "Release"
       optimize "Speed"
@@ -58,11 +58,11 @@ project "GHUDCore"
 project "GHUDVulkan"
    location "./GHUDVulkan"
    debugdir "./"
-   local bin = "./GHUDVulkan/bin/"..outputSubfolder
+   local bin = "./GHUDVulkan/lib"
 
-   kind "SharedLib"
+   kind "StaticLib"
    language "C++"
-   cppdialect "C++17"
+   cppdialect "C++14"
    targetdir (bin)
 
    flags { "MultiProcessorCompile" }
@@ -86,6 +86,7 @@ project "GHUDVulkan"
    }
 	
    filter "configurations:Debug"
+      targetname "GHUDVulkan_d"
       defines { "_DEBUG", "_DLLEXPORT" }
       runtime "Debug"
       symbols "On"
@@ -93,6 +94,7 @@ project "GHUDVulkan"
 	  }
 
    filter "configurations:Release"
+      targetname "GHUDVulkan"
 	  defines { "NDEBUG", "_DLLEXPORT" }
       runtime "Release"
       optimize "Speed"

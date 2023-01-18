@@ -2,33 +2,31 @@
 
 #include <ghudcpp/context.h>
 #include <ghudcpp/draw/element.h>
-#include <ghudcpp/draw/draw_allocator.h>
-#include <unordered_map>
-#include <vector>
+#include <ghudcpp/draw/draw_vector.h>
+#include <set>
+
 namespace GHUD {
+	class Context; // fwd declare
+
 	class DrawList : virtual public NonCopyableClass {
 	public:
-		DrawList();
+		DrawList(Context* ctx);
 		~DrawList();
 		void FrameStart();
 		void FrameEnd();
 		void Clear();
 		inline const auto& GetList() { 
-			return m_ElementList; 
+			return m_DrawList;
 		}
-
-		Element::Line& DrawLine(const Element::Line& line);
-		Element::Line& DrawLine(fvec2 m_PointA, fvec2 m_PointB, RGBAColor m_Color);
-		Element::Rect& DrawRect(const Element::Rect& rect);
-		Element::Rect& DrawRect(const Element::Transform& m_Transform, const TextureObject& m_Texture, RGBAColor m_Color);
+		const Element::Line& DrawLine(const Element::Line& line);
+		const Element::Line& DrawLine(fvec2 m_PointA, fvec2 m_PointB, RGBAColor m_Color, uint32 m_Layer);
+		const Element::Rect& DrawRect(const Element::Rect& rect);
+		const Element::Rect& DrawRect(const Element::Transform& m_Transform, const TextureObject& m_Texture, RGBAColor m_Color, uint32 m_Layer);
 	private:
-		ElementVector<Element::Base*> m_ElementList;
-		ElementVector<Element::Base*> m_HeapElements; // helper vector to track heap allocated elements
+		Context* ctx;
 
-		ElementVector<Element::Line> m_Lines; // lines must be fast to draw;
-		ElementVector<Element::Rect> m_Rects;
-		ElementVector<Element::Image> m_Images;
-		ElementVector<Element::Text> m_Texts;
+		ElementVector<DrawData> m_DrawData;
+		std::multiset<DrawInfo> m_DrawList; // ordered version of the vector, based on the layers
 
 		size_t m_PreviousSize = 0;
 	};

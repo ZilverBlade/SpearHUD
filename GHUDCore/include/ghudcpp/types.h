@@ -27,6 +27,38 @@ namespace GHUD {
         std::array<T, N> array;
         constexpr T& operator[](size_t i) noexcept { return array[i]; }
         constexpr const T& operator[](size_t i) const noexcept { return array[i]; }
+                                                                  
+        constexpr inline Vec<T, N> operator+=(const Vec<T, N>& a) noexcept {
+            return *this = *this + a;                             
+        }                                                         
+                                                                  
+        constexpr inline Vec<T, N> operator-=(const Vec<T, N>& a) noexcept {
+            return *this = *this - a;                             
+        }                                                         
+                                                                  
+        constexpr inline Vec<T, N> operator*=(const Vec<T, N>& a) noexcept {
+            return *this = *this * a;                             
+        }                                                         
+                                                                  
+        constexpr inline Vec<T, N> operator/=(const Vec<T, N>& a) noexcept {
+            return *this = *this / a;
+        }
+
+        constexpr inline Vec<T, N> operator+=(T a) noexcept {
+            return *this = *this + a;
+        }
+
+        constexpr inline Vec<T, N> operator-=(T a) noexcept {
+            return *this = *this - a;         
+        }                                     
+                                              
+        constexpr inline Vec<T, N> operator*=(T a) noexcept {
+            return *this = *this * a;         
+        }                                     
+                                              
+        constexpr inline Vec<T, N> operator/=(T a) noexcept {
+            return *this = *this / a;
+        }
     };
 
     template<typename T>
@@ -34,12 +66,16 @@ namespace GHUD {
         T x{}, y{};
         Vec() = default;
 
+        constexpr Vec<T, 2>(float vx, float vy) noexcept :
+            x(vx), y(vy)
+        {}
+
         constexpr T& operator[](size_t i) noexcept {
-            assert(i <= N && "Array index out of vector range");
+            assert(i <= 2 && "Array index out of vector range");
             return *reinterpret_cast<T*>(this + i * sizeof(T));
         }
         constexpr const T& operator[](size_t i) const noexcept {
-            assert(i <= N && "Array index out of vector range");
+            assert(i <= 2 && "Array index out of vector range");
             return *reinterpret_cast<const T*>(this + i * sizeof(T));
         }
     };
@@ -49,12 +85,16 @@ namespace GHUD {
         T x{}, y{}, z{};
         Vec() = default;
 
+        constexpr Vec<T, 3>(float vx, float vy, float vz) noexcept :
+            x(vx), y(vy), z(vz)
+        {}
+
         constexpr T& operator[](size_t i) noexcept {
-            assert(i <= N && "Array index out of vector range");
+            assert(i <= 3 && "Array index out of vector range");
             return *reinterpret_cast<T*>(this + i * sizeof(T));
         }
         constexpr const T& operator[](size_t i) const noexcept {
-            assert(i <= N && "Array index out of vector range");
+            assert(i <= 3 && "Array index out of vector range");
             return *reinterpret_cast<const T*>(this + i * sizeof(T));
         }
     };
@@ -64,12 +104,16 @@ namespace GHUD {
         T x{}, y{}, z{}, w{};
         Vec() = default;
 
+        constexpr Vec<T, 4>(float vx, float vy, float vz, float vw) noexcept :
+            x(vx), y(vy), z(vz), w(vw)
+        {}
+
         constexpr T& operator[](size_t i) noexcept {
-            assert(i <= N && "Array index out of vector range");
+            assert(i <= 4 && "Array index out of vector range");
             return *reinterpret_cast<T*>(this + i * sizeof(T));
         }
         constexpr const T& operator[](size_t i) const noexcept {
-            assert(i <= N && "Array index out of vector range");
+            assert(i <= 4 && "Array index out of vector range");
             return *reinterpret_cast<const T*>(this + i * sizeof(T));
         }
     };

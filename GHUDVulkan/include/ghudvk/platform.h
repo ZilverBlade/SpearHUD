@@ -2,10 +2,14 @@
 
 #ifdef _WIN32
 #define GHUDVK_PLATFORM_WINDOWS
+#ifdef GHUDVK_DYNAMIC_LIBRARY
 #ifdef _DLLEXPORT
 #define GHUDVK_API __declspec(dllexport)
 #else
 #define GHUDVK_API __declspec(dllimport)
+#endif
+#else
+#define GHUDVK_API
 #endif
 #endif
 #ifdef __linux__

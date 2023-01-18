@@ -1,63 +1,60 @@
 #pragma once
 
 #include <ghudcpp/draw/draw_list.h>
+#include <ghudcpp/context.h>
 namespace GHUD {
-	DrawList::DrawList() : m_ElementList(ElementVector<Element::Base*>()) {}
+	DrawList::DrawList(Context* ctx_) : ctx(ctx_) {
+	
+	}
 
 	DrawList::~DrawList() {
-		m_ElementList.Clear();
+		this->Clear();
 	}
 
 	void DrawList::FrameStart() {
-		assert(m_ElementList.Size() == 0 && "Draw List must be cleared before frame start!");
-		if (m_PreviousSize > 0) {
-			m_ElementList.Allocate(m_PreviousSize); // allocate depending on previous array size for performance
-		}
+		assert(m_DrawData.Size() == 0 && "Draw List must be cleared before frame start!");
+		assert(m_DrawList.size() == 0 && "Draw List must be cleared before frame start!");
 	}
 
 	void DrawList::FrameEnd() {
-		for (auto obj : m_HeapElements) {
-			delete obj.m_Element;
-		}
 		this->Clear();
 	}
 
 	void DrawList::Clear() {
-		m_PreviousSize = m_ElementList.Size();
-		m_ElementList.Clear();
-		m_HeapElements.Clear();
-		m_Lines.Clear();
-		m_Rects.Clear();
-		m_Images.Clear();
-		m_Texts.Clear();
+		m_PreviousSize = m_DrawData.Size();
+		m_DrawData.Clear();
+		m_DrawList.clear();
 	}
 
-	Element::Line& DrawList::DrawLine(const Element::Line& line) {
-		m_Lines.PushBack(line);
-		m_ElementList.PushBack(&m_Lines.Last());
-		return m_Lines.Last();
+	const Element::Line& DrawList::DrawLine(const Element::Line& line) {
+		m_DrawData.PushBack(line.GenerateDrawData(&ctx->GetGlobalContextInfo()));
+		m_DrawList.emplace(MultiSetContainer{ line.m_Layer, &m_DrawData.Last() });
+		return line;
 	}
-	Element::Line& DrawList::DrawLine(fvec2 m_PointA, fvec2 m_PointB, RGBAColor m_Color) {
+	const Element::Line& DrawList::DrawLine(fvec2 m_PointA, fvec2 m_PointB, RGBAColor m_Color, uint32 m_Layer) {
 		Element::Line obj{};
 		obj.m_PointA = m_PointA;
 		obj.m_PointB = m_PointB;
 		obj.m_Color = m_Color;
-		m_Lines.PushBack(std::move(obj));
-		m_ElementList.PushBack(&obj);
-		return m_Lines.Last();
+		obj.m_Layer = m_Layer;
+		m_DrawData.PushBack(obj.GenerateDrawData(&ctx->GetGlobalContextInfo()));
+		m_DrawList.emplace(MultiSetContainer{ obj.m_Layer, &m_DrawData.Last() });
+		return obj;
 	}
 
-	Element::Rect& DrawList::DrawRect(const Element::Rect& rect) {
-		m_Rects.PushBack(rect);
-		m_ElementList.PushBack(&m_Rects.Last());
-		return m_Rects.Last();
+	const Element::Rect& DrawList::DrawRect(const Element::Rect& rect) {
+		m_DrawData.PushBack(rect.GenerateDrawData(&ctx->GetGlobalContextInfo()));
+		m_DrawList.emplace(MultiSetContainer{ rect.m_Layer, &m_DrawData.Last() });
+		return rect;
 	}
-	Element::Rect& DrawList::DrawRect(const Element::Transform& m_Transform, const TextureObject& m_Texture, RGBAColor m_Color) {
+
+	const Element::Rect& DrawList::DrawRect(const Element::Transform& m_Transform, const TextureObject& m_Texture, RGBAColor m_Color, uint32 m_Layer) {
 		Element::Rect obj{};
 		obj.m_Transform = m_Transform;
 		obj.m_Color = m_Color;
-		m_Rects.PushBack(std::move(obj));
-		m_ElementList.PushBack(&m_Rects.Last());
-		return  m_Rects.Last();
+		obj.m_Layer = m_Layer;
+		m_DrawData.PushBack(obj.GenerateDrawData(&ctx->GetGlobalContextInfo()));
+		m_DrawList.emplace(MultiSetContainer{ obj.m_Layer, &m_DrawData.Last() });
+		return obj;
 	}
 }

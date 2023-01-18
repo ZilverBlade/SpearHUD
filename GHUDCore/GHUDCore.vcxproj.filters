@@ -13,6 +13,9 @@
     <Filter Include="include\ghudcpp\resources">
       <UniqueIdentifier>{0D83820E-7945-B698-C2F5-44252EF78E76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\ghudcpp\utils">
+      <UniqueIdentifier>{8305EC40-EF71-A73B-B865-3F992491C9A3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
@@ -24,10 +27,13 @@
     <ClInclude Include="include\ghudcpp\core.h">
       <Filter>include\ghudcpp</Filter>
     </ClInclude>
-    <ClInclude Include="include\ghudcpp\draw\draw_allocator.h">
+    <ClInclude Include="include\ghudcpp\draw\draw_data.h">
       <Filter>include\ghudcpp\draw</Filter>
     </ClInclude>
     <ClInclude Include="include\ghudcpp\draw\draw_list.h">
+      <Filter>include\ghudcpp\draw</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\draw\draw_vector.h">
       <Filter>include\ghudcpp\draw</Filter>
     </ClInclude>
     <ClInclude Include="include\ghudcpp\draw\element.h">
@@ -54,9 +60,21 @@
     <ClInclude Include="include\ghudcpp\types.h">
       <Filter>include\ghudcpp</Filter>
     </ClInclude>
+    <ClInclude Include="include\ghudcpp\utils\helper.h">
+      <Filter>include\ghudcpp\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\utils\math.h">
+      <Filter>include\ghudcpp\utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\context_impl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="src\draw_impl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\element_impl.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

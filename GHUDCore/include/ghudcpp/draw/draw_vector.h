@@ -24,13 +24,13 @@ namespace GHUD {
 	};
 
 	template <typename T>
-	class ElementVectorBase {
+	class ElementVector {
 	public:
-		constexpr inline ElementVectorBase() noexcept {
+		constexpr inline ElementVector() noexcept {
 			m_Elements = reinterpret_cast<T*>(malloc(1));
 			m_WholeSize = 1;
 		}
-		inline ~ElementVectorBase() noexcept {
+		inline ~ElementVector() noexcept {
 			this->Clear();
 		}
 		constexpr inline void PushBack(const T& element) noexcept {
@@ -55,26 +55,20 @@ namespace GHUD {
 		constexpr inline T& operator[](size_t i) noexcept {
 			return this->At(i);
 		}
-		virtual inline void Clear() = 0;
-
-		inline T& First() noexcept { return m_Elements[0]; }
-		inline T& Last() noexcept { return m_Elements[m_Size]; }
-
-		inline ElementIterator<T> begin() noexcept { return ElementIterator<T>(m_Elements, 0); }
-		inline ElementIterator<T> end() noexcept { return ElementIterator<T>(m_Elements, m_Size); }
-	protected:
-		size_t m_Size = 0;
-		size_t m_WholeSize = 0;
-		T* m_Elements{};
-	};
-
-	template <typename T>
-	class ElementVector : public ElementVectorBase<T> {
-	public:
-		virtual inline void Clear() override {
+		constexpr inline void Clear() noexcept {
 			free(m_Elements);
 			m_Size = 0;
 			m_WholeSize = 0;
 		}
+
+		inline T& First() noexcept { return m_Elements[0]; }
+		inline T& Last() noexcept { return m_Elements[m_Size]; }
+
+		inline ElementIterator<T> begin() const noexcept { return ElementIterator<T>(m_Elements, 0); }
+		inline ElementIterator<T> end() const noexcept { return ElementIterator<T>(m_Elements, m_Size); }
+	protected:
+		size_t m_Size = 0;
+		size_t m_WholeSize = 0;
+		T* m_Elements{};
 	};
 }

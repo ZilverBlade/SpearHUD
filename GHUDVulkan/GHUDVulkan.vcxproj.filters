@@ -24,11 +24,14 @@
     <ClInclude Include="include\ghudvk\vk_resources.h">
       <Filter>include\ghudvk</Filter>
     </ClInclude>
+    <ClInclude Include="include\ghudvk\api\buffer.h">
+      <Filter>include\ghudvk</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\vk_context_impl.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="include\ghudvk\vk_context.cpp" />
+    <ClCompile Include="src\api_impl.cpp" />
   </ItemGroup>
 </Project>
