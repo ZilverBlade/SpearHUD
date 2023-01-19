@@ -17,7 +17,7 @@ namespace GHUD {
 	struct DrawInfo {
 		LayerIndex m_Layer;
 		TextureID m_TextureID;
-		DrawData* m_Data;
+		DrawData m_Data;
 
 		// for the std::multi_set
 		inline bool operator<(const DrawInfo& other) const {

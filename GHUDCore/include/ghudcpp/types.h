@@ -30,38 +30,6 @@ namespace GHUD {
         std::array<T, N> array;
         constexpr T& operator[](size_t i) noexcept { return array[i]; }
         constexpr const T& operator[](size_t i) const noexcept { return array[i]; }
-                                                                  
-        constexpr inline Vec<T, N> operator+=(const Vec<T, N>& a) noexcept {
-            return *this = *this + a;                             
-        }                                                         
-                                                                  
-        constexpr inline Vec<T, N> operator-=(const Vec<T, N>& a) noexcept {
-            return *this = *this - a;                             
-        }                                                         
-                                                                  
-        constexpr inline Vec<T, N> operator*=(const Vec<T, N>& a) noexcept {
-            return *this = *this * a;                             
-        }                                                         
-                                                                  
-        constexpr inline Vec<T, N> operator/=(const Vec<T, N>& a) noexcept {
-            return *this = *this / a;
-        }
-
-        constexpr inline Vec<T, N> operator+=(T a) noexcept {
-            return *this = *this + a;
-        }
-
-        constexpr inline Vec<T, N> operator-=(T a) noexcept {
-            return *this = *this - a;         
-        }                                     
-                                              
-        constexpr inline Vec<T, N> operator*=(T a) noexcept {
-            return *this = *this * a;         
-        }                                     
-                                              
-        constexpr inline Vec<T, N> operator/=(T a) noexcept {
-            return *this = *this / a;
-        }
     };
 
     template<typename T>

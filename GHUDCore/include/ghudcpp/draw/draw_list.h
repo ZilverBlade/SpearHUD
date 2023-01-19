@@ -4,6 +4,7 @@
 #include <ghudcpp/draw/element.h>
 #include <ghudcpp/draw/draw_vector.h>
 #include <set>
+#include <vector>
 
 namespace GHUD {
 	class Context; // fwd declare
@@ -25,7 +26,7 @@ namespace GHUD {
 	private:
 		Context* ctx;
 
-		ElementVector<DrawData> m_DrawData;
+		std::vector<DrawData> m_DrawData;
 		std::multiset<DrawInfo> m_DrawList; // ordered version of the vector, based on the layers
 
 		size_t m_PreviousSize = 0;

@@ -6,6 +6,7 @@ const vec2 VERTICES[4] = vec2[](
 	vec2(0.5, -0.5),
 	vec2(0.5, 0.5)
 );
+
 const uint INDICES[6] = uint[](
 	0, 1, 2, 2, 1, 3
 );
@@ -45,5 +46,5 @@ void main() {
 	);
 	
 	fragUV = texCoords[INDICES[ind]];
-	gl_Position = vec4(position, 0.0, 1.0); // disabled depth test
+	gl_Position = vec4(position, 0.1, 1.0); // disabled depth test
 }

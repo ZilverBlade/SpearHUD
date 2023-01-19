@@ -9,20 +9,20 @@ namespace GHUD {
 
 			fvec2 ptA = Utils::ConvertScreenCoordToGPUCoord(m_PointA);
 			fvec2 ptB = Utils::ConvertScreenCoordToGPUCoord(m_PointB);
-			fvec2 v = ptB - ptA;
-			float len = Math::Length(v);
-			v = v / len;
+			fvec2 v = fvec2(ptB.x - ptA.x, ptB.y - ptA.y);
+			float len = sqrt(v.x * v.x + v.y * v.y);
+			v = fvec2(v.x / len, v.y / len);
 
-			const float c = Math::Dot(v, fvec2(1.0f, 0.0f));
+			const float c = v.x;
 			const float s = sqrt(1.0f - c * c);
 
-			const float w = m_Width / ctxInfo->m_ScreenSize.y;
+			const float w = m_Width / ctxInfo->m_ScreenSize.x;
 
 			data.m_AnchorOffset = m_AnchorOffset;
-			data.m_RotationMatrix[0][0] = c * len;
-			data.m_RotationMatrix[0][1] = s * len;
-			data.m_RotationMatrix[1][0] = -s * w;
-			data.m_RotationMatrix[1][1] = c * w;
+			data.m_RotationMatrix[0].x = c * len;
+			data.m_RotationMatrix[0].y = s * len;
+			data.m_RotationMatrix[1].x = -s * w;
+			data.m_RotationMatrix[1].y = c * w;
 			data.m_Position = fvec2((ptA.x + ptB.x) * 0.5f, (ptA.y + ptB.y) * 0.5f);
 
 			data.m_HasTexture = 0;
@@ -38,8 +38,8 @@ namespace GHUD {
 			data.m_AnchorOffset = m_AnchorOffset;
 			data.m_Position = Utils::ConvertScreenCoordToGPUCoord(m_Transform.m_Coord);
 
-			data.m_RotationMatrix[0][0] = m_Transform.m_Scale.x;
-			data.m_RotationMatrix[1][1] = m_Transform.m_Scale.y;
+			data.m_RotationMatrix[0].x = m_Transform.m_Scale.x;
+			data.m_RotationMatrix[1].y = m_Transform.m_Scale.y;
 
 			data.m_HasTexture = 0;
 			data.m_HasInteraction = 0;
@@ -57,10 +57,10 @@ namespace GHUD {
 
 			data.m_AnchorOffset = m_AnchorOffset;
 			data.m_Position = m_Transform.m_Coord;
-			data.m_RotationMatrix[0][0] = c * m_Transform.m_Scale.x;
-			data.m_RotationMatrix[0][1] = s * m_Transform.m_Scale.x;
-			data.m_RotationMatrix[1][0] = -s * m_Transform.m_Scale.y;
-			data.m_RotationMatrix[1][1] = c * m_Transform.m_Scale.y;
+			data.m_RotationMatrix[0].x = c * m_Transform.m_Scale.x;
+			data.m_RotationMatrix[0].y = s * m_Transform.m_Scale.x;
+			data.m_RotationMatrix[1].x = -s * m_Transform.m_Scale.y;
+			data.m_RotationMatrix[1].y = c * m_Transform.m_Scale.y;
 
 			data.m_HasTexture = 0;
 			data.m_HasInteraction = 0;
