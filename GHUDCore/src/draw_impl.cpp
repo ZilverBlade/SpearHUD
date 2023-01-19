@@ -2,6 +2,7 @@
 
 #include <ghudcpp/draw/draw_list.h>
 #include <ghudcpp/context.h>
+
 namespace GHUD {
 	DrawList::DrawList(Context* ctx_) : ctx(ctx_) {
 	
@@ -17,7 +18,6 @@ namespace GHUD {
 	}
 
 	void DrawList::FrameEnd() {
-		this->Clear();
 	}
 
 	void DrawList::Clear() {
@@ -26,12 +26,12 @@ namespace GHUD {
 		m_DrawList.clear();
 	}
 
-	const Element::Line& DrawList::DrawLine(const Element::Line& line) {
+	const Element::Line DrawList::DrawLine(const Element::Line& line) {
 		m_DrawData.PushBack(line.GenerateDrawData(&ctx->GetGlobalContextInfo()));
 		m_DrawList.emplace(DrawInfo{ line.m_Layer, 0, &m_DrawData.Last() });
 		return line;
 	}
-	const Element::Line& DrawList::DrawLine(fvec2 m_PointA, fvec2 m_PointB, RGBAColor m_Color, uint32 m_Layer) {
+	const Element::Line DrawList::DrawLine(fvec2 m_PointA, fvec2 m_PointB, RGBAColor m_Color, LayerIndex m_Layer) {
 		Element::Line obj{};
 		obj.m_PointA = m_PointA;
 		obj.m_PointB = m_PointB;
@@ -42,13 +42,13 @@ namespace GHUD {
 		return obj;
 	}
 
-	const Element::Rect& DrawList::DrawRect(const Element::Rect& rect) {
+	const Element::Rect DrawList::DrawRect(const Element::Rect& rect) {
 		m_DrawData.PushBack(rect.GenerateDrawData(&ctx->GetGlobalContextInfo()));
 		m_DrawList.emplace(DrawInfo{ rect.m_Layer, 0, &m_DrawData.Last() });
 		return rect;
 	}
 
-	const Element::Rect& DrawList::DrawRect(const Element::Transform& m_Transform, const TextureObject& m_Texture, RGBAColor m_Color, uint32 m_Layer) {
+	const Element::Rect DrawList::DrawRect(const Element::Transform& m_Transform, const TextureObject& m_Texture, RGBAColor m_Color, LayerIndex m_Layer) {
 		Element::Rect obj{};
 		obj.m_Transform = m_Transform;
 		obj.m_Color = m_Color;

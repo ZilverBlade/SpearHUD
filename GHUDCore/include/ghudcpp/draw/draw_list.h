@@ -18,10 +18,10 @@ namespace GHUD {
 		inline const auto& GetList() { 
 			return m_DrawList;
 		}
-		const Element::Line& DrawLine(const Element::Line& line);
-		const Element::Line& DrawLine(fvec2 m_PointA, fvec2 m_PointB, RGBAColor m_Color, uint32 m_Layer);
-		const Element::Rect& DrawRect(const Element::Rect& rect);
-		const Element::Rect& DrawRect(const Element::Transform& m_Transform, const TextureObject& m_Texture, RGBAColor m_Color, uint32 m_Layer);
+		const Element::Line DrawLine(const Element::Line& line);
+		const Element::Line DrawLine(fvec2 m_PointA, fvec2 m_PointB, RGBAColor m_Color, LayerIndex m_Layer);
+		const Element::Rect DrawRect(const Element::Rect& rect);
+		const Element::Rect DrawRect(const Element::Transform& m_Transform, const TextureObject& m_Texture, RGBAColor m_Color, LayerIndex m_Layer);
 	private:
 		Context* ctx;
 

@@ -10,7 +10,7 @@ namespace GHUD {
 		fvec2 m_ScreenSize{};
 		float m_AspectRatio = 1.0f;
 		float m_DisplayGamma = 2.2f;
-		float m_DisplayInverseGamma = 1.0 / 2.2f;
+		float m_DisplayInverseGamma = 1.0f / 2.2f;
 	};
 	class Context : public virtual NonCopyableClass {
 	public:

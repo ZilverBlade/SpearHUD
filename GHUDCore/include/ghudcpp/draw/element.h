@@ -8,7 +8,7 @@
 
 namespace GHUD {
 	class DrawList;
-	class GlobalContextInfo;
+	struct GlobalContextInfo;
 
 	namespace Element {
 		enum class Type {
@@ -102,9 +102,9 @@ namespace GHUD {
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
 			Transform m_Transform{};
-			float m_Rotation;
-			TextureObject m_Texture;
-			RGBAColor m_Color;
+			float m_Rotation{};
+			TextureObject m_Texture{};
+			RGBAColor m_Color{};
 		};
 
 		struct Text : public Base {
@@ -115,7 +115,7 @@ namespace GHUD {
 			Transform m_Transform{};
 			FontObject m_Font{};
 			RGBAColor m_Color{};
-			char* m_Text;
+			char* m_Text{};
 		};
 		struct TextButton : public Interactive {
 			TextButton() : Base(Type::TextButton) {}
@@ -125,7 +125,7 @@ namespace GHUD {
 			Transform m_Transform{};
 			FontObject m_Font{};
 			RGBAColor m_Color{};
-			char* m_Text;
+			char* m_Text{};
 		};
 
 		struct Window : public Interactive {
@@ -134,7 +134,7 @@ namespace GHUD {
 
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 		protected:
-			std::vector<Element::Base*> elements; // this will hold a reference to our elements inside the window
+			std::vector<Element::Base*> elements{}; // this will hold a reference to our elements inside the window
 		};
 	}
 }

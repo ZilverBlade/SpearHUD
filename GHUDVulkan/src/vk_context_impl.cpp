@@ -1,6 +1,6 @@
 #include <ghudvk/vk_context.h>
 #include <ghudcpp/draw/draw_data.h>
-
+#include <vulkan/vk_enum_string_helper.h>
 namespace GHUD {
 
 #pragma region Shader Code
@@ -436,7 +436,7 @@ namespace GHUD {
 		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 		poolInfo.maxSets = 1024u + 1u + 1u;
-		poolInfo.poolSizeCount = 1024u + 1u + 1u;
+		poolInfo.poolSizeCount = 3u;
 		poolInfo.pPoolSizes = poolSizes;
 		vkCreateDescriptorPool(m_Device, &poolInfo, nullptr, &m_DescriptorPool);
 
@@ -469,6 +469,26 @@ namespace GHUD {
 		bufferLayoutCreateInfo.pBindings = bufferBindings;
 		vkCreateDescriptorSetLayout(m_Device, &bufferLayoutCreateInfo, nullptr, &m_BufferDescriptorSetLayout);
 
+		static_assert(sizeof(DrawData) <= 128, "DrawData exceeds size of recommended vulkan spec push constant size of 128 bytes");
+
+		VkPushConstantRange pushRange{};
+		pushRange.offset = 0;
+		pushRange.size = sizeof(DrawData);
+		pushRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+
+		VkDescriptorSetLayout setLayouts[2]{
+			m_BufferDescriptorSetLayout,
+			m_TextureDescriptorSetLayout
+		};
+
+		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		pipelineLayoutInfo.setLayoutCount = 2;
+		pipelineLayoutInfo.pSetLayouts = setLayouts; // global UBO and texture
+		pipelineLayoutInfo.pushConstantRangeCount = 1;
+		pipelineLayoutInfo.pPushConstantRanges = &pushRange; // push
+		vkCreatePipelineLayout(m_Device, &pipelineLayoutInfo, nullptr, &m_PipelineLayout);
+
 		for (uint32 i = 0; i < createInfo.m_SwapChainImageCount; i++) {
 			m_GlobalUBO.emplace_back(
 				new Buffer(createInfo.m_Device, createInfo.m_PhysicalDevice, sizeof(GlobalContextInfo), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
@@ -478,7 +498,42 @@ namespace GHUD {
 			);
 			m_GlobalUBO[i]->map();
 			m_IDSSBO[i]->map();
+
+			VkDescriptorSet set = {};
+			VkDescriptorSetAllocateInfo allocateInfo{};
+			allocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+			allocateInfo.descriptorPool = m_DescriptorPool;
+			allocateInfo.descriptorSetCount = 1;
+			allocateInfo.pSetLayouts = &m_BufferDescriptorSetLayout;
+			vkAllocateDescriptorSets(m_Device, &allocateInfo, &set);
+
+			VkWriteDescriptorSet writeUBO{};
+			writeUBO.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			writeUBO.descriptorCount = 1;
+			writeUBO.dstBinding = 0;
+			writeUBO.dstSet = set;
+			writeUBO.pBufferInfo = &m_GlobalUBO[i]->descriptorInfo();
+			writeUBO.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+
+			VkWriteDescriptorSet writeSSBO{};
+			writeSSBO.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			writeSSBO.descriptorCount = 1;
+			writeSSBO.dstBinding = 1;
+			writeSSBO.dstSet = set;
+			writeSSBO.pBufferInfo = &m_IDSSBO[i]->descriptorInfo();
+			writeSSBO.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+
+			VkWriteDescriptorSet writes[2]{
+				writeUBO,
+				writeSSBO
+			};
+
+			vkUpdateDescriptorSets(m_Device, 2, writes, 0, nullptr);
+
+			m_BufferDescriptorSets.push_back(set);
 		}
+
+		CreateGraphicsPipeline(createInfo);
 	}
 
 	VulkanContext::~VulkanContext() {
@@ -498,21 +553,6 @@ namespace GHUD {
 	}
 
 	void VulkanContext::CreateGraphicsPipeline(const VulkanContextCreateInfo& createInfo) {
-		static_assert(sizeof(DrawData) <= 128, "DrawData exceeds size of recommended vulkan spec push constant size of 128 bytes");
-
-		VkPushConstantRange pushRange{};
-		pushRange.offset = 0;
-		pushRange.size = sizeof(DrawData);
-		pushRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
-
-		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 2;
-		pipelineLayoutInfo.pSetLayouts = nullptr; // global UBO and texture
-		pipelineLayoutInfo.pushConstantRangeCount = 1;
-		pipelineLayoutInfo.pPushConstantRanges = &pushRange; // push
-		vkCreatePipelineLayout(m_Device, &pipelineLayoutInfo, nullptr, &m_PipelineLayout);
-
 		VkShaderModuleCreateInfo vshModuleCreateInfo{};
 		vshModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 
@@ -604,7 +644,7 @@ namespace GHUD {
 		rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
 		rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		rasterizationInfo.lineWidth = 1.0f;
-		rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT;
+		rasterizationInfo.cullMode = VK_CULL_MODE_NONE;
 		rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
 		rasterizationInfo.depthBiasEnable = VK_FALSE;
 		rasterizationInfo.depthBiasConstantFactor = 0.0f;
@@ -661,7 +701,8 @@ namespace GHUD {
 		pipelineInfo.basePipelineIndex = -1;
 		pipelineInfo.basePipelineHandle = nullptr;
 
-		vkCreateGraphicsPipelines(m_Device, nullptr, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline);
+		VkResult pipelineResult = vkCreateGraphicsPipelines(m_Device, nullptr, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline);
+		assert(pipelineResult == VK_SUCCESS && "Failed to create graphics pipeline!");
 	}
 
 	void VulkanContext::Render(const VulkanFrameInfoStruct* frameInfoStruct) {
@@ -678,7 +719,7 @@ namespace GHUD {
 			m_PipelineLayout,
 			0,
 			1,
-			&m_BufferDescriptorSet,
+			&m_BufferDescriptorSets[frameInfo.m_FrameIndex],
 			0,
 			nullptr
 		);

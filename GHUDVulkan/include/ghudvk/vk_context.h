@@ -5,8 +5,6 @@
 #include <ghudvk/api/buffer.h>
 
 namespace GHUD {
-
-
 	struct VulkanContextCreateInfo {
 		VkDevice m_Device;
 		VkPhysicalDevice m_PhysicalDevice;
@@ -45,13 +43,12 @@ namespace GHUD {
 		VkPhysicalDevice m_PhysicalDevice;
 		VkDevice m_Device;
 
-		VkDescriptorSet m_BufferDescriptorSet;
-
 		VkShaderModule m_VshModule;
 		VkShaderModule m_FshModule;
 
 		uint32 m_SwapChainImageCount;
 		std::vector<Buffer*> m_GlobalUBO;
 		std::vector<Buffer*> m_IDSSBO;
+		std::vector<VkDescriptorSet> m_BufferDescriptorSets;
 	};
 }

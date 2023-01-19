@@ -26,24 +26,29 @@ namespace GHUD {
 	template <typename T>
 	class ElementVector {
 	public:
-		constexpr inline ElementVector() noexcept {
-			m_Elements = reinterpret_cast<T*>(malloc(1));
-			m_WholeSize = 1;
+		ElementVector() noexcept {
+			m_Elements = reinterpret_cast<T*>(malloc(sizeof(T) * 16));
+			m_WholeSize = sizeof(T) * 16;
 		}
-		inline ~ElementVector() noexcept {
+		~ElementVector() noexcept {
 			this->Clear();
 		}
 		constexpr inline void PushBack(const T& element) noexcept {
+			size_t memIndex = m_Size * sizeof(T);
 			m_Size++;
 			size_t arraySize = m_Size * sizeof(T);
 			if (arraySize > m_WholeSize) {
 				this->Allocate(4 * sizeof(T));
 			}
-			m_Elements[m_Size - 1] = element;
+			memcpy(m_Elements + memIndex, &element, sizeof(T));
 		}
 		constexpr inline void Allocate(size_t size) noexcept {
-			m_WholeSize += size; // allocate enough for 4 future elements
-			m_Elements = reinterpret_cast<T*>(realloc(m_Elements, m_WholeSize));
+			m_WholeSize += size; 
+
+			void* new_buff{};
+			new_buff = std::realloc(m_Elements, m_WholeSize);
+			assert(new_buff && "failed to allocate buffer memory!");
+			m_Elements = reinterpret_cast<T*>(new_buff);
 		}
 		constexpr inline T& At(size_t index) const noexcept {
 			assert(index <= m_Size && "Index out of array bounds");
@@ -58,7 +63,8 @@ namespace GHUD {
 		constexpr inline void Clear() noexcept {
 			free(m_Elements);
 			m_Size = 0;
-			m_WholeSize = 0;
+			m_Elements = reinterpret_cast<T*>(malloc(sizeof(T) * 16));
+			m_WholeSize = sizeof(T) * 16;
 		}
 
 		inline T& First() noexcept { return m_Elements[0]; }

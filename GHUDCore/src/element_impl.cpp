@@ -23,7 +23,7 @@ namespace GHUD {
 			data.m_RotationMatrix[0][1] = s * len;
 			data.m_RotationMatrix[1][0] = -s * w;
 			data.m_RotationMatrix[1][1] = c * w;
-			data.m_Position = fvec2(ptA.x + ptB.x, ptA.y + ptB.y) * 0.5f;
+			data.m_Position = fvec2((ptA.x + ptB.x) * 0.5f, (ptA.y + ptB.y) * 0.5f);
 
 			data.m_HasTexture = 0;
 			data.m_HasInteraction = 0;
@@ -33,7 +33,7 @@ namespace GHUD {
 			return data;
 		}
 
-		const DrawData Rect::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
+		 const DrawData Rect::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
 			DrawData data{};
 			data.m_AnchorOffset = m_AnchorOffset;
 			data.m_Position = Utils::ConvertScreenCoordToGPUCoord(m_Transform.m_Coord);
@@ -68,6 +68,21 @@ namespace GHUD {
 			data.m_UVOffsetA = fvec2(0.0f, 0.0f);
 			data.m_UVOffsetB = fvec2(1.0f, 1.0f);
 			return data;
+		}
+		const DrawData GHUD::Element::Image::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
+			return DrawData();
+		}
+		const DrawData GHUD::Element::Button::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
+			return DrawData();
+		}
+		const DrawData GHUD::Element::Text::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
+			return DrawData();
+		}
+		const DrawData GHUD::Element::TextButton::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
+			return DrawData();
+		}
+		const DrawData GHUD::Element::Window::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
+			return DrawData();
 		}
 	}
 }
