@@ -5,6 +5,8 @@
 #include <ghudvk/api/buffer.h>
 
 namespace GHUD {
+
+
 	struct VulkanContextCreateInfo {
 		VkDevice m_Device;
 		VkPhysicalDevice m_PhysicalDevice;
@@ -12,6 +14,11 @@ namespace GHUD {
 		uint32 m_SubPass;
 		VkFormat m_FrameBufferFormat;
 		uint32 m_SwapChainImageCount;
+
+		void* m_VshCodeOverride = nullptr;
+		size_t m_VshCodeOverrideSize;
+		void* m_FshCodeOverride = nullptr;
+		size_t m_FshCodeOverrideSize;
 	};
 
 	struct VulkanFrameInfo {
@@ -25,8 +32,7 @@ namespace GHUD {
 	public:
 		GHUDVK_API VulkanContext(const VulkanContextCreateInfo& createInfo);
 		GHUDVK_API ~VulkanContext();
-		GHUDVK_API void SetCommandBuffer(VkCommandBuffer commandBuffer);
-		GHUDVK_API virtual void Render(VulkanFrameInfoStruct* frameInfoStruct) override;
+		GHUDVK_API virtual void Render(const VulkanFrameInfoStruct* frameInfoStruct) override;
 		GHUDVK_API ResourceObject CreateTexture(const VkDescriptorImageInfo& imageInfo);
 	private:
 		GHUDVK_API void CreateGraphicsPipeline(const VulkanContextCreateInfo& createInfo);
@@ -40,6 +46,9 @@ namespace GHUD {
 		VkDevice m_Device;
 
 		VkDescriptorSet m_BufferDescriptorSet;
+
+		VkShaderModule m_VshModule;
+		VkShaderModule m_FshModule;
 
 		uint32 m_SwapChainImageCount;
 		std::vector<Buffer*> m_GlobalUBO;

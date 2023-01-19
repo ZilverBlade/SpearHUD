@@ -28,7 +28,7 @@ namespace GHUD {
 
 	const Element::Line& DrawList::DrawLine(const Element::Line& line) {
 		m_DrawData.PushBack(line.GenerateDrawData(&ctx->GetGlobalContextInfo()));
-		m_DrawList.emplace(MultiSetContainer{ line.m_Layer, &m_DrawData.Last() });
+		m_DrawList.emplace(DrawInfo{ line.m_Layer, 0, &m_DrawData.Last() });
 		return line;
 	}
 	const Element::Line& DrawList::DrawLine(fvec2 m_PointA, fvec2 m_PointB, RGBAColor m_Color, uint32 m_Layer) {
@@ -38,13 +38,13 @@ namespace GHUD {
 		obj.m_Color = m_Color;
 		obj.m_Layer = m_Layer;
 		m_DrawData.PushBack(obj.GenerateDrawData(&ctx->GetGlobalContextInfo()));
-		m_DrawList.emplace(MultiSetContainer{ obj.m_Layer, &m_DrawData.Last() });
+		m_DrawList.emplace(DrawInfo{ obj.m_Layer, 0, &m_DrawData.Last() });
 		return obj;
 	}
 
 	const Element::Rect& DrawList::DrawRect(const Element::Rect& rect) {
 		m_DrawData.PushBack(rect.GenerateDrawData(&ctx->GetGlobalContextInfo()));
-		m_DrawList.emplace(MultiSetContainer{ rect.m_Layer, &m_DrawData.Last() });
+		m_DrawList.emplace(DrawInfo{ rect.m_Layer, 0, &m_DrawData.Last() });
 		return rect;
 	}
 
@@ -54,7 +54,7 @@ namespace GHUD {
 		obj.m_Color = m_Color;
 		obj.m_Layer = m_Layer;
 		m_DrawData.PushBack(obj.GenerateDrawData(&ctx->GetGlobalContextInfo()));
-		m_DrawList.emplace(MultiSetContainer{ obj.m_Layer, &m_DrawData.Last() });
+		m_DrawList.emplace(DrawInfo{ obj.m_Layer, 0, &m_DrawData.Last() });
 		return obj;
 	}
 }

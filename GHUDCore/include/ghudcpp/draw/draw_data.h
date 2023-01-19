@@ -9,14 +9,14 @@ namespace GHUD {
 		fvec2 m_AnchorOffset;
 		fvec2 m_UVOffsetA{};
 		fvec2 m_UVOffsetB{};
-		RGBAColor m_Color{};
+		fvec4 m_Color{};
 		uint32 m_ID{};
 		uint32 m_HasTexture{};
 		uint32 m_HasInteraction{};
 	};
 	struct DrawInfo {
 		LayerIndex m_Layer;
-		uint64 m_TextureID;
+		TextureID m_TextureID;
 		DrawData* m_Data;
 
 		// for the std::multi_set

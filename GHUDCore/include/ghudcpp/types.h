@@ -22,6 +22,9 @@ namespace GHUD {
 	using int64 = signed long;
 #endif
 
+    using LayerIndex = uint16;
+    using TextureID = uint64;
+
     template<typename T, size_t N>
     struct Vec {
         std::array<T, N> array;

@@ -1,8 +1,8 @@
 #version 450
 
-layout (location = 0) in vec2 FragUV
+layout (location = 0) in vec2 fragUV;
 
-layout (location = 0) out vec4 OutColor;
+layout (location = 0) out vec4 outColor;
 
 layout (set = 0, binding = 0) uniform GlobalUBO {
 	float m_Gamma;
@@ -22,22 +22,21 @@ layout (push_constant) uniform Push {
 	vec2 m_AnchorOffset;
 	vec2 m_UVOffsetA;
 	vec2 m_UVOffsetB;
-	uint m_Color;
+	vec4 m_Color;
 	uint m_ID;
 	uint m_HasTexture;
 	uint m_HasInteraction;
 } push;
 
 void main() {
-
-
-	float red = (push.m_Color & 0xFF000000) / 255;
-	float green = (push.m_Color & 0x00FF0000) / 255;
-	float blue = (push.m_Color & 0x0000FF00) / 255;
-	float alpha = (push.m_Color & 0x000000FF) / 255;
-
-
-	if (length(FragUV, ubo.m_CursorCoord) < 0.00001) idssbo.m_PickID = push.m_ID;
+	if (push.m_HasInteraction == 1) 
+		if (distance(fragUV, ubo.m_CursorCoord) < 0.00001) 
+			idssbo.m_PickID = push.m_ID;
 	
+	vec4 color = push.m_Color;
 	
+	if (push.m_HasTexture == 1)
+		color *= textureLod(textureAtlas, fragUV, 1.0);
+	
+	outColor = vec4(pow(color.rgb, vec3(ubo.m_InvGamma)), color.a);
 }

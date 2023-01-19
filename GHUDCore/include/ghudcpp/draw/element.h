@@ -10,7 +10,6 @@ namespace GHUD {
 	class DrawList;
 	class GlobalContextInfo;
 
-	using LayerIndex = uint16;
 	namespace Element {
 		enum class Type {
 			None,
@@ -28,7 +27,6 @@ namespace GHUD {
 		};
 
 		struct Transform {
-			fvec2 m_AnchorOffset = { 0.0f, 0.0f };
 			fvec2 m_Coord = { 0.5f, 0.5f };
 			fvec2 m_Scale = { 1.0f, 1.0f };
 		};
@@ -39,6 +37,7 @@ namespace GHUD {
 			Base(Element::Type type) : m_Type(type) {}
 			LayerIndex m_Layer = 0;
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const = 0;
+			fvec2 m_AnchorOffset = { 0.0f, 0.0f };
 		protected:
 			Base() = default;
 		};
