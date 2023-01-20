@@ -35,8 +35,9 @@ layout (push_constant) uniform Push {
 void main() {
 	vec4 color = vec4(1.0);
 	if (push.m_HasTexture == 1) {
-		vec2 textureCoord = mod(fragUV, push.m_SubUVOffsetB - push.m_SubUVOffsetA) + push.m_SubUVOffsetA;
-		color = textureLod(textureAtlas, textureCoord, 1.0) * push.m_Color;
+		vec2 BminA = push.m_SubUVOffsetB - push.m_SubUVOffsetA;
+		vec2 textureCoord = mod(fragUV * BminA, BminA) + push.m_SubUVOffsetA;
+		color = textureLod(textureAtlas, textureCoord, 1.0).rgba * push.m_Color;
 		if (color.a < 0.01) discard; // masked objects to avoid unintended button presses
 	} else {
 		color = push.m_Color;

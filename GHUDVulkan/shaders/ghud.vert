@@ -45,12 +45,12 @@ void main() {
 	vec2 position = transform * arTransform + push.m_AnchorOffset; // i want to kms
 	
 	vec2 texCoords[4] = vec2[](
-		vec2(push.m_UVOffsetB.x, push.m_UVOffsetB.y),
-		vec2(push.m_UVOffsetB.x, push.m_UVOffsetA.y),
 		vec2(push.m_UVOffsetA.x, push.m_UVOffsetB.y),
-		vec2(push.m_UVOffsetA.x, push.m_UVOffsetA.y)
+		vec2(push.m_UVOffsetA.x, push.m_UVOffsetA.y),
+		vec2(push.m_UVOffsetB.x, push.m_UVOffsetB.y),
+		vec2(push.m_UVOffsetB.x, push.m_UVOffsetA.y)
 	);
 	
-	fragUV = texCoords[INDICES[ind]];
+	fragUV = texCoords[ind];
 	gl_Position = vec4(position, 1.0, 1.0); // disabled depth test
 }
