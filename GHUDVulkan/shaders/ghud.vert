@@ -36,11 +36,13 @@ layout (push_constant) uniform Push {
 } push;
 
 void main() {
+	vec2 arTransform = vec2(ubo.m_InvAspectRatio, 1.0);
+	vec2 invArTransform = vec2(ubo.m_AspectRatio, 1.0);
 	uint ind = INDICES[gl_VertexIndex];
-	
-	vec2 position = vec2(push.m_RotationMatrix * (VERTICES[ind] + push.m_AnchorOffset) + push.m_Position);
-	position.x *= ubo.m_InvAspectRatio;
-	
+	vec2 vtx = (VERTICES[ind]);
+	vec2 offsetVTX = vtx - push.m_AnchorOffset;
+	vec2 transform = vec2(push.m_RotationMatrix * offsetVTX) + push.m_Position;
+	vec2 position = transform * arTransform + push.m_AnchorOffset; // i want to kms
 	vec2 texCoords[4] = vec2[](
 		vec2(push.m_UVOffsetB.x, push.m_UVOffsetB.y),
 		vec2(push.m_UVOffsetB.x, push.m_UVOffsetA.y),

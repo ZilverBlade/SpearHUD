@@ -1,0 +1,7 @@
+﻿Build started...
+1>------ Build started: Project: GHUDCore, Configuration: Debug x64 ------
+2023-01-20 17:13:29,720 UTC INFO  BuildVersionIncrement.Logging.Logger - Pre-build process : Completed
+1>element_impl.cpp
+1>GHUDCore.vcxproj -> D:\Directories\Documents\Visual Studio 2019\source\repos\GammaHUD\GHUDCore\lib\GHUDCore_d.lib
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
+2023-01-20 17:13:30,291 UTC INFO  BuildVersionIncrement.Logging.Logger - Post-build process : Completed

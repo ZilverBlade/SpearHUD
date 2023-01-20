@@ -19,8 +19,8 @@ namespace GHUD {
 			const float w = m_Width / ctxInfo->m_ScreenSize.y;
 
 			data.m_AnchorOffset = m_AnchorOffset;
-			data.m_RotationMatrix[0][0] = v.x * 0.5f;
-			data.m_RotationMatrix[0][1] = v.y * 0.5f;
+			data.m_RotationMatrix[0][0] = v.x * 0.5;
+			data.m_RotationMatrix[0][1] = v.y * 0.5;
 			data.m_RotationMatrix[1][0] = -u.y * w;
 			data.m_RotationMatrix[1][1] = u.x * w;
 			data.m_Position = fvec2(ptA.x + ptB.x, ptA.y + ptB.y) * 0.5f;
@@ -56,7 +56,7 @@ namespace GHUD {
 			const float c = cos(m_Rotation);
 
 			data.m_AnchorOffset = m_AnchorOffset;
-			data.m_Position = m_Transform.m_Coord;
+			data.m_Position = Utils::ConvertScreenCoordToGPUCoord(m_Transform.m_Coord);
 			data.m_RotationMatrix[0].x = c * m_Transform.m_Scale.x;
 			data.m_RotationMatrix[0].y = s * m_Transform.m_Scale.x;
 			data.m_RotationMatrix[1].x = -s * m_Transform.m_Scale.y;
