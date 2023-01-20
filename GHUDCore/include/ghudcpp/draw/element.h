@@ -22,18 +22,19 @@ namespace GHUD {
 			TextButton, // TextButton is an interactive Text element.
 			TextInput, // TextInput is an interactive box to input text.
 			Window, // Window is a movable (may be configured to drag) rect that may contain other elements.
+			Panel, 
 			Scrollbar,
 			Rotor
 		};
 
 		struct Transform {
-			fvec2 m_Coord = { 0.5f, 0.5f };
+			fvec2 m_TransformOffset = { 0.0f, 0.0f };
+			fvec2 m_Position = { 0.5f, 0.5f };
 			fvec2 m_Scale = { 1.0f, 1.0f };
 		};
 
 		struct Base {
 			const Element::Type m_Type = Type::None;
-			uint64 m_UserDefinedID = 0;
 			Base(Element::Type type) : m_Type(type) {}
 			LayerIndex m_Layer = 0;
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const = 0;
@@ -43,7 +44,7 @@ namespace GHUD {
 		};
 
 		struct Interactive : public virtual Base {
-			uint64 m_TabIndex = 0;
+			uint32 m_TabIndex = 0;
 			inline PressState GetPressState() const { return m_State.m_PressState; }
 		protected:
 			State m_State;
@@ -83,6 +84,8 @@ namespace GHUD {
 
 			Transform m_Transform{};
 			TextureObject m_Texture{};
+			fvec2 m_GlobalUVOffsetMin = { 0.f, 0.f };
+			fvec2 m_GlobalUVOffsetMax = { 1.f, 1.f };
 			RGBAColor m_Color{};
 		};
 

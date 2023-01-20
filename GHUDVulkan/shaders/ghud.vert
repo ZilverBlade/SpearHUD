@@ -43,6 +43,7 @@ void main() {
 	vec2 offsetVTX = vtx - push.m_AnchorOffset;
 	vec2 transform = vec2(push.m_RotationMatrix * offsetVTX) + push.m_Position;
 	vec2 position = transform * arTransform + push.m_AnchorOffset; // i want to kms
+	
 	vec2 texCoords[4] = vec2[](
 		vec2(push.m_UVOffsetB.x, push.m_UVOffsetB.y),
 		vec2(push.m_UVOffsetB.x, push.m_UVOffsetA.y),

@@ -721,8 +721,8 @@ namespace GHUD {
 		rasterizationInfo.depthBiasSlopeFactor = 0.0f;
 
 		multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-		multisampleInfo.sampleShadingEnable = VK_FALSE;
-		multisampleInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+		multisampleInfo.sampleShadingEnable = createInfo.m_MSAASamples == VK_SAMPLE_COUNT_1_BIT ? VK_FALSE : VK_TRUE;
+		multisampleInfo.rasterizationSamples = createInfo.m_MSAASamples;
 		multisampleInfo.minSampleShading = 1.0f;
 		multisampleInfo.pSampleMask = nullptr;
 		multisampleInfo.alphaToCoverageEnable = VK_FALSE;

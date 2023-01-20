@@ -18,5 +18,8 @@ namespace GHUD {
                 float(color.a) / 255.0f
             );
         }
+        static inline fvec2 GetAbsoluteCoord(fvec2 coord, float aspectRatio) {
+            return fvec2(((coord.x - 0.5) * 2.0 * aspectRatio) * 0.5 + 0.5, coord.y);
+        }
     };
 }

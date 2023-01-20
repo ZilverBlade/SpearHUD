@@ -12,6 +12,7 @@ namespace GHUD {
 		uint32 m_SubPass;
 		VkFormat m_FrameBufferFormat;
 		uint32 m_SwapChainImageCount;
+		VkSampleCountFlagBits m_MSAASamples;
 
 		void* m_VshCodeOverride = nullptr;
 		size_t m_VshCodeOverrideSize;

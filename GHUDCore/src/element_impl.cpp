@@ -25,27 +25,19 @@ namespace GHUD {
 			data.m_RotationMatrix[1][1] = u.x * w;
 			data.m_Position = fvec2(ptA.x + ptB.x, ptA.y + ptB.y) * 0.5f;
 
-			data.m_HasTexture = 0;
-			data.m_HasInteraction = 0;
 			data.m_Color = Utils::ConvertHexColorToFloat4Color(m_Color);
-			data.m_UVOffsetA = fvec2(0.0f, 0.0f);
-			data.m_UVOffsetB = fvec2(1.0f, 1.0f);
 			return data;
 		}
 
 		 const DrawData Rect::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
 			DrawData data{};
 			data.m_AnchorOffset = m_AnchorOffset;
-			data.m_Position = Utils::ConvertScreenCoordToGPUCoord(m_Transform.m_Coord);
+			data.m_Position = Utils::ConvertScreenCoordToGPUCoord(m_Transform.m_Position);
 
-			data.m_RotationMatrix[0].x = m_Transform.m_Scale.x;
-			data.m_RotationMatrix[1].y = m_Transform.m_Scale.y;
+			data.m_RotationMatrix[0][0] = m_Transform.m_Scale.x;
+			data.m_RotationMatrix[1][1] = m_Transform.m_Scale.y;
 
-			data.m_HasTexture = 0;
-			data.m_HasInteraction = 0;
 			data.m_Color = Utils::ConvertHexColorToFloat4Color(m_Color);
-			data.m_UVOffsetA = fvec2(0.0f, 0.0f);
-			data.m_UVOffsetB = fvec2(1.0f, 1.0f);
 			return data;
 		}
 
@@ -56,21 +48,32 @@ namespace GHUD {
 			const float c = cos(m_Rotation);
 
 			data.m_AnchorOffset = m_AnchorOffset;
-			data.m_Position = Utils::ConvertScreenCoordToGPUCoord(m_Transform.m_Coord);
-			data.m_RotationMatrix[0].x = c * m_Transform.m_Scale.x;
-			data.m_RotationMatrix[0].y = s * m_Transform.m_Scale.x;
-			data.m_RotationMatrix[1].x = -s * m_Transform.m_Scale.y;
-			data.m_RotationMatrix[1].y = c * m_Transform.m_Scale.y;
+			data.m_Position = Utils::ConvertScreenCoordToGPUCoord(m_Transform.m_Position);
+			data.m_RotationMatrix[0][0] = c * m_Transform.m_Scale.x;
+			data.m_RotationMatrix[0][1] = s * m_Transform.m_Scale.x;
+			data.m_RotationMatrix[1][0] = -s * m_Transform.m_Scale.y;
+			data.m_RotationMatrix[1][1] = c * m_Transform.m_Scale.y;
 
-			data.m_HasTexture = 0;
-			data.m_HasInteraction = 0;
 			data.m_Color = Utils::ConvertHexColorToFloat4Color(m_Color);
-			data.m_UVOffsetA = fvec2(0.0f, 0.0f);
-			data.m_UVOffsetB = fvec2(1.0f, 1.0f);
 			return data;
 		}
 		const DrawData GHUD::Element::Image::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
-			return DrawData();
+			DrawData data{};
+
+			data.m_AnchorOffset = m_AnchorOffset;
+			data.m_Position = Utils::ConvertScreenCoordToGPUCoord(m_Transform.m_Position);
+			data.m_RotationMatrix[0][0] = m_Transform.m_Scale.x;
+			data.m_RotationMatrix[1][1] = m_Transform.m_Scale.y;
+
+			data.m_HasTexture = 1;
+			data.m_HasInteraction = 0;
+			data.m_Color = Utils::ConvertHexColorToFloat4Color(m_Color);
+			data.m_UVOffsetA = m_GlobalUVOffsetMin;
+			data.m_UVOffsetB = m_GlobalUVOffsetMax;
+			data.m_SubUVOffsetA = m_Texture.m_DefaultTextureCoords.m_UVOffsetMin;
+			data.m_SubUVOffsetB = m_Texture.m_DefaultTextureCoords.m_UVOffsetMax;
+
+			return data;
 		}
 		const DrawData GHUD::Element::Button::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
 			return DrawData();
