@@ -26,7 +26,6 @@ namespace GHUD {
 	private:
 		Context* ctx;
 
-		std::vector<DrawData> m_DrawData;
 		std::multiset<DrawInfo> m_DrawList; // ordered version of the vector, based on the layers
 
 		size_t m_PreviousSize = 0;

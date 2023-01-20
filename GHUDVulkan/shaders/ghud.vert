@@ -1,10 +1,10 @@
 #version 450
 
 const vec2 VERTICES[4] = vec2[](
-	vec2(-0.5, -0.5),
-	vec2(-0.5, 0.5),
-	vec2(0.5, -0.5),
-	vec2(0.5, 0.5)
+	vec2(-1.0, -1.0),
+	vec2(-1.0, 1.0),
+	vec2(1.0, -1.0),
+	vec2(1.0, 1.0)
 );
 
 const uint INDICES[6] = uint[](
@@ -16,6 +16,7 @@ layout (set = 0, binding = 0) uniform GlobalUBO {
 	vec2 m_CursorCoord;
 	vec2 m_ScreenSize;
 	float m_AspectRatio;
+	float m_InvAspectRatio;
 	float m_Gamma;
 	float m_InvGamma;
 } ubo;
@@ -26,6 +27,8 @@ layout (push_constant) uniform Push {
 	vec2 m_AnchorOffset;
 	vec2 m_UVOffsetA; // min
 	vec2 m_UVOffsetB; // max
+	vec2 m_SubUVOffsetA; // min atlas
+	vec2 m_SubUVOffsetB; // max atlas
 	vec4 m_Color;
 	uint m_ID;
 	uint m_HasTexture;
@@ -36,7 +39,7 @@ void main() {
 	uint ind = INDICES[gl_VertexIndex];
 	
 	vec2 position = vec2(push.m_RotationMatrix * (VERTICES[ind] + push.m_AnchorOffset) + push.m_Position);
-	position.y *= ubo.m_AspectRatio;
+	position.x *= ubo.m_InvAspectRatio;
 	
 	vec2 texCoords[4] = vec2[](
 		vec2(push.m_UVOffsetB.x, push.m_UVOffsetB.y),
@@ -46,5 +49,5 @@ void main() {
 	);
 	
 	fragUV = texCoords[INDICES[ind]];
-	gl_Position = vec4(position, 0.1, 1.0); // disabled depth test
+	gl_Position = vec4(position, 1.0, 1.0); // disabled depth test
 }

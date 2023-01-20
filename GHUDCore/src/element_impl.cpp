@@ -11,19 +11,19 @@ namespace GHUD {
 			fvec2 ptB = Utils::ConvertScreenCoordToGPUCoord(m_PointB);
 			fvec2 v = fvec2(ptB.x - ptA.x, ptB.y - ptA.y);
 			float len = sqrt(v.x * v.x + v.y * v.y);
-			v = fvec2(v.x / len, v.y / len);
+			fvec2 u = fvec2(v.x, v.y) / len;
 
-			const float c = v.x;
-			const float s = sqrt(1.0f - c * c);
+			const float c = u.x;
+			const float s = u.y;
 
-			const float w = m_Width / ctxInfo->m_ScreenSize.x;
+			const float w = m_Width / ctxInfo->m_ScreenSize.y;
 
 			data.m_AnchorOffset = m_AnchorOffset;
-			data.m_RotationMatrix[0].x = c * len;
-			data.m_RotationMatrix[0].y = s * len;
-			data.m_RotationMatrix[1].x = -s * w;
-			data.m_RotationMatrix[1].y = c * w;
-			data.m_Position = fvec2((ptA.x + ptB.x) * 0.5f, (ptA.y + ptB.y) * 0.5f);
+			data.m_RotationMatrix[0][0] = v.x * 0.5f;
+			data.m_RotationMatrix[0][1] = v.y * 0.5f;
+			data.m_RotationMatrix[1][0] = -u.y * w;
+			data.m_RotationMatrix[1][1] = u.x * w;
+			data.m_Position = fvec2(ptA.x + ptB.x, ptA.y + ptB.y) * 0.5f;
 
 			data.m_HasTexture = 0;
 			data.m_HasInteraction = 0;

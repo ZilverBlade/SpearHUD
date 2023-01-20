@@ -9,6 +9,8 @@ namespace GHUD {
 		fvec2 m_AnchorOffset;
 		fvec2 m_UVOffsetA{};
 		fvec2 m_UVOffsetB{};
+		fvec2 m_SubUVOffsetA{};
+		fvec2 m_SubUVOffsetB{};
 		fvec4 m_Color{};
 		uint32 m_ID{};
 		uint32 m_HasTexture{};

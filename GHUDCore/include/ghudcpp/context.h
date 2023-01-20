@@ -9,6 +9,7 @@ namespace GHUD {
 		fvec2 m_CursorPosition{};
 		fvec2 m_ScreenSize{};
 		float m_AspectRatio = 1.0f;
+		float m_InverseAspectRatio = 1.0f;
 		float m_DisplayGamma = 2.2f;
 		float m_DisplayInverseGamma = 1.0f / 2.2f;
 	};

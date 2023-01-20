@@ -20,6 +20,7 @@ namespace GHUD {
 	void Context::Resize(fvec2 screenSize) {
 		m_CtxInfo.m_ScreenSize = screenSize;
 		m_CtxInfo.m_AspectRatio = screenSize.x / screenSize.y;
+		m_CtxInfo.m_InverseAspectRatio = screenSize.y / screenSize.x;
 	}
 	void Context::Render(const void* frameInfoStruct) {
 

@@ -5,12 +5,14 @@ layout (location = 0) in vec2 fragUV;
 layout (location = 0) out vec4 outColor;
 
 layout (set = 0, binding = 0) uniform GlobalUBO {
-	float m_Gamma;
-	float m_InvGamma;
+	vec2 m_CursorCoord;
 	vec2 m_ScreenSize;
 	float m_AspectRatio;
-	vec2 m_CursorCoord;
+	float m_InvAspectRatio;
+	float m_Gamma;
+	float m_InvGamma;
 } ubo;
+
 layout (set = 0, binding = 1) buffer IDSSBO {
 	uint m_PickID;
 } idssbo;
@@ -22,6 +24,8 @@ layout (push_constant) uniform Push {
 	vec2 m_AnchorOffset;
 	vec2 m_UVOffsetA;
 	vec2 m_UVOffsetB;
+	vec2 m_SubUVOffsetA;
+	vec2 m_SubUVOffsetB;
 	vec4 m_Color;
 	uint m_ID;
 	uint m_HasTexture;
@@ -29,14 +33,17 @@ layout (push_constant) uniform Push {
 } push;
 
 void main() {
+	vec4 color = vec4(1.0);
+	if (push.m_HasTexture == 1) {
+		vec2 textureCoord = mod(fragUV, push.m_SubUVOffsetB - push.m_SubUVOffsetA) + push.m_SubUVOffsetA;
+		color = textureLod(textureAtlas, textureCoord, 1.0) * push.m_Color;
+		if (color.a < 0.01) discard; // masked objects to avoid unintended button presses
+	} else {
+		color = push.m_Color;
+	}
 	if (push.m_HasInteraction == 1) 
 		if (distance(fragUV, ubo.m_CursorCoord) < 0.00001) 
 			idssbo.m_PickID = push.m_ID;
-	
-	vec4 color = push.m_Color;
-	
-	if (push.m_HasTexture == 1)
-		color *= textureLod(textureAtlas, fragUV, 1.0);
 	
 	outColor = vec4(pow(color.rgb, vec3(ubo.m_InvGamma)), color.a);
 }

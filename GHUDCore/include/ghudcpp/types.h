@@ -42,12 +42,12 @@ namespace GHUD {
         {}
 
         constexpr T& operator[](size_t i) noexcept {
-            assert(i <= 2 && "Array index out of vector range");
-            return *reinterpret_cast<T*>(this + i * sizeof(T));
+            assert(i < 2 && "Array index out of vector range");
+            return reinterpret_cast<T*>(this)[i];
         }
         constexpr const T& operator[](size_t i) const noexcept {
-            assert(i <= 2 && "Array index out of vector range");
-            return *reinterpret_cast<const T*>(this + i * sizeof(T));
+            assert(i < 2 && "Array index out of vector range");
+            return reinterpret_cast<const T*>(this)[i];
         }
     };
 
@@ -61,12 +61,12 @@ namespace GHUD {
         {}
 
         constexpr T& operator[](size_t i) noexcept {
-            assert(i <= 3 && "Array index out of vector range");
-            return *reinterpret_cast<T*>(this + i * sizeof(T));
+            assert(i < 3 && "Array index out of vector range");
+            return reinterpret_cast<T*>(this)[i];
         }
         constexpr const T& operator[](size_t i) const noexcept {
-            assert(i <= 3 && "Array index out of vector range");
-            return *reinterpret_cast<const T*>(this + i * sizeof(T));
+            assert(i < 3 && "Array index out of vector range");
+            return reinterpret_cast<const T*>(this)[i];
         }
     };
 
@@ -80,12 +80,12 @@ namespace GHUD {
         {}
 
         constexpr T& operator[](size_t i) noexcept {
-            assert(i <= 4 && "Array index out of vector range");
-            return *reinterpret_cast<T*>(this + i * sizeof(T));
+            assert(i < 4 && "Array index out of vector range");
+            return reinterpret_cast<T*>(this)[i];
         }
         constexpr const T& operator[](size_t i) const noexcept {
-            assert(i <= 4 && "Array index out of vector range");
-            return *reinterpret_cast<const T*>(this + i * sizeof(T));
+            assert(i < 4 && "Array index out of vector range");
+            return reinterpret_cast<const T*>(this)[i];
         }
     };
 
@@ -115,11 +115,11 @@ namespace GHUD {
         {};
 
         inline uint8& operator[](size_t i) noexcept {
-            assert(i <= 4 && "Array index out of vector range");
+            assert(i < 4 && "Array index out of vector range");
             return *reinterpret_cast<uint8*>(this + i);
         }
         inline const uint8& operator[](size_t i) const noexcept {
-            assert(i <= 4 && "Array index out of vector range");
+            assert(i < 4 && "Array index out of vector range");
             return *reinterpret_cast<const uint8*>(this + i);
         }
     };
@@ -142,11 +142,11 @@ namespace GHUD {
         {};
 
         inline uint8& operator[](size_t i) noexcept {
-            assert(i <= 3 && "Array index out of vector range");
+            assert(i < 3 && "Array index out of vector range");
             return *reinterpret_cast<uint8*>(this + i);
         }
         inline const uint8& operator[](size_t i) const noexcept {
-            assert(i <= 3 && "Array index out of vector range");
+            assert(i < 3 && "Array index out of vector range");
             return *reinterpret_cast<const uint8*>(this + i);
         }
     };

@@ -5,7 +5,7 @@
 namespace GHUD {
     namespace Utils {
         static inline fvec2 ConvertScreenCoordToGPUCoord(fvec2 coord) {
-            return fvec2((coord.x - 0.5) * 2.0f, -(coord.y - 0.5) * 2.0f);
+            return fvec2(coord.x - 0.5, -(coord.y - 0.5)) * 2.0f;
         }
         static inline fvec4 ConvertHexColorToFloat4Color(RGBAColor color) {           
             return fvec4(
