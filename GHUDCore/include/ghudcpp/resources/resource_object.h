@@ -7,6 +7,10 @@ namespace GHUD {
 		class ResourceObject {
 		public:
 			virtual const void* Get() const { return m_ResourcePtr; }
+			virtual void* _Set(void* void_) {
+				m_ResourcePtr = void_;
+				return m_ResourcePtr;
+			}
 			virtual	const TextureID GetTextureID() const { return reinterpret_cast<TextureID>(m_ResourcePtr); }
 		private:
 			void* m_ResourcePtr;

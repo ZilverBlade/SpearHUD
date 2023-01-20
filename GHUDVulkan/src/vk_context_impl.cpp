@@ -795,7 +795,7 @@ namespace GHUD {
 
 		for (const DrawInfo& draw : m_DrawList->GetList()) {
 			if (draw.m_Data.m_HasTexture == 1) {
-				const VkDescriptorSet textureDescriptor = reinterpret_cast<const VkDescriptorSet>(draw.m_TextureID);
+				const VkDescriptorSet textureDescriptor = (const VkDescriptorSet)(draw.m_TextureID);
 				vkCmdBindDescriptorSets(
 					frameInfo.m_CommandBuffer,
 					VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -829,6 +829,9 @@ namespace GHUD {
 		write.pImageInfo = &imageInfo;
 		write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		vkUpdateDescriptorSets(m_Device, 1, &write, 0, nullptr);
-		return *reinterpret_cast<ResourceObject*>(&set);
+
+		ResourceObject res{};
+		res._Set(set);
+		return res;
 	}
 }
