@@ -795,14 +795,14 @@ namespace GHUD {
 
 		for (const DrawInfo& draw : m_DrawList->GetList()) {
 			if (draw.m_Data.m_HasTexture == 1) {
-				const VkDescriptorSet* textureDescriptor = reinterpret_cast<const VkDescriptorSet*>(draw.m_TextureID);
+				const VkDescriptorSet textureDescriptor = reinterpret_cast<const VkDescriptorSet>(draw.m_TextureID);
 				vkCmdBindDescriptorSets(
 					frameInfo.m_CommandBuffer,
 					VK_PIPELINE_BIND_POINT_GRAPHICS,
 					m_PipelineLayout,
 					1,
 					1,
-					textureDescriptor,
+					&textureDescriptor,
 					0,
 					nullptr
 				);
