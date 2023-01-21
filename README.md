@@ -3,7 +3,7 @@
 
 ### Setup (Windows): 
 - Run premake.bat
-- Choose build system (cmake is currently not supports)
+- Choose build system (cmake is currently not supported)
 
 ### Setup (other platforms):
 - Coming soon...
