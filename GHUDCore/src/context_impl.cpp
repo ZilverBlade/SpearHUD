@@ -15,7 +15,7 @@ namespace GHUD {
 		m_CtxInfo.m_DisplayInverseGamma = 1.0 / gamma;
 	}
 	void Context::Pick(fvec2 cursorCoord) {
-		m_CtxInfo.m_ScreenSize = cursorCoord;
+		m_CtxInfo.m_CursorPosition = cursorCoord;
 	}
 	void Context::Resize(fvec2 screenSize) {
 		m_CtxInfo.m_ScreenSize = screenSize;

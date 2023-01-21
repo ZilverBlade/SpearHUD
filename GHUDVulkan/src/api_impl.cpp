@@ -49,25 +49,25 @@ namespace GHUD {
         vkBindBufferMemory(device, m_Buffer, m_Memory, 0);
     }
     Buffer::~Buffer() {
-        unmap();
+        Unmap();
         vkDestroyBuffer(m_Device, m_Buffer, nullptr);
         vkFreeMemory(m_Device, m_Memory, nullptr);
     }
-    VkResult Buffer::map(VkDeviceSize size) {
+    VkResult Buffer::Map(VkDeviceSize size) {
         assert(m_Buffer && m_Memory && "Called map on buffer before create");
         return vkMapMemory(m_Device, m_Memory, 0, size, 0, &m_Mapped);
     }
-    void Buffer::unmap()  {
+    void Buffer::Unmap()  {
         if (m_Mapped) {
             vkUnmapMemory(m_Device, m_Memory);
             m_Mapped = nullptr;
         }
     }
-    void Buffer::writeToBuffer(void* data) {
+    void Buffer::WriteToBuffer(void* data) {
         assert(m_Mapped && "Cannot copy to unmapped buffer");
         memcpy(m_Mapped, data, m_BufferSize); 
     }
-    VkResult Buffer::flush(VkDeviceSize size, VkDeviceSize offset) {
+    VkResult Buffer::Flush(VkDeviceSize size, VkDeviceSize offset) {
         VkMappedMemoryRange mappedRange = {};
         mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
         mappedRange.memory = m_Memory;
@@ -75,14 +75,14 @@ namespace GHUD {
         mappedRange.size = size;
         return vkFlushMappedMemoryRanges(m_Device, 1, &mappedRange);
     }
-    VkDescriptorBufferInfo Buffer::descriptorInfo(VkDeviceSize size, VkDeviceSize offset) {
+    VkDescriptorBufferInfo Buffer::GetDescriptorInfo(VkDeviceSize size, VkDeviceSize offset) {
         return VkDescriptorBufferInfo{
             m_Buffer,
             offset,
             size,
         };
     }
-    VkResult Buffer::invalidate(VkDeviceSize size, VkDeviceSize offset) {
+    VkResult Buffer::Invalidate(VkDeviceSize size, VkDeviceSize offset) {
         VkMappedMemoryRange mappedRange = {};
         mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
         mappedRange.memory = m_Memory;

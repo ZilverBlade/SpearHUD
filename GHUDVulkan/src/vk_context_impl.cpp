@@ -562,15 +562,14 @@ namespace GHUD {
 		pipelineLayoutInfo.pPushConstantRanges = &pushRange; // push
 		vkCreatePipelineLayout(m_Device, &pipelineLayoutInfo, nullptr, &m_PipelineLayout);
 
+		m_GlobalUBO.resize(createInfo.m_SwapChainImageCount);
+		m_IDSSBO.resize(createInfo.m_SwapChainImageCount);
+		m_BufferDescriptorSets.resize(createInfo.m_SwapChainImageCount);
 		for (uint32 i = 0; i < createInfo.m_SwapChainImageCount; i++) {
-			m_GlobalUBO.emplace_back(
-				new Buffer(createInfo.m_Device, createInfo.m_PhysicalDevice, sizeof(GlobalContextInfo), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-			);
-			m_IDSSBO.emplace_back(
-				new Buffer(createInfo.m_Device, createInfo.m_PhysicalDevice, sizeof(uint32), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)
-			);
-			m_GlobalUBO[i]->map();
-			m_IDSSBO[i]->map();
+			m_GlobalUBO[i] = new Buffer(createInfo.m_Device, createInfo.m_PhysicalDevice, sizeof(GlobalContextInfo), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			m_IDSSBO[i] = new Buffer(createInfo.m_Device, createInfo.m_PhysicalDevice, sizeof(uint32), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			m_GlobalUBO[i]->Map();
+			m_IDSSBO[i]->Map();
 
 			VkDescriptorSet set = {};
 			VkDescriptorSetAllocateInfo allocateInfo{};
@@ -580,30 +579,26 @@ namespace GHUD {
 			allocateInfo.pSetLayouts = &m_BufferDescriptorSetLayout;
 			vkAllocateDescriptorSets(m_Device, &allocateInfo, &set);
 
-			VkWriteDescriptorSet writeUBO{};
-			writeUBO.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			writeUBO.descriptorCount = 1;
-			writeUBO.dstBinding = 0;
-			writeUBO.dstSet = set;
-			writeUBO.pBufferInfo = &m_GlobalUBO[i]->descriptorInfo();
-			writeUBO.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			VkWriteDescriptorSet writes[2]{};
+			writes[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			writes[0].descriptorCount = 1;
+			writes[0].dstBinding = 0;
+			writes[0].dstSet = set;
+			VkDescriptorBufferInfo uboInfo = m_GlobalUBO[i]->GetDescriptorInfo();
+			writes[0].pBufferInfo = &uboInfo;
+			writes[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 
-			VkWriteDescriptorSet writeSSBO{};
-			writeSSBO.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			writeSSBO.descriptorCount = 1;
-			writeSSBO.dstBinding = 1;
-			writeSSBO.dstSet = set;
-			writeSSBO.pBufferInfo = &m_IDSSBO[i]->descriptorInfo();
-			writeSSBO.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-
-			VkWriteDescriptorSet writes[2]{
-				writeUBO,
-				writeSSBO
-			};
+			writes[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			writes[1].descriptorCount = 1;
+			writes[1].dstBinding = 1;
+			writes[1].dstSet = set;
+			VkDescriptorBufferInfo ssboInfo = m_IDSSBO[i]->GetDescriptorInfo();
+			writes[1].pBufferInfo = &ssboInfo;
+			writes[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 
 			vkUpdateDescriptorSets(m_Device, 2, writes, 0, nullptr);
 
-			m_BufferDescriptorSets.push_back(set);
+			m_BufferDescriptorSets[i] = set;
 		}
 
 		CreateGraphicsPipeline(createInfo);
@@ -614,6 +609,7 @@ namespace GHUD {
 			delete m_GlobalUBO[i];
 			delete m_IDSSBO[i];
 		}
+		delete m_EBuffer;
 
 
 		vkDestroySampler(m_Device, m_ESampler, nullptr);
@@ -787,8 +783,8 @@ namespace GHUD {
 	void VulkanContext::Render(const VulkanFrameInfoStruct* frameInfoStruct) {
 		const VulkanFrameInfo& frameInfo = *reinterpret_cast<const VulkanFrameInfo*>(frameInfoStruct);
 		
-		m_GlobalUBO[frameInfo.m_FrameIndex]->writeToBuffer(&m_CtxInfo);
-		m_GlobalUBO[frameInfo.m_FrameIndex]->flush();
+		m_GlobalUBO[frameInfo.m_FrameIndex]->WriteToBuffer(&m_CtxInfo);
+		m_GlobalUBO[frameInfo.m_FrameIndex]->Flush();
 
 		vkCmdBindPipeline(frameInfo.m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
 
@@ -810,7 +806,7 @@ namespace GHUD {
 
 		for (const DrawInfo& draw : m_DrawList->GetList()) {
 			if (draw.m_Data.m_HasTexture == 1) {
-				const VkDescriptorSet textureDescriptor = (const VkDescriptorSet)(draw.m_TextureID);
+				const VkDescriptorSet textureDescriptor = *reinterpret_cast<const VkDescriptorSet*>(&draw.m_TextureID);
 				vkCmdBindDescriptorSets(
 					frameInfo.m_CommandBuffer,
 					VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -849,14 +845,14 @@ namespace GHUD {
 		res._Set((void*)set);
 		return res;
 	}
-	GHUDVK_API void VulkanContext::CreateResources(VkCommandBuffer singleTimeCommandBuffer) {
+	void VulkanContext::CreateResources(VkCommandBuffer singleTimeCommandBuffer) {
 		CreateBlankTexture(singleTimeCommandBuffer);
 	}
-	void GHUD::VulkanContext::CreateBlankTexture(VkCommandBuffer singleTimeCommandBuffer) {
+	void VulkanContext::CreateBlankTexture(VkCommandBuffer singleTimeCommandBuffer) {
 		byte pixels[] = { 0x00, 0x00, 0x00, 0xff };
 		VkDeviceSize imageSize = 1 * 1 * 4;
 
-		Buffer* buffer = new Buffer(
+		m_EBuffer = new Buffer(
 			m_Device,
 			m_PhysicalDevice,
 			imageSize,
@@ -864,9 +860,9 @@ namespace GHUD {
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 		);
 
-		buffer->map();
-		memcpy(buffer->GetMappedMemory(), pixels, static_cast<size_t>(imageSize));
-		buffer->unmap();
+		m_EBuffer->Map();
+		memcpy(m_EBuffer->GetMappedMemory(), pixels, static_cast<size_t>(imageSize));
+		m_EBuffer->Unmap();
 
 		VkFormat format = VK_FORMAT_R8G8B8A8_SRGB;
 		VkExtent3D extent = { 1, 1, 1 };
@@ -964,7 +960,7 @@ namespace GHUD {
 
 			vkCmdCopyBufferToImage(
 				singleTimeCommandBuffer,
-				buffer->GetBuffer(),
+				m_EBuffer->GetBuffer(),
 				m_EImage,
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 				1,
@@ -1056,6 +1052,5 @@ namespace GHUD {
 		descriptorInfo.sampler = m_ESampler;
 
 		m_ETexture = (VkDescriptorSet)CreateTexture(descriptorInfo).Get();
-		delete buffer;
 	}
 }

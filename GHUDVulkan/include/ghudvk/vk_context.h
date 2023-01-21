@@ -49,6 +49,7 @@ namespace GHUD {
 		VkShaderModule m_VshModule;
 		VkShaderModule m_FshModule;
 
+		Buffer* m_EBuffer;
 		VkImage m_EImage;
 		VkImageView m_EImageView;
 		VkSampler m_ESampler;
