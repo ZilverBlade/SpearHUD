@@ -27,66 +27,60 @@ namespace GHUD {
 			Rotor
 		};
 
-		struct Transform {
-			fvec2 m_TransformOffset = { 0.0f, 0.0f };
-			fvec2 m_Position = { 0.5f, 0.5f };
-			fvec2 m_Scale = { 1.0f, 1.0f };
-		};
-
 		struct Base {
-			const Element::Type m_Type = Type::None;
-			Base(Element::Type type) : m_Type(type) {}
-			LayerIndex m_Layer = 0;
+			const Element::Type mType = Type::None;
+			Base(Element::Type type) : mType(type) {}
+			LayerIndex mLayer = 0;
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const = 0;
-			fvec2 m_AnchorOffset = { 0.0f, 0.0f };
+			fvec2 mAnchorOffset = { 0.0f, 0.0f };
 		protected:
 			Base() = default;
 		};
 
 		struct Interactive : public virtual Base {
-			uint32 m_TabIndex = 0;
-			inline PressState GetPressState() const { return m_State.m_PressState; }
+			uint32 mTabIndex = 0;
+			inline PressState GetPressState() const { return mState.mPressState; }
 		protected:
-			State m_State;
+			State mState;
 			friend class DrawList;
 		};
 
 		struct Line : public Base {
 			Line() : Base(Type::Line) {}
-			Line(const Line& other) : m_PointA(other.m_PointA), m_PointB(other.m_PointB), m_Color(other.m_Color) {}
+			Line(const Line& other) : mPointA(other.mPointA), mPointB(other.mPointB), mColor(other.mColor) {}
 			Line& operator=(const Line& other) { return Line(other); }
 
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
-			fvec2 m_PointA = { 0.0f, 0.0f };
-			fvec2 m_PointB = { 1.0f, 1.0f };
-			float m_Width = 1.0f;
-			RGBAColor m_Color{};
+			fvec2 mPointA = { 0.0f, 0.0f };
+			fvec2 mPointB = { 1.0f, 1.0f };
+			float mWidth = 1.0f;
+			RGBAColor mColor{};
 		};
 
 		struct Rect : public Base {
 			Rect() : Base(Type::Rect) {}
-			Rect(const Rect& other) : m_Transform(other.m_Transform), m_Color(other.m_Color) {}
+			Rect(const Rect& other) : mTransform(other.mTransform), mColor(other.mColor) {}
 			Rect& operator=(const Rect& other) { return Rect(other); }
 
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
-			Transform m_Transform{};
-			RGBAColor m_Color{};
+			Transform mTransform{};
+			RGBAColor mColor{};
 		};
 
 		struct Image : public Base {
 			Image() : Base(Type::Image) {}
-			Image(const Image& other) : m_Transform(other.m_Transform), m_Texture(other.m_Texture), m_Color(other.m_Color) {}
+			Image(const Image& other) : mTransform(other.mTransform), mTexture(other.mTexture), mColor(other.mColor) {}
 			Image& operator=(const Image& other) { return Image(other); }
 
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
-			Transform m_Transform{};
-			TextureObject m_Texture{};
-			fvec2 m_GlobalUVOffsetMin = { 0.f, 0.f };
-			fvec2 m_GlobalUVOffsetMax = { 1.f, 1.f };
-			RGBAColor m_Color{};
+			Transform mTransform{};
+			TextureObject mTexture{};
+			fvec2 mGlobalUVOffsetMin = { 0.f, 0.f };
+			fvec2 mGlobalUVOffsetMax = { 1.f, 1.f };
+			RGBAColor mColor{};
 		};
 
 		struct Button : public Interactive {
@@ -94,9 +88,9 @@ namespace GHUD {
 
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
-			Transform m_Transform{};
-			TextureObject m_Texture{};
-			RGBAColor m_Color{};
+			Transform mTransform{};
+			TextureObject mTexture{};
+			RGBAColor mColor{};
 		};
 
 		struct Rotor : public Interactive {
@@ -104,10 +98,10 @@ namespace GHUD {
 
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
-			Transform m_Transform{};
-			float m_Rotation{};
-			TextureObject m_Texture{};
-			RGBAColor m_Color{};
+			Transform mTransform{};
+			float mRotation{};
+			TextureObject mTexture{};
+			RGBAColor mColor{};
 		};
 
 		struct Text : public Base {
@@ -115,25 +109,25 @@ namespace GHUD {
 
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
-			Transform m_Transform{};
-			FontObject m_Font{};
-			RGBAColor m_Color{};
-			char* m_Text{};
+			Transform mTransform{};
+			FontObject mFont{};
+			RGBAColor mColor{};
+			char* mText{};
 		};
 		struct TextButton : public Interactive {
 			TextButton() : Base(Type::TextButton) {}
 
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
-			Transform m_Transform{};
-			FontObject m_Font{};
-			RGBAColor m_Color{};
-			char* m_Text{};
+			Transform mTransform{};
+			FontObject mFont{};
+			RGBAColor mColor{};
+			char* mText{};
 		};
 
 		struct Window : public Interactive {
 			Window() : Base(Type::TextButton) {}
-			Transform m_Transform{};
+			Transform mTransform{};
 
 			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 		protected:

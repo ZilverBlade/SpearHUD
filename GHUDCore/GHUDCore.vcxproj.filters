@@ -66,6 +66,9 @@
     <ClInclude Include="include\ghudcpp\utils\math.h">
       <Filter>include\ghudcpp\utils</Filter>
     </ClInclude>
+    <ClInclude Include="include\ghudcpp\draw\push_stack.h">
+      <Filter>include\ghudcpp\draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\context_impl.cpp">

@@ -498,7 +498,7 @@ namespace GHUD {
 
 #pragma endregion
 
-	VulkanContext::VulkanContext(const VulkanContextCreateInfo& createInfo) : m_Device(createInfo.m_Device), m_PhysicalDevice(createInfo.m_PhysicalDevice), m_SwapChainImageCount(createInfo.m_SwapChainImageCount) {
+	VulkanContext::VulkanContext(const VulkanContextCreateInfo& createInfo) : mDevice(createInfo.mDevice), mPhysicalDevice(createInfo.mPhysicalDevice), mSwapChainImageCount(createInfo.mSwapChainImageCount) {
 		VkDescriptorPoolSize poolSizes[] = {
 			{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1024 },
 			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1 },
@@ -511,7 +511,7 @@ namespace GHUD {
 		poolInfo.maxSets = 1024u + 1u + 1u;
 		poolInfo.poolSizeCount = 3u;
 		poolInfo.pPoolSizes = poolSizes;
-		vkCreateDescriptorPool(m_Device, &poolInfo, nullptr, &m_DescriptorPool);
+		vkCreateDescriptorPool(mDevice, &poolInfo, nullptr, &mDescriptorPool);
 
 		VkDescriptorSetLayoutBinding textureBinding{};
 		textureBinding.binding = 0;
@@ -523,7 +523,7 @@ namespace GHUD {
 		textureLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		textureLayoutCreateInfo.bindingCount = 1;
 		textureLayoutCreateInfo.pBindings = &textureBinding;
-		vkCreateDescriptorSetLayout(m_Device, &textureLayoutCreateInfo, nullptr, &m_TextureDescriptorSetLayout);
+		vkCreateDescriptorSetLayout(mDevice, &textureLayoutCreateInfo, nullptr, &mTextureDescriptorSetLayout);
 
 		VkDescriptorSetLayoutBinding bufferBindings[2]{};
 		bufferBindings[0].binding = 0;
@@ -540,7 +540,7 @@ namespace GHUD {
 		bufferLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		bufferLayoutCreateInfo.bindingCount = 2;
 		bufferLayoutCreateInfo.pBindings = bufferBindings;
-		vkCreateDescriptorSetLayout(m_Device, &bufferLayoutCreateInfo, nullptr, &m_BufferDescriptorSetLayout);
+		vkCreateDescriptorSetLayout(mDevice, &bufferLayoutCreateInfo, nullptr, &mBufferDescriptorSetLayout);
 
 		static_assert(sizeof(DrawData) <= 128, "DrawData exceeds size of recommended vulkan spec push constant size of 128 bytes");
 
@@ -550,8 +550,8 @@ namespace GHUD {
 		pushRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 
 		VkDescriptorSetLayout setLayouts[2]{
-			m_BufferDescriptorSetLayout,
-			m_TextureDescriptorSetLayout
+			mBufferDescriptorSetLayout,
+			mTextureDescriptorSetLayout
 		};
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
@@ -560,31 +560,31 @@ namespace GHUD {
 		pipelineLayoutInfo.pSetLayouts = setLayouts; // global UBO and texture
 		pipelineLayoutInfo.pushConstantRangeCount = 1;
 		pipelineLayoutInfo.pPushConstantRanges = &pushRange; // push
-		vkCreatePipelineLayout(m_Device, &pipelineLayoutInfo, nullptr, &m_PipelineLayout);
+		vkCreatePipelineLayout(mDevice, &pipelineLayoutInfo, nullptr, &mPipelineLayout);
 
-		m_GlobalUBO.resize(createInfo.m_SwapChainImageCount);
-		m_IDSSBO.resize(createInfo.m_SwapChainImageCount);
-		m_BufferDescriptorSets.resize(createInfo.m_SwapChainImageCount);
-		for (uint32 i = 0; i < createInfo.m_SwapChainImageCount; i++) {
-			m_GlobalUBO[i] = new Buffer(createInfo.m_Device, createInfo.m_PhysicalDevice, sizeof(GlobalContextInfo), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-			m_IDSSBO[i] = new Buffer(createInfo.m_Device, createInfo.m_PhysicalDevice, sizeof(uint32), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-			m_GlobalUBO[i]->Map();
-			m_IDSSBO[i]->Map();
+		mGlobalUBO.resize(createInfo.mSwapChainImageCount);
+		mIDSSBO.resize(createInfo.mSwapChainImageCount);
+		mBufferDescriptorSets.resize(createInfo.mSwapChainImageCount);
+		for (uint32 i = 0; i < createInfo.mSwapChainImageCount; i++) {
+			mGlobalUBO[i] = new Buffer(createInfo.mDevice, createInfo.mPhysicalDevice, sizeof(GlobalContextInfo), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			mIDSSBO[i] = new Buffer(createInfo.mDevice, createInfo.mPhysicalDevice, sizeof(uint32), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			mGlobalUBO[i]->Map();
+			mIDSSBO[i]->Map();
 
 			VkDescriptorSet set = {};
 			VkDescriptorSetAllocateInfo allocateInfo{};
 			allocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-			allocateInfo.descriptorPool = m_DescriptorPool;
+			allocateInfo.descriptorPool = mDescriptorPool;
 			allocateInfo.descriptorSetCount = 1;
-			allocateInfo.pSetLayouts = &m_BufferDescriptorSetLayout;
-			vkAllocateDescriptorSets(m_Device, &allocateInfo, &set);
+			allocateInfo.pSetLayouts = &mBufferDescriptorSetLayout;
+			vkAllocateDescriptorSets(mDevice, &allocateInfo, &set);
 
 			VkWriteDescriptorSet writes[2]{};
 			writes[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 			writes[0].descriptorCount = 1;
 			writes[0].dstBinding = 0;
 			writes[0].dstSet = set;
-			VkDescriptorBufferInfo uboInfo = m_GlobalUBO[i]->GetDescriptorInfo();
+			VkDescriptorBufferInfo uboInfo = mGlobalUBO[i]->GetDescriptorInfo();
 			writes[0].pBufferInfo = &uboInfo;
 			writes[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 
@@ -592,48 +592,48 @@ namespace GHUD {
 			writes[1].descriptorCount = 1;
 			writes[1].dstBinding = 1;
 			writes[1].dstSet = set;
-			VkDescriptorBufferInfo ssboInfo = m_IDSSBO[i]->GetDescriptorInfo();
+			VkDescriptorBufferInfo ssboInfo = mIDSSBO[i]->GetDescriptorInfo();
 			writes[1].pBufferInfo = &ssboInfo;
 			writes[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 
-			vkUpdateDescriptorSets(m_Device, 2, writes, 0, nullptr);
+			vkUpdateDescriptorSets(mDevice, 2, writes, 0, nullptr);
 
-			m_BufferDescriptorSets[i] = set;
+			mBufferDescriptorSets[i] = set;
 		}
 
 		CreateGraphicsPipeline(createInfo);
 	}
 
 	VulkanContext::~VulkanContext() {
-		for (uint32 i = 0; i < m_SwapChainImageCount; i++) {
-			delete m_GlobalUBO[i];
-			delete m_IDSSBO[i];
+		for (uint32 i = 0; i < mSwapChainImageCount; i++) {
+			delete mGlobalUBO[i];
+			delete mIDSSBO[i];
 		}
-		delete m_EBuffer;
+		delete mEBuffer;
 
 
-		vkDestroySampler(m_Device, m_ESampler, nullptr);
-		vkDestroyImageView(m_Device, m_EImageView, nullptr);
-		vkDestroyImage(m_Device, m_EImage, nullptr);
-		vkFreeMemory(m_Device, m_EImageMemory, nullptr);
+		vkDestroySampler(mDevice, mESampler, nullptr);
+		vkDestroyImageView(mDevice, mEImageView, nullptr);
+		vkDestroyImage(mDevice, mEImage, nullptr);
+		vkFreeMemory(mDevice, mEImageMemory, nullptr);
 
-		vkDestroyShaderModule(m_Device, m_VshModule, nullptr);
-		vkDestroyShaderModule(m_Device, m_FshModule, nullptr);
-		vkDestroyPipeline(m_Device, m_GraphicsPipeline, nullptr);
-		vkDestroyPipelineLayout(m_Device, m_PipelineLayout, nullptr);
+		vkDestroyShaderModule(mDevice, mVshModule, nullptr);
+		vkDestroyShaderModule(mDevice, mFshModule, nullptr);
+		vkDestroyPipeline(mDevice, mGraphicsPipeline, nullptr);
+		vkDestroyPipelineLayout(mDevice, mPipelineLayout, nullptr);
 
-		vkDestroyDescriptorSetLayout(m_Device, m_TextureDescriptorSetLayout, nullptr);
-		vkDestroyDescriptorSetLayout(m_Device, m_BufferDescriptorSetLayout, nullptr);
-		vkDestroyDescriptorPool(m_Device, m_DescriptorPool, nullptr);
+		vkDestroyDescriptorSetLayout(mDevice, mTextureDescriptorSetLayout, nullptr);
+		vkDestroyDescriptorSetLayout(mDevice, mBufferDescriptorSetLayout, nullptr);
+		vkDestroyDescriptorPool(mDevice, mDescriptorPool, nullptr);
 	}
 
 	void VulkanContext::CreateGraphicsPipeline(const VulkanContextCreateInfo& createInfo) {
 		VkShaderModuleCreateInfo vshModuleCreateInfo{};
 		vshModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 
-		if (createInfo.m_VshCodeOverride) {
-			vshModuleCreateInfo.codeSize = createInfo.m_VshCodeOverrideSize;
-			vshModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(createInfo.m_VshCodeOverride);
+		if (createInfo.mVshCodeOverride) {
+			vshModuleCreateInfo.codeSize = createInfo.mVshCodeOverrideSize;
+			vshModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(createInfo.mVshCodeOverride);
 		} else {
 			vshModuleCreateInfo.codeSize = sizeof(ghud_vert);
 			vshModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(ghud_vert);
@@ -642,21 +642,21 @@ namespace GHUD {
 		VkShaderModuleCreateInfo fshModuleCreateInfo{};
 		fshModuleCreateInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 
-		if (createInfo.m_FshCodeOverride) {
-			fshModuleCreateInfo.codeSize = createInfo.m_FshCodeOverrideSize;
-			fshModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(createInfo.m_FshCodeOverride);
+		if (createInfo.mFshCodeOverride) {
+			fshModuleCreateInfo.codeSize = createInfo.mFshCodeOverrideSize;
+			fshModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(createInfo.mFshCodeOverride);
 		} else {
 			fshModuleCreateInfo.codeSize = sizeof(ghud_frag);
 			fshModuleCreateInfo.pCode = reinterpret_cast<const uint32_t*>(ghud_frag);
 		}
 
-		vkCreateShaderModule(m_Device, &vshModuleCreateInfo, nullptr, &m_VshModule);
-		vkCreateShaderModule(m_Device, &fshModuleCreateInfo, nullptr, &m_FshModule);
+		vkCreateShaderModule(mDevice, &vshModuleCreateInfo, nullptr, &mVshModule);
+		vkCreateShaderModule(mDevice, &fshModuleCreateInfo, nullptr, &mFshModule);
 
 		std::array<VkPipelineShaderStageCreateInfo, 2> shaderStages{};
 		shaderStages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		shaderStages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
-		shaderStages[0].module = m_VshModule;
+		shaderStages[0].module = mVshModule;
 		shaderStages[0].pName = "main";
 		shaderStages[0].flags = 0;
 		shaderStages[0].pNext = nullptr;
@@ -664,7 +664,7 @@ namespace GHUD {
 
 		shaderStages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		shaderStages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-		shaderStages[1].module = m_FshModule;
+		shaderStages[1].module = mFshModule;
 		shaderStages[1].pName = "main";
 		shaderStages[1].flags = 0;
 		shaderStages[1].pNext = nullptr;
@@ -700,9 +700,9 @@ namespace GHUD {
 		pipelineInfo.pDepthStencilState = &depthStencilInfo;
 		pipelineInfo.pDynamicState = &dynamicStateInfo;
 
-		pipelineInfo.layout = m_PipelineLayout;
-		pipelineInfo.renderPass = createInfo.m_RenderPass;
-		pipelineInfo.subpass = createInfo.m_SubPass;
+		pipelineInfo.layout = mPipelineLayout;
+		pipelineInfo.renderPass = createInfo.mRenderPass;
+		pipelineInfo.subpass = createInfo.mSubPass;
 
 		inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 		inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -727,8 +727,8 @@ namespace GHUD {
 		rasterizationInfo.depthBiasSlopeFactor = 0.0f;
 
 		multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-		multisampleInfo.sampleShadingEnable = createInfo.m_MSAASamples == VK_SAMPLE_COUNT_1_BIT ? VK_FALSE : VK_TRUE;
-		multisampleInfo.rasterizationSamples = createInfo.m_MSAASamples;
+		multisampleInfo.sampleShadingEnable = createInfo.mMSAASamples == VK_SAMPLE_COUNT_1_BIT ? VK_FALSE : VK_TRUE;
+		multisampleInfo.rasterizationSamples = createInfo.mMSAASamples;
 		multisampleInfo.minSampleShading = 1.0f;
 		multisampleInfo.pSampleMask = nullptr;
 		multisampleInfo.alphaToCoverageEnable = VK_FALSE;
@@ -776,27 +776,27 @@ namespace GHUD {
 		pipelineInfo.basePipelineIndex = -1;
 		pipelineInfo.basePipelineHandle = nullptr;
 
-		VkResult pipelineResult = vkCreateGraphicsPipelines(m_Device, nullptr, 1, &pipelineInfo, nullptr, &m_GraphicsPipeline);
+		VkResult pipelineResult = vkCreateGraphicsPipelines(mDevice, nullptr, 1, &pipelineInfo, nullptr, &mGraphicsPipeline);
 		assert(pipelineResult == VK_SUCCESS && "Failed to create graphics pipeline!");
 	}
 
 	void VulkanContext::Render(const VulkanFrameInfoStruct* frameInfoStruct) {
 		const VulkanFrameInfo& frameInfo = *reinterpret_cast<const VulkanFrameInfo*>(frameInfoStruct);
 		
-		m_GlobalUBO[frameInfo.m_FrameIndex]->WriteToBuffer(&m_CtxInfo);
-		m_GlobalUBO[frameInfo.m_FrameIndex]->Flush();
+		mGlobalUBO[frameInfo.mFrameIndex]->WriteToBuffer(&mCtxInfo);
+		mGlobalUBO[frameInfo.mFrameIndex]->Flush();
 
-		vkCmdBindPipeline(frameInfo.m_CommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_GraphicsPipeline);
+		vkCmdBindPipeline(frameInfo.mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mGraphicsPipeline);
 
 		VkDescriptorSet sets[2]{
-			m_BufferDescriptorSets[frameInfo.m_FrameIndex],
-			m_ETexture // bind empty texture to avoid validation errors
+			mBufferDescriptorSets[frameInfo.mFrameIndex],
+			mETexture // bind empty texture to avoid validation errors
 		};
 
 		vkCmdBindDescriptorSets(
-			frameInfo.m_CommandBuffer,
+			frameInfo.mCommandBuffer,
 			VK_PIPELINE_BIND_POINT_GRAPHICS,
-			m_PipelineLayout,
+			mPipelineLayout,
 			0,
 			2,
 			sets,
@@ -804,13 +804,13 @@ namespace GHUD {
 			nullptr
 		);
 
-		for (const DrawInfo& draw : m_DrawList->GetList()) {
-			if (draw.m_Data.m_HasTexture == 1) {
-				const VkDescriptorSet textureDescriptor = *reinterpret_cast<const VkDescriptorSet*>(&draw.m_TextureID);
+		for (const DrawInfo& draw : mDrawList->GetList()) {
+			if (draw.mData.mHasTexture == 1) {
+				const VkDescriptorSet textureDescriptor = *reinterpret_cast<const VkDescriptorSet*>(&draw.mTextureID);
 				vkCmdBindDescriptorSets(
-					frameInfo.m_CommandBuffer,
+					frameInfo.mCommandBuffer,
 					VK_PIPELINE_BIND_POINT_GRAPHICS,
-					m_PipelineLayout,
+					mPipelineLayout,
 					1,
 					1,
 					&textureDescriptor,
@@ -818,8 +818,8 @@ namespace GHUD {
 					nullptr
 				);
 			}
-			vkCmdPushConstants(frameInfo.m_CommandBuffer, m_PipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(DrawData), &draw.m_Data);
-			vkCmdDraw(frameInfo.m_CommandBuffer, 6, 1, 0, 0);
+			vkCmdPushConstants(frameInfo.mCommandBuffer, mPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(DrawData), &draw.mData);
+			vkCmdDraw(frameInfo.mCommandBuffer, 6, 1, 0, 0);
 		}
 	}
 
@@ -827,10 +827,10 @@ namespace GHUD {
 		VkDescriptorSet set = {};
 		VkDescriptorSetAllocateInfo allocateInfo{};
 		allocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-		allocateInfo.descriptorPool = m_DescriptorPool;
+		allocateInfo.descriptorPool = mDescriptorPool;
 		allocateInfo.descriptorSetCount = 1;
-		allocateInfo.pSetLayouts = &m_TextureDescriptorSetLayout;
-		vkAllocateDescriptorSets(m_Device, &allocateInfo, &set);
+		allocateInfo.pSetLayouts = &mTextureDescriptorSetLayout;
+		vkAllocateDescriptorSets(mDevice, &allocateInfo, &set);
 
 		VkWriteDescriptorSet write{};
 		write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -839,7 +839,7 @@ namespace GHUD {
 		write.dstSet = set;
 		write.pImageInfo = &imageInfo;
 		write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-		vkUpdateDescriptorSets(m_Device, 1, &write, 0, nullptr);
+		vkUpdateDescriptorSets(mDevice, 1, &write, 0, nullptr);
 
 		ResourceObject res{};
 		res._Set((void*)set);
@@ -852,17 +852,17 @@ namespace GHUD {
 		byte pixels[] = { 0x00, 0x00, 0x00, 0xff };
 		VkDeviceSize imageSize = 1 * 1 * 4;
 
-		m_EBuffer = new Buffer(
-			m_Device,
-			m_PhysicalDevice,
+		mEBuffer = new Buffer(
+			mDevice,
+			mPhysicalDevice,
 			imageSize,
 			VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 		);
 
-		m_EBuffer->Map();
-		memcpy(m_EBuffer->GetMappedMemory(), pixels, static_cast<size_t>(imageSize));
-		m_EBuffer->Unmap();
+		mEBuffer->Map();
+		memcpy(mEBuffer->GetMappedMemory(), pixels, static_cast<size_t>(imageSize));
+		mEBuffer->Unmap();
 
 		VkFormat format = VK_FORMAT_R8G8B8A8_SRGB;
 		VkExtent3D extent = { 1, 1, 1 };
@@ -881,18 +881,18 @@ namespace GHUD {
 		imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 		imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-		if (vkCreateImage(m_Device, &imageInfo, nullptr, &m_EImage) != VK_SUCCESS) {
+		if (vkCreateImage(mDevice, &imageInfo, nullptr, &mEImage) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create image!");
 		}
 		VkMemoryRequirements memRequirements;
-		vkGetImageMemoryRequirements(m_Device, m_EImage, &memRequirements);
+		vkGetImageMemoryRequirements(mDevice, mEImage, &memRequirements);
 
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
 
 		VkPhysicalDeviceMemoryProperties memProperties;
-		vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &memProperties);
+		vkGetPhysicalDeviceMemoryProperties(mPhysicalDevice, &memProperties);
 		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
 			if ((memRequirements.memoryTypeBits & (1 << i)) &&
 				(memProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) {
@@ -901,11 +901,11 @@ namespace GHUD {
 			}
 		}
 
-		if (vkAllocateMemory(m_Device, &allocInfo, nullptr, &m_EImageMemory) != VK_SUCCESS) {
+		if (vkAllocateMemory(mDevice, &allocInfo, nullptr, &mEImageMemory) != VK_SUCCESS) {
 			throw std::runtime_error("failed to allocate image memory!");
 		}
 
-		if (vkBindImageMemory(m_Device, m_EImage, m_EImageMemory, 0) != VK_SUCCESS) {
+		if (vkBindImageMemory(mDevice, mEImage, mEImageMemory, 0) != VK_SUCCESS) {
 			throw std::runtime_error("failed to bind image memory!");
 		}
 		{
@@ -917,7 +917,7 @@ namespace GHUD {
 			barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 			barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 
-			barrier.image = m_EImage;
+			barrier.image = mEImage;
 			barrier.subresourceRange.baseMipLevel = 0;
 			barrier.subresourceRange.levelCount = 1;
 			barrier.subresourceRange.baseArrayLayer = 0;
@@ -960,8 +960,8 @@ namespace GHUD {
 
 			vkCmdCopyBufferToImage(
 				singleTimeCommandBuffer,
-				m_EBuffer->GetBuffer(),
-				m_EImage,
+				mEBuffer->GetBuffer(),
+				mEImage,
 				VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 				1,
 				&region
@@ -977,7 +977,7 @@ namespace GHUD {
 			barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 			barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 
-			barrier.image = m_EImage;
+			barrier.image = mEImage;
 			barrier.subresourceRange.baseMipLevel = 0;
 			barrier.subresourceRange.levelCount = 1;
 			barrier.subresourceRange.baseArrayLayer = 0;
@@ -1007,7 +1007,7 @@ namespace GHUD {
 		}
 		VkImageViewCreateInfo viewInfo{};
 		viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		viewInfo.image = m_EImage;
+		viewInfo.image = mEImage;
 		viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
 		viewInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
 		viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1016,7 +1016,7 @@ namespace GHUD {
 		viewInfo.subresourceRange.baseArrayLayer = 0;
 		viewInfo.subresourceRange.layerCount = 1;
 
-		if (vkCreateImageView(m_Device, &viewInfo, nullptr, &m_EImageView) != VK_SUCCESS) {
+		if (vkCreateImageView(mDevice, &viewInfo, nullptr, &mEImageView) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create texture image view!");
 		}
 
@@ -1042,15 +1042,15 @@ namespace GHUD {
 		samplerInfo.minLod = 0.0f;
 		samplerInfo.maxLod = 1.0f;
 
-		if (vkCreateSampler(m_Device, &samplerInfo, nullptr, &m_ESampler) != VK_SUCCESS) {
+		if (vkCreateSampler(mDevice, &samplerInfo, nullptr, &mESampler) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create texture sampler!");
 		}
 
 		VkDescriptorImageInfo descriptorInfo{};
 		descriptorInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		descriptorInfo.imageView = m_EImageView;
-		descriptorInfo.sampler = m_ESampler;
+		descriptorInfo.imageView = mEImageView;
+		descriptorInfo.sampler = mESampler;
 
-		m_ETexture = (VkDescriptorSet)CreateTexture(descriptorInfo).Get();
+		mETexture = (VkDescriptorSet)CreateTexture(descriptorInfo).Get();
 	}
 }

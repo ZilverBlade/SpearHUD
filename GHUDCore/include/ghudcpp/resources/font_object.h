@@ -5,7 +5,7 @@
 namespace GHUD {
 	inline namespace Resources {
 		struct FontObject {
-			ResourceObject m_FontAtlas{};
+			ResourceObject mFontAtlas{};
 		};
 	}
 }

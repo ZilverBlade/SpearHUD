@@ -6,23 +6,23 @@
 
 namespace GHUD {
 	struct VulkanContextCreateInfo {
-		VkDevice m_Device;
-		VkPhysicalDevice m_PhysicalDevice;
-		VkRenderPass m_RenderPass;
-		uint32 m_SubPass;
-		VkFormat m_FrameBufferFormat;
-		uint32 m_SwapChainImageCount;
-		VkSampleCountFlagBits m_MSAASamples;
+		VkDevice mDevice;
+		VkPhysicalDevice mPhysicalDevice;
+		VkRenderPass mRenderPass;
+		uint32 mSubPass;
+		VkFormat mFrameBufferFormat;
+		uint32 mSwapChainImageCount;
+		VkSampleCountFlagBits mMSAASamples;
 
-		void* m_VshCodeOverride = nullptr;
-		size_t m_VshCodeOverrideSize;
-		void* m_FshCodeOverride = nullptr;
-		size_t m_FshCodeOverrideSize;
+		void* mVshCodeOverride = nullptr;
+		size_t mVshCodeOverrideSize;
+		void* mFshCodeOverride = nullptr;
+		size_t mFshCodeOverrideSize;
 	};
 
 	struct VulkanFrameInfo {
-		uint32 m_FrameIndex;
-		VkCommandBuffer m_CommandBuffer;
+		uint32 mFrameIndex;
+		VkCommandBuffer mCommandBuffer;
 	};
 
 	using VulkanFrameInfoStruct = void;
@@ -38,28 +38,28 @@ namespace GHUD {
 		GHUDVK_API void CreateGraphicsPipeline(const VulkanContextCreateInfo& createInfo);
 		GHUDVK_API void CreateBlankTexture(VkCommandBuffer singleTimeCommandBuffer);
 
-		VkDescriptorPool m_DescriptorPool;
-		VkDescriptorSetLayout m_TextureDescriptorSetLayout;
-		VkDescriptorSetLayout m_BufferDescriptorSetLayout;
-		VkPipelineLayout m_PipelineLayout;
-		VkPipeline m_GraphicsPipeline;
-		VkPhysicalDevice m_PhysicalDevice;
-		VkDevice m_Device;
+		VkDescriptorPool mDescriptorPool;
+		VkDescriptorSetLayout mTextureDescriptorSetLayout;
+		VkDescriptorSetLayout mBufferDescriptorSetLayout;
+		VkPipelineLayout mPipelineLayout;
+		VkPipeline mGraphicsPipeline;
+		VkPhysicalDevice mPhysicalDevice;
+		VkDevice mDevice;
 
-		VkShaderModule m_VshModule;
-		VkShaderModule m_FshModule;
+		VkShaderModule mVshModule;
+		VkShaderModule mFshModule;
 
-		Buffer* m_EBuffer;
-		VkImage m_EImage;
-		VkImageView m_EImageView;
-		VkSampler m_ESampler;
-		VkDeviceMemory m_EImageMemory;
+		Buffer* mEBuffer;
+		VkImage mEImage;
+		VkImageView mEImageView;
+		VkSampler mESampler;
+		VkDeviceMemory mEImageMemory;
 
-		VkDescriptorSet m_ETexture;
+		VkDescriptorSet mETexture;
 
-		uint32 m_SwapChainImageCount;
-		std::vector<Buffer*> m_GlobalUBO;
-		std::vector<Buffer*> m_IDSSBO;
-		std::vector<VkDescriptorSet> m_BufferDescriptorSets;
+		uint32 mSwapChainImageCount;
+		std::vector<Buffer*> mGlobalUBO;
+		std::vector<Buffer*> mIDSSBO;
+		std::vector<VkDescriptorSet> mBufferDescriptorSets;
 	};
 }

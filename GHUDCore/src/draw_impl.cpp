@@ -13,64 +13,86 @@ namespace GHUD {
 	}
 
 	void DrawList::FrameStart() {
-		assert(m_DrawList.size() == 0 && "Draw List must be cleared before frame start!");
+		assert(mDrawList.size() == 0 && "Draw List must be cleared before frame start!");
 	}
 
 	void DrawList::FrameEnd() {
 	}
 
 	void DrawList::Clear() {
-		m_PreviousSize = m_DrawList.size();
-		m_DrawList.clear();
+		mPreviousSize = mDrawList.size();
+		mDrawList.clear();
 	}
-
-#define DrawDataLast m_DrawData[m_DrawData.size() - 1]
 
 	const Element::Line DrawList::DrawLine(const Element::Line& line) {
-		m_DrawList.emplace(DrawInfo{ line.m_Layer, 0, line.GenerateDrawData(&ctx->GetGlobalContextInfo()) });
+		Draw(DrawInfo{ line.mLayer, 0, line.GenerateDrawData(&ctx->GetGlobalContextInfo()) });
 		return line;
 	}
-	const Element::Line DrawList::DrawLine(fvec2 m_PointA, fvec2 m_PointB, RGBAColor m_Color, LayerIndex m_Layer, fvec2 m_AnchorOffset) {
+	const Element::Line DrawList::DrawLine(fvec2 mPointA, fvec2 mPointB, RGBAColor mColor, LayerIndex mLayer, fvec2 mAnchorOffset) {
 		Element::Line obj{};
-		obj.m_PointA = m_PointA;
-		obj.m_PointB = m_PointB;
-		obj.m_Color = m_Color;
-		obj.m_Layer = m_Layer;
-		obj.m_AnchorOffset = m_AnchorOffset;
+		obj.mPointA = mPointA;
+		obj.mPointB = mPointB;
+		obj.mColor = mColor;
+		obj.mLayer = mLayer;
+		obj.mAnchorOffset = mAnchorOffset;
 		return DrawLine(obj);
 	}
 
 	const Element::Rect DrawList::DrawRect(const Element::Rect& rect) {
 		DrawData data = rect.GenerateDrawData(&ctx->GetGlobalContextInfo());
-		data.m_ID = m_DrawList.size();
-		m_DrawList.emplace(DrawInfo{ rect.m_Layer, 0, std::move(data) });
+		data.mID = mDrawList.size();
+		Draw(DrawInfo{ rect.mLayer, 0, std::move(data) });
 		return rect;
 	}
 
-	const Element::Rect DrawList::DrawRect(const Element::Transform& m_Transform, RGBAColor m_Color, LayerIndex m_Layer, fvec2 m_AnchorOffset) {
+	const Element::Rect DrawList::DrawRect(const Transform& mTransform, RGBAColor mColor, LayerIndex mLayer, fvec2 mAnchorOffset) {
 		Element::Rect obj{};
-		obj.m_Transform = m_Transform;
-		obj.m_Color = m_Color;
-		obj.m_Layer = m_Layer;
-		obj.m_AnchorOffset = m_AnchorOffset;
+		obj.mTransform = mTransform;
+		obj.mColor = mColor;
+		obj.mLayer = mLayer;
+		obj.mAnchorOffset = mAnchorOffset;
 		return DrawRect(obj);
 	}
 	const Element::Image DrawList::DrawImage(const Element::Image& img) {
 		DrawData data = img.GenerateDrawData(&ctx->GetGlobalContextInfo());
-		data.m_ID = m_DrawList.size();
-		m_DrawList.emplace(DrawInfo{ img.m_Layer, img.m_Texture.m_Atlas.GetTextureID(), std::move(data) });
+		data.mID = mDrawList.size();
+		Draw(DrawInfo{ img.mLayer, img.mTexture.mAtlas.GetTextureID(), std::move(data) });
 		return img;
 	}
 
-	const Element::Image DrawList::DrawImage(const Element::Transform& m_Transform, const TextureObject& m_Texture, RGBAColor m_Color, LayerIndex m_Layer, fvec2 m_AnchorOffset, fvec2 m_GlobalUVOffsetMin, fvec2 m_GlobalUVOffsetMax) {
+	const Element::Image DrawList::DrawImage(const Transform& mTransform, const TextureObject& mTexture, RGBAColor mColor, LayerIndex mLayer, fvec2 mAnchorOffset, fvec2 mGlobalUVOffsetMin, fvec2 mGlobalUVOffsetMax) {
 		Element::Image obj{};
-		obj.m_Transform = m_Transform;
-		obj.m_Color = m_Color;
-		obj.m_Layer = m_Layer;
-		obj.m_GlobalUVOffsetMin = m_GlobalUVOffsetMin;
-		obj.m_GlobalUVOffsetMax = m_GlobalUVOffsetMax;
-		obj.m_AnchorOffset = m_AnchorOffset;
+		obj.mTransform = mTransform;
+		obj.mColor = mColor;
+		obj.mLayer = mLayer;
+		obj.mGlobalUVOffsetMin = mGlobalUVOffsetMin;
+		obj.mGlobalUVOffsetMax = mGlobalUVOffsetMax;
+		obj.mAnchorOffset = mAnchorOffset;
 		return DrawImage(obj);
+	}
+
+	void DrawList::BeginPanel(const Transform& mTransform) {
+		StackPushTransform pushTransform = { Math::Transform2x2(mTransform.mScale, 0.0), mTransform.mPosition };
+		StackPushTransform applyTransform = pushTransform;
+		applyTransform.mPosition = applyTransform.mPosition + mStackTransform.GetApplyData().mPosition;
+		applyTransform.mTransform = applyTransform.mTransform * mStackTransform.GetApplyData().mTransform;
+		mStackTransform.Push(pushTransform, applyTransform);
+	}
+
+	void DrawList::EndPanel() {
+		StackPushTransform unApplyTransform = mStackTransform.GetApplyData();
+		unApplyTransform.mPosition = unApplyTransform.mPosition - mStackTransform.GetBackData().mPosition;
+		unApplyTransform.mTransform = unApplyTransform.mTransform * Math::Inverse(mStackTransform.GetBackData().mTransform);
+		mStackTransform.Pop(unApplyTransform);
+	}
+
+	void DrawList::Draw(DrawInfo drawInfo) {
+		// apply stack pushes
+		drawInfo.mData.mRotationMatrix = drawInfo.mData.mRotationMatrix * mStackTransform.GetApplyData().mTransform;
+		drawInfo.mData.mPosition = drawInfo.mData.mPosition + mStackTransform.GetApplyData().mPosition;
+
+		mDrawList.emplace(drawInfo);
+
 	}
 
 }

@@ -4,29 +4,29 @@
 #include <ghudcpp/utils/math.h>
 namespace GHUD {
 	struct DrawData {
-		fvec2 m_RotationMatrix[2];
-		fvec2 m_Position;
-		fvec2 m_AnchorOffset;
-		fvec2 m_UVOffsetA{};
-		fvec2 m_UVOffsetB{};
-		fvec2 m_SubUVOffsetA{};
-		fvec2 m_SubUVOffsetB{};
-		fvec4 m_Color{};
-		uint32 m_ID{};
-		uint32 m_HasTexture{};
-		uint32 m_HasInteraction{};
+		Math::Transform2x2 mRotationMatrix;
+		fvec2 mPosition;
+		fvec2 mAnchorOffset;
+		fvec2 mUVOffsetA{};
+		fvec2 mUVOffsetB{};
+		fvec2 mSubUVOffsetA{};
+		fvec2 mSubUVOffsetB{};
+		fvec4 mColor{};
+		uint32 mID{};
+		uint32 mHasTexture{};
+		uint32 mHasInteraction{};
 	};
 	struct DrawInfo {
-		LayerIndex m_Layer;
-		TextureID m_TextureID;
-		DrawData m_Data;
+		LayerIndex mLayer;
+		TextureID mTextureID;
+		DrawData mData;
 
 		// for the std::multi_set
 		inline bool operator<(const DrawInfo& other) const {
-			return m_Layer < other.m_Layer;
+			return mLayer < other.mLayer;
 		}
 		inline bool operator>(const DrawInfo& other) const {
-			return m_Layer > other.m_Layer;
+			return mLayer > other.mLayer;
 		}
 	};
 }

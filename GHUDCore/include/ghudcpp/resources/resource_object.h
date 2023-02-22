@@ -6,14 +6,14 @@ namespace GHUD {
 	inline namespace Resources {
 		class ResourceObject {
 		public:
-			virtual const void* Get() const { return m_ResourcePtr; }
+			virtual const void* Get() const { return mResourcePtr; }
 			virtual void* _Set(void* void_) {
-				m_ResourcePtr = void_;
-				return m_ResourcePtr;
+				mResourcePtr = void_;
+				return mResourcePtr;
 			}
-			virtual	const TextureID GetTextureID() const { return reinterpret_cast<TextureID>(m_ResourcePtr); }
+			virtual	const TextureID GetTextureID() const { return reinterpret_cast<TextureID>(mResourcePtr); }
 		private:
-			void* m_ResourcePtr;
+			void* mResourcePtr;
 		};
 	}
 }

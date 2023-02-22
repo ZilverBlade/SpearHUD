@@ -13,8 +13,8 @@ namespace GHUD {
 	};
 
 	struct State {
-		PressState m_PressState = PressState::None;
-		uint64 m_ElementID = 0;
+		PressState mPressState = PressState::None;
+		uint64 mElementID = 0;
 	};
 
 }

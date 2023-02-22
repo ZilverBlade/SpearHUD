@@ -5,17 +5,17 @@
 namespace GHUD {
 	inline namespace Resources {
 		struct TexCoordLimits {
-			fvec2 m_UVOffsetMin = { 0.f, 0.f };
-			fvec2 m_UVOffsetMax = { 1.f, 1.f };
+			fvec2 mUVOffsetMin = { 0.f, 0.f };
+			fvec2 mUVOffsetMax = { 1.f, 1.f };
 		};
 		struct TextureObject {
-			ResourceObject m_Atlas{};
+			ResourceObject mAtlas{};
 
-			TexCoordLimits m_DefaultTextureCoords{};
-			TexCoordLimits m_SelectTextureCoords{};
-			TexCoordLimits m_HoverTextureCoords{};
-			TexCoordLimits m_PressTextureCoords{};
-			TexCoordLimits m_DisabledTextureCoords{};
+			TexCoordLimits mDefaultTextureCoords{};
+			TexCoordLimits mSelectTextureCoords{};
+			TexCoordLimits mHoverTextureCoords{};
+			TexCoordLimits mPressTextureCoords{};
+			TexCoordLimits mDisabledTextureCoords{};
 		};
 	}
 }

@@ -1,13 +1,13 @@
 #pragma once
 
 #ifdef _WIN32
-#define GHUD_PLATFORM_WINDOWS
+#define GHUD_PLATFORmWINDOWS
 #endif
 #ifdef __linux__
-#define GHUD_PLATFORM_LINUX
+#define GHUD_PLATFORmLINUX
 #pragma error "Linux is currently not supported!"
 #endif
 #ifdef __OSX__
-#define GHUD_PLATFORM_MACOS
+#define GHUD_PLATFORmMACOS
 #pragma error "MacOS is currently not supported!"
 #endif
