@@ -31,13 +31,21 @@ namespace GHUD {
 			const Element::Type mType = Type::None;
 			Base(Element::Type type) : mType(type) {}
 			LayerIndex mLayer = 0;
-			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const = 0;
 			fvec2 mAnchorOffset = { 0.0f, 0.0f };
 		protected:
 			Base() = default;
 		};
+		struct DrawableBase : public virtual Base {
+			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const = 0;
+		protected:
+			DrawableBase() = default;
+		};
+		struct NonDrawableBase : public virtual Base {
+		protected:
+			NonDrawableBase() = default;
+		};
 
-		struct Interactive : public virtual Base {
+		struct InteractiveDrawableBase : public virtual DrawableBase {
 			uint32 mTabIndex = 0;
 			inline PressState GetPressState() const { return mState.mPressState; }
 		protected:
@@ -45,12 +53,12 @@ namespace GHUD {
 			friend class DrawList;
 		};
 
-		struct Line : public Base {
+		struct Line : public DrawableBase {
 			Line() : Base(Type::Line) {}
 			Line(const Line& other) : mPointA(other.mPointA), mPointB(other.mPointB), mColor(other.mColor) {}
 			Line& operator=(const Line& other) { return Line(other); }
 
-			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
 			fvec2 mPointA = { 0.0f, 0.0f };
 			fvec2 mPointB = { 1.0f, 1.0f };
@@ -58,23 +66,23 @@ namespace GHUD {
 			RGBAColor mColor{};
 		};
 
-		struct Rect : public Base {
+		struct Rect : public DrawableBase {
 			Rect() : Base(Type::Rect) {}
 			Rect(const Rect& other) : mTransform(other.mTransform), mColor(other.mColor) {}
 			Rect& operator=(const Rect& other) { return Rect(other); }
 
-			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
 			Transform mTransform{};
 			RGBAColor mColor{};
 		};
 
-		struct Image : public Base {
+		struct Image : public DrawableBase {
 			Image() : Base(Type::Image) {}
 			Image(const Image& other) : mTransform(other.mTransform), mTexture(other.mTexture), mColor(other.mColor) {}
 			Image& operator=(const Image& other) { return Image(other); }
 
-			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
 			Transform mTransform{};
 			TextureObject mTexture{};
@@ -83,20 +91,20 @@ namespace GHUD {
 			RGBAColor mColor{};
 		};
 
-		struct Button : public Interactive {
+		struct Button : public InteractiveDrawableBase {
 			Button() : Base(Type::Button) {}
 
-			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
 			Transform mTransform{};
 			TextureObject mTexture{};
 			RGBAColor mColor{};
 		};
 
-		struct Rotor : public Interactive {
+		struct Rotor : public InteractiveDrawableBase {
 			Rotor() : Base(Type::Rotor) {}
 
-			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
 			Transform mTransform{};
 			float mRotation{};
@@ -104,20 +112,20 @@ namespace GHUD {
 			RGBAColor mColor{};
 		};
 
-		struct Text : public Base {
+		struct Text : public DrawableBase {
 			Text() : Base(Type::Text) {}
 
-			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
 			Transform mTransform{};
 			FontObject mFont{};
 			RGBAColor mColor{};
 			char* mText{};
 		};
-		struct TextButton : public Interactive {
+		struct TextButton : public InteractiveDrawableBase {
 			TextButton() : Base(Type::TextButton) {}
 
-			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
 			Transform mTransform{};
 			FontObject mFont{};
@@ -125,11 +133,16 @@ namespace GHUD {
 			char* mText{};
 		};
 
-		struct Window : public Interactive {
+		struct Panel : public NonDrawableBase {
+			Panel() : Base(Type::Panel) {}
+			Transform mTransform{};
+		};
+
+		struct Window : public InteractiveDrawableBase {
 			Window() : Base(Type::TextButton) {}
 			Transform mTransform{};
 
-			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 		protected:
 			std::vector<Element::Base*> elements{}; // this will hold a reference to our elements inside the window
 		};

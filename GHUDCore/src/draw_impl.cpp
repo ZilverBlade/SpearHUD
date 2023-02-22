@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ghudcpp/draw/draw_list.h>
+#include <ghudcpp/utils/helper.h>
 #include <ghudcpp/context.h>
 
 namespace GHUD {
@@ -71,11 +72,28 @@ namespace GHUD {
 		return DrawImage(obj);
 	}
 
-	void DrawList::BeginPanel(const Transform& mTransform) {
-		StackPushTransform pushTransform = { Math::Transform2x2(mTransform.mScale, 0.0), mTransform.mPosition };
+	void DrawList::BeginPanel(const Element::Panel& mPanel) {
+		StackPushTransform pushTransform{};
+		pushTransform.mTransform = Math::Transform2x2(mPanel.mTransform.mScale, 0.0);
+		pushTransform.mPosition = mPanel.mTransform.mPosition;
+		pushTransform.mAnchorOffset = mPanel.mTransform.mTransformOffset;
+		pushTransform.mLayerOffset = mPanel.mLayer;
+
+		// anchor limits are [-1, 1] instead of [0, 1]
+		fvec2 anchorCoordsOffset = Utils::ConvertScreenCoordToGPUCoord(mPanel.mTransform.mPosition);
+		fvec2 anchorLim = mPanel.mTransform.mScale;
+		pushTransform.mAnchorAreaLimMin = -anchorLim + anchorCoordsOffset;
+		pushTransform.mAnchorAreaLimMax = anchorLim + anchorCoordsOffset;
+
 		StackPushTransform applyTransform = pushTransform;
 		applyTransform.mPosition = applyTransform.mPosition + mStackTransform.GetApplyData().mPosition;
 		applyTransform.mTransform = applyTransform.mTransform * mStackTransform.GetApplyData().mTransform;
+
+		applyTransform.mAnchorOffset = applyTransform.mAnchorOffset * Math::Abs(mStackTransform.GetApplyData().mAnchorOffset); // abs to avoid making negative values positive by accident
+		applyTransform.mLayerOffset += mStackTransform.GetApplyData().mLayerOffset;
+
+		applyTransform.mAnchorAreaLimMin = applyTransform.mAnchorAreaLimMin * mStackTransform.GetApplyData().mAnchorAreaLimMin;
+		applyTransform.mAnchorAreaLimMax = applyTransform.mAnchorAreaLimMax * mStackTransform.GetApplyData().mAnchorAreaLimMax;
 		mStackTransform.Push(pushTransform, applyTransform);
 	}
 
@@ -83,6 +101,11 @@ namespace GHUD {
 		StackPushTransform unApplyTransform = mStackTransform.GetApplyData();
 		unApplyTransform.mPosition = unApplyTransform.mPosition - mStackTransform.GetBackData().mPosition;
 		unApplyTransform.mTransform = unApplyTransform.mTransform * Math::Inverse(mStackTransform.GetBackData().mTransform);
+		unApplyTransform.mAnchorOffset = unApplyTransform.mAnchorOffset / Math::Abs(mStackTransform.GetBackData().mAnchorOffset);
+		unApplyTransform.mLayerOffset -= mStackTransform.GetBackData().mLayerOffset;
+		
+		unApplyTransform.mAnchorAreaLimMin = unApplyTransform.mAnchorAreaLimMin / mStackTransform.GetBackData().mAnchorAreaLimMin;
+		unApplyTransform.mAnchorAreaLimMax = unApplyTransform.mAnchorAreaLimMax / mStackTransform.GetBackData().mAnchorAreaLimMax;
 		mStackTransform.Pop(unApplyTransform);
 	}
 
@@ -90,7 +113,8 @@ namespace GHUD {
 		// apply stack pushes
 		drawInfo.mData.mRotationMatrix = drawInfo.mData.mRotationMatrix * mStackTransform.GetApplyData().mTransform;
 		drawInfo.mData.mPosition = drawInfo.mData.mPosition + mStackTransform.GetApplyData().mPosition;
-
+		drawInfo.mData.mAnchorOffset = drawInfo.mData.mAnchorOffset * mStackTransform.GetApplyData().mAnchorOffset;
+		drawInfo.mLayer += mStackTransform.GetApplyData().mLayerOffset;
 		mDrawList.emplace(drawInfo);
 
 	}

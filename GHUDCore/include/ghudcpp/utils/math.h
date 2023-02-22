@@ -30,6 +30,15 @@ namespace GHUD {
             const T lensq = Length(a);
             return a / lensq;
         }
+        template<typename T, size_t N>
+        static constexpr inline Vec<T, N> Abs(const Vec<T, N>& a) {
+            Vec<T, N> result;
+            for (size_t i = 0; i < N; i++) {
+                bool negative = a[i] < 0.0f;
+                result[i] = -static_cast<float>(negative) * a[i] + static_cast<float>(!negative) * a[i];
+            }
+            return result;
+        }
 
         class Transform2x2 { // Collumn major order 2x2 transform matrix
         public:

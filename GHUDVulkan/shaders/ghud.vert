@@ -1,5 +1,9 @@
 #version 450
 
+#extension GL_GOOGLE_include_directive : enable
+
+#include "shared.glsl"
+
 const vec2 VERTICES[4] = vec2[](
 	vec2(-1.0, -1.0),
 	vec2(-1.0, 1.0),
@@ -12,28 +16,6 @@ const uint INDICES[6] = uint[](
 );
 
 layout (location = 0) out vec2 fragUV;
-layout (set = 0, binding = 0) uniform GlobalUBO {
-	vec2 m_CursorCoord;
-	vec2 m_ScreenSize;
-	float m_AspectRatio;
-	float m_InvAspectRatio;
-	float m_Gamma;
-	float m_InvGamma;
-} ubo;
-
-layout (push_constant) uniform Push {
-	mat2 m_RotationMatrix;
-	vec2 m_Position;
-	vec2 m_AnchorOffset;
-	vec2 m_UVOffsetA; // min
-	vec2 m_UVOffsetB; // max
-	vec2 m_SubUVOffsetA; // min atlas
-	vec2 m_SubUVOffsetB; // max atlas
-	vec4 m_Color;
-	uint m_ID;
-	uint m_HasTexture;
-	uint m_HasInteraction;
-} push;
 
 void main() {
 	vec2 arTransform = vec2(ubo.m_InvAspectRatio, 1.0);

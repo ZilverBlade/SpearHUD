@@ -168,6 +168,14 @@ namespace GHUD {
         }
         return result;
     }
+    template<typename T, size_t N>
+    constexpr inline Vec<T, N> operator-(const Vec<T, N>& a) {
+        Vec<T, N> result;
+        for (size_t i = 0; i < N; i++) {
+            result[i] = -a[i]
+        }
+        return result;
+    }
 
     template<typename T, size_t N>
     constexpr inline Vec<T, N> operator*(const Vec<T, N>& a, const Vec<T, N>& b) {
