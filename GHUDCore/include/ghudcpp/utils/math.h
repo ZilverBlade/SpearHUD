@@ -69,12 +69,12 @@ namespace GHUD {
         };
 
 
-        static constexpr inline Transform2x2 operator*(const Transform2x2& a, const Transform2x2& b) {
-            Transform2x2 result{};
+        static constexpr inline Transform2x2 operator*(const Transform2x2& a, const Transform2x2& b) noexcept {
+            Transform2x2 result;
             fvec2 mulAr0 = { a[0][0], a[1][0] };
             fvec2 mulAr1 = { a[0][1], a[1][1] };
-            fvec2 mulBc0 = { a[0][0], a[0][1] };
-            fvec2 mulBc1 = { a[1][0], a[1][1] };
+            fvec2 mulBc0 = { b[0][0], b[0][1] };
+            fvec2 mulBc1 = { b[1][0], b[1][1] };
 
             result[0][0] = Dot(mulAr0, mulBc0);
             result[0][1] = Dot(mulAr1, mulBc0);

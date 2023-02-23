@@ -19,11 +19,13 @@ namespace GHUD {
 	}
 
 	void DrawList::FrameEnd() {
+
 	}
 
 	void DrawList::Clear() {
 		mPreviousSize = mDrawList.size();
 		mDrawList.clear();
+		mStackTransform = {};
 	}
 
 	const Element::Line DrawList::DrawLine(const Element::Line& line) {
@@ -77,46 +79,47 @@ namespace GHUD {
 	void DrawList::BeginPanel(const Element::Panel& mPanel) {
 		StackPushTransform pushTransform{};
 		pushTransform.mTransform = Math::Transform2x2(mPanel.mTransform.mScale, 0.0);
-		pushTransform.mPosition = mPanel.mTransform.mPosition;
-		pushTransform.mAnchorOffset = mPanel.mTransform.mTransformOffset;
+		pushTransform.mAbsPosition = Utils::ConvertScreenCoordToGPUCoord(mPanel.mTransform.mPosition);
 		pushTransform.mLayerOffset = mPanel.mLayer;
 
-		// anchor limits are [-1, 1] instead of [0, 1]
-		fvec2 anchorCoordsOffset = Utils::ConvertScreenCoordToGPUCoord(mPanel.mTransform.mPosition);
-		fvec2 anchorLim = mPanel.mTransform.mScale;
-		pushTransform.mAnchorAreaLimMin = -anchorLim + anchorCoordsOffset;
-		pushTransform.mAnchorAreaLimMax = anchorLim + anchorCoordsOffset;
+		pushTransform.mAnchorAreaScale = mPanel.mTransform.mScale;
 
-		StackPushTransform applyTransform = pushTransform;
-		applyTransform.mPosition = applyTransform.mPosition + mStackTransform.GetApplyData().mPosition;
-		applyTransform.mTransform = applyTransform.mTransform * mStackTransform.GetApplyData().mTransform;
+		StackPushTransform newApplyTransform = pushTransform;
+		StackPushTransform oldApplyTransform = mStackTransform.GetApplyData();
+		newApplyTransform.mAbsPosition += oldApplyTransform.mAbsPosition;
+		newApplyTransform.mTransform = newApplyTransform.mTransform * oldApplyTransform.mTransform;
 
-		applyTransform.mAnchorOffset = applyTransform.mAnchorOffset * Math::Abs(mStackTransform.GetApplyData().mAnchorOffset); // abs to avoid making negative values positive by accident
-		applyTransform.mLayerOffset += mStackTransform.GetApplyData().mLayerOffset;
+		// anchor limits are [-1, 1] unlike positions which are [0, 1] 
+		newApplyTransform.mAnchorOffset = newApplyTransform.mAnchorOffset + newApplyTransform.mAbsPosition;
+		newApplyTransform.mLayerOffset += oldApplyTransform.mLayerOffset;
 
-		applyTransform.mAnchorAreaLimMin = applyTransform.mAnchorAreaLimMin * mStackTransform.GetApplyData().mAnchorAreaLimMin;
-		applyTransform.mAnchorAreaLimMax = applyTransform.mAnchorAreaLimMax * mStackTransform.GetApplyData().mAnchorAreaLimMax;
-		mStackTransform.Push(pushTransform, applyTransform);
+		newApplyTransform.mAnchorAreaScale = newApplyTransform.mAnchorAreaScale * oldApplyTransform.mAnchorAreaScale;
+		mStackTransform.Push(pushTransform, newApplyTransform);
 	}
 
 	void DrawList::EndPanel() {
 		StackPushTransform unApplyTransform = mStackTransform.GetApplyData();
-		unApplyTransform.mPosition = unApplyTransform.mPosition - mStackTransform.GetBackData().mPosition;
-		unApplyTransform.mTransform = unApplyTransform.mTransform * Math::Inverse(mStackTransform.GetBackData().mTransform);
-		unApplyTransform.mAnchorOffset = unApplyTransform.mAnchorOffset / Math::Abs(mStackTransform.GetBackData().mAnchorOffset);
-		unApplyTransform.mLayerOffset -= mStackTransform.GetBackData().mLayerOffset;
+		StackPushTransform backTransform = mStackTransform.GetBackData();
+		unApplyTransform.mAbsPosition = unApplyTransform.mAbsPosition - backTransform.mAbsPosition;
+		unApplyTransform.mTransform = unApplyTransform.mTransform * Math::Inverse(backTransform.mTransform);
+		unApplyTransform.mAnchorOffset = unApplyTransform.mAnchorOffset - backTransform.mAnchorOffset;
+		unApplyTransform.mLayerOffset -= backTransform.mLayerOffset;
 		
-		unApplyTransform.mAnchorAreaLimMin = unApplyTransform.mAnchorAreaLimMin / mStackTransform.GetBackData().mAnchorAreaLimMin;
-		unApplyTransform.mAnchorAreaLimMax = unApplyTransform.mAnchorAreaLimMax / mStackTransform.GetBackData().mAnchorAreaLimMax;
+		unApplyTransform.mAnchorAreaScale = unApplyTransform.mAnchorAreaScale / backTransform.mAnchorAreaScale;
 		mStackTransform.Pop(unApplyTransform);
 	}
 
 	void DrawList::Draw(DrawInfo drawInfo) {
 		// apply stack pushes
-		drawInfo.mData.mRotationMatrix = drawInfo.mData.mRotationMatrix * mStackTransform.GetApplyData().mTransform;
-		drawInfo.mData.mPosition = drawInfo.mData.mPosition + mStackTransform.GetApplyData().mPosition;
-		drawInfo.mData.mAnchorOffset = drawInfo.mData.mAnchorOffset * mStackTransform.GetApplyData().mAnchorOffset;
-		drawInfo.mLayer += mStackTransform.GetApplyData().mLayerOffset;
+		StackPushTransform applyTransform = mStackTransform.GetApplyData();
+		drawInfo.mData.mRotationMatrix = drawInfo.mData.mRotationMatrix * applyTransform.mTransform;
+		if (applyTransform.mAnchorOffset.x != 0.0 || applyTransform.mAnchorOffset.y != 0.0) {
+			// override anchor if a transform is applying one to prioritize the positioning
+			drawInfo.mData.mPosition = drawInfo.mData.mPosition + drawInfo.mData.mAnchorOffset;
+			drawInfo.mData.mAnchorOffset = applyTransform.mAnchorOffset;
+		}
+		drawInfo.mData.mPosition = drawInfo.mData.mPosition * applyTransform.mAnchorAreaScale; // normalize the positioning
+		drawInfo.mLayer += applyTransform.mLayerOffset;
 		mDrawList.emplace(drawInfo);
 	}
 

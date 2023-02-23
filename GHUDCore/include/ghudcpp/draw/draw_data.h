@@ -6,7 +6,9 @@ namespace GHUD {
 	struct DrawData {
 		Math::Transform2x2 mRotationMatrix;
 		fvec2 mPosition;
-		fvec2 mAnchorOffset;
+		int padding[2];
+		fvec2 mTransformOffset{};
+		fvec2 mAnchorOffset{};
 		fvec2 mUVOffsetA{};
 		fvec2 mUVOffsetB{};
 		fvec2 mSubUVOffsetA{};

@@ -41,12 +41,11 @@ namespace GHUD {
 		struct StackPushTransform {
 			LayerIndex mLayerOffset{};
 			Math::Transform2x2 mTransform{};
-			fvec2 mPosition{0.0, 0.0};
+			fvec2 mAbsPosition{0.0, 0.0}; // position [-1, 1]
 			fvec2 mAnchorOffset{ 0.0, 0.0 };
 
 			// to modify panel "size" 
-			fvec2 mAnchorAreaLimMin{ -1.0, -1.0 };
-			fvec2 mAnchorAreaLimMax{ 1.0, 1.0 };
+			fvec2 mAnchorAreaScale{ 1.0, 1.0 };
 		};
 		StackDrawData<StackPushTransform> mStackTransform;
 
