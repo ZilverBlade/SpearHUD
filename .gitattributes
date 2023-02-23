@@ -62,5 +62,7 @@
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
 
-#glad.h linguist-vendored
-#glad.c linguist-vendored
+GHUDOpenGL3/include/glad/glad.h linguist-vendored
+GHUDOpenGL4/include/glad/glad.h linguist-vendored
+GHUDOpenGL3/src/glad.c linguist-vendored
+GHUDOpenGL4/src/glad.c linguist-vendored
