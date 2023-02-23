@@ -4,7 +4,7 @@ layout (location = 0) in vec2 fragUV;
 
 layout (location = 0) out vec4 outColor;
 
-layout (set = 0, binding = 0) uniform GlobalUBO {
+uniform GlobalUBO {
 	vec2 m_CursorCoord;
 	vec2 m_ScreenSize;
 	float m_AspectRatio;
@@ -13,21 +13,17 @@ layout (set = 0, binding = 0) uniform GlobalUBO {
 	float m_InvGamma;
 } ubo;
 
-layout (set = 0, binding = 1) buffer IDSSBO {
-	uint m_PickID;
-} idssbo;
-layout (set = 1, binding = 0) uniform sampler2D textureAtlas;
+uniform sampler2D textureAtlas;
 
-layout (push_constant) uniform Push {
+
+uniform Push {
 	mat2 m_RotationMatrix;
 	vec2 m_Position;
-	int padding[2];
-	vec2 m_TransformAnchorOffset;
-	vec2 m_PositionAnchorOffset;
-	vec2 m_UVOffsetA;
-	vec2 m_UVOffsetB;
-	vec2 m_SubUVOffsetA;
-	vec2 m_SubUVOffsetB;
+	vec2 m_AnchorOffset;
+	vec2 m_UVOffsetA; // min
+	vec2 m_UVOffsetB; // max
+	vec2 m_SubUVOffsetA; // min atlas
+	vec2 m_SubUVOffsetB; // max atlas
 	vec4 m_Color;
 	uint m_ID;
 	uint m_HasTexture;

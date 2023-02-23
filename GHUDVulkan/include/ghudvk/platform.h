@@ -14,11 +14,11 @@
 #endif
 #ifdef __linux__
 #define GHUDVK_PLATFORM_LINUX
-#pragma error "Linux is currently not supported!"
 #define GHUDVK_API
+#pragma warning "Linux might not be supported!"
 #endif
 #ifdef __OSX__
 #define GHUDVK_PLATFORM_MACOS
-#pragma error "MacOS is currently not supported!"
 #define GHUDVK_API
+#pragma warning "MacOS might not be supported!"
 #endif

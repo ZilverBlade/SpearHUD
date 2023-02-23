@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BE9F0DCD-AA57-4F1A-135F-2876FF35EA0A}</ProjectGuid>
+    <ProjectGuid>{E6A9C247-525F-3B3D-DB53-351447083241}</ProjectGuid>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>GHUDVulkan</RootNamespace>
+    <RootNamespace>GHUDOpenGL4</RootNamespace>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -43,13 +43,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>lib\</OutDir>
     <IntDir>obj\Debug\</IntDir>
-    <TargetName>GHUDVulkan_d</TargetName>
+    <TargetName>GHUDOpenGL4_d</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>lib\</OutDir>
     <IntDir>obj\Release\</IntDir>
-    <TargetName>GHUDVulkan</TargetName>
+    <TargetName>GHUDOpenGL4</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -58,7 +58,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>26812;4244;4996;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\GameEngines\Vulkan-1.3.211.0\Include;..\GHUDCore\include;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GHUDCore\include;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -77,7 +77,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>26812;4244;4996;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\GameEngines\Vulkan-1.3.211.0\Include;..\GHUDCore\include;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\GHUDCore\include;include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -94,15 +94,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\ghudvk\api\buffer.h" />
-    <ClInclude Include="include\ghudvk\core.h" />
-    <ClInclude Include="include\ghudvk\platform.h" />
-    <ClInclude Include="include\ghudvk\vk_context.h" />
-    <ClInclude Include="include\ghudvk\vk_resources.h" />
+    <ClInclude Include="include\ghudgl4\core.h" />
+    <ClInclude Include="include\ghudgl4\gl_context.h" />
+    <ClInclude Include="include\ghudgl4\gl_resources.h" />
+    <ClInclude Include="include\ghudgl4\platform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\api_impl.cpp" />
-    <ClCompile Include="src\vk_context_impl.cpp" />
+    <ClCompile Include="src\ogl4_context_impl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

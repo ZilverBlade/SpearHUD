@@ -161,7 +161,25 @@ namespace GHUD {
     }
 
     template<typename T, size_t N>
+    constexpr inline Vec<T, N> operator+=(const Vec<T, N>& a, const Vec<T, N>& b) {
+        Vec<T, N> result;
+        for (size_t i = 0; i < N; i++) {
+            result[i] = a[i] + b[i];
+        }
+        return result;
+    }
+
+    template<typename T, size_t N>
     constexpr inline Vec<T, N> operator-(const Vec<T, N>& a, const Vec<T, N>& b) {
+        Vec<T, N> result;
+        for (size_t i = 0; i < N; i++) {
+            result[i] = a[i] - b[i];
+        }
+        return result;
+    }
+
+    template<typename T, size_t N>
+    constexpr inline Vec<T, N> operator-=(const Vec<T, N>& a, const Vec<T, N>& b) {
         Vec<T, N> result;
         for (size_t i = 0; i < N; i++) {
             result[i] = a[i] - b[i];
@@ -179,7 +197,25 @@ namespace GHUD {
     }
 
     template<typename T, size_t N>
+    constexpr inline Vec<T, N> operator*=(const Vec<T, N>& a, const Vec<T, N>& b) {
+        Vec<T, N> result;
+        for (size_t i = 0; i < N; i++) {
+            result[i] = a[i] * b[i];
+        }
+        return result;
+    }
+
+    template<typename T, size_t N>
     constexpr inline Vec<T, N> operator/(const Vec<T, N>& a, const Vec<T, N>& b) {
+        Vec<T, N> result;
+        for (size_t i = 0; i < N; i++) {
+            result[i] = a[i] / b[i];
+        }
+        return result;
+    }    
+    
+    template<typename T, size_t N>
+        constexpr inline Vec<T, N> operator/=(const Vec<T, N>& a, const Vec<T, N>& b) {
         Vec<T, N> result;
         for (size_t i = 0; i < N; i++) {
             result[i] = a[i] / b[i];

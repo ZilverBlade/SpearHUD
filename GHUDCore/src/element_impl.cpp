@@ -4,6 +4,23 @@
 
 namespace GHUD {
 	namespace Element {
+
+		static inline const float CalcSineRotation(float rot) {
+#ifdef GHUD_FORCE_DEGREES
+			return sin(rot * 3.14159216f / 180.0f);
+#else
+			return sin(rot);
+#endif
+		}
+
+		static inline const float CalcCosineRotation(float rot) {
+#ifdef GHUD_FORCE_DEGREES
+			return cos(rot * 3.14159216f / 180.0f);
+#else
+			return cos(rot);
+#endif
+		}
+
 		const DrawData Line::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
 			DrawData data{};
 
@@ -32,21 +49,13 @@ namespace GHUD {
 		 const DrawData Rect::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
 			DrawData data{};
 			data.m_AnchorOffset = m_AnchorOffset;
+			data.m_TransformOffset = m_Transform.m_TransformOffset;
 			data.m_Position = Utils::ConvertScreenCoordToGPUCoord(m_Transform.m_Position);
 
-			data.m_RotationMatrix[0][0] = m_Transform.m_Scale.x;
-			data.m_RotationMatrix[1][1] = m_Transform.m_Scale.y;
+			const float s = CalcSineRotation(m_Transform.m_Rotation);
+			const float c = CalcCosineRotation(m_Transform.m_Rotation);
 
-			data.m_Color = Utils::ConvertHexColorToFloat4Color(m_Color);
-			return data;
-		}
-
-		const DrawData Rotor::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
-			DrawData data{};
-
-			const float s = sin(m_Rotation);
-			const float c = cos(m_Rotation);
-
+			data.m_TransformOffset = m_Transform.m_TransformOffset;
 			data.m_AnchorOffset = m_AnchorOffset;
 			data.m_Position = Utils::ConvertScreenCoordToGPUCoord(m_Transform.m_Position);
 			data.m_RotationMatrix[0][0] = c * m_Transform.m_Scale.x;
@@ -60,16 +69,22 @@ namespace GHUD {
 		const DrawData GHUD::Element::Image::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
 			DrawData data{};
 
+			const float s = CalcSineRotation(m_Transform.m_Rotation);
+			const float c = CalcCosineRotation(m_Transform.m_Rotation);
+
+			data.m_TransformOffset = m_Transform.m_TransformOffset;
 			data.m_AnchorOffset = m_AnchorOffset;
 			data.m_Position = Utils::ConvertScreenCoordToGPUCoord(m_Transform.m_Position);
-			data.m_RotationMatrix[0][0] = m_Transform.m_Scale.x;
-			data.m_RotationMatrix[1][1] = m_Transform.m_Scale.y;
+			data.m_RotationMatrix[0][0] = c * m_Transform.m_Scale.x;
+			data.m_RotationMatrix[0][1] = s * m_Transform.m_Scale.x;
+			data.m_RotationMatrix[1][0] = -s * m_Transform.m_Scale.y;
+			data.m_RotationMatrix[1][1] = c * m_Transform.m_Scale.y;
 
 			data.m_HasTexture = 1;
 			data.m_HasInteraction = 0;
 			data.m_Color = Utils::ConvertHexColorToFloat4Color(m_Color);
-			data.m_UVOffsetA = m_GlobalUVOffsetMin;
-			data.m_UVOffsetB = m_GlobalUVOffsetMax;
+			data.m_UVOffsetA = m_UVMin;
+			data.m_UVOffsetB = m_UVMax;
 			data.m_SubUVOffsetA = m_Texture.m_DefaultTextureCoords.m_UVOffsetMin;
 			data.m_SubUVOffsetB = m_Texture.m_DefaultTextureCoords.m_UVOffsetMax;
 

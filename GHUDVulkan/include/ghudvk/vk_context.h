@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ghudvk/core.h>
-#include <ghudcpp/ghud.h>
 #include <ghudvk/api/buffer.h>
 
 namespace GHUD {
