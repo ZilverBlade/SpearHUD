@@ -6,25 +6,26 @@
 namespace GHUD {
 	class DrawList;
 	struct GlobalContextInfo {
-		fvec2 m_CursorPosition{};
-		fvec2 m_ScreenSize{};
-		float m_AspectRatio = 1.0f;
-		float m_InverseAspectRatio = 1.0f;
-		float m_DisplayGamma = 2.2f;
-		float m_DisplayInverseGamma = 1.0f / 2.2f;
+		fvec2 mCursorPosition{};
+		fvec2 mScreenSize{};
+		float mAspectRatio = 1.0f;
+		float mInverseAspectRatio = 1.0f;
+		float mDisplayGamma = 2.2f;
+		float mDisplayInverseGamma = 1.0f / 2.2f;
 	};
 	class Context : public virtual NonCopyableClass {
 	public:
-		Context();
-		virtual ~Context();
-		inline DrawList* GetDrawList() { return m_DrawList; }
-		virtual void SetGamma(float gamma);
-		virtual void Render(const void* frameInfoStruct);
-		virtual void Pick(fvec2 cursorCoord);
-		inline const GlobalContextInfo& GetGlobalContextInfo() { return m_CtxInfo; }
-		virtual void Resize(fvec2 screenSize);
+		GHUD_API Context();
+		GHUD_API virtual ~Context();
+		GHUD_API virtual void SetGamma(float gamma);
+		GHUD_API virtual void Render(const void* frameInfoStruct);
+		GHUD_API virtual void Pick(fvec2 cursorCoord);
+		GHUD_API virtual void Resize(fvec2 screenSize);
+
+		inline DrawList* GetDrawList() { return mDrawList; }
+		inline const GlobalContextInfo& GetGlobalContextInfo() { return mCtxInfo; }
 	protected:
-		DrawList* m_DrawList{};
-		GlobalContextInfo m_CtxInfo{};
+		DrawList* mDrawList{};
+		GlobalContextInfo mCtxInfo{};
 	};
 }

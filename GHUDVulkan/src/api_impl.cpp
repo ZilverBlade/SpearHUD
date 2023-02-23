@@ -11,22 +11,22 @@ namespace GHUD {
        VkDeviceSize size,
        VkBufferUsageFlags usageFlags,
        VkMemoryPropertyFlags memoryPropertyFlags
-    ) : m_Device{ device },
-        m_UsageFlags{ usageFlags },
-        m_MemoryPropertyFlags{ memoryPropertyFlags } {
-        m_BufferSize = size;
+    ) : mDevice{ device },
+        mUsageFlags{ usageFlags },
+        mMemoryPropertyFlags{ memoryPropertyFlags } {
+        mBufferSize = size;
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         bufferInfo.size = size;
         bufferInfo.usage = usageFlags;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateBuffer(device, &bufferInfo, nullptr, &m_Buffer) != VK_SUCCESS) {
+        if (vkCreateBuffer(device, &bufferInfo, nullptr, &mBuffer) != VK_SUCCESS) {
             std::cerr << "[GHUD Vulkan] Failed to create Vulkan Buffer!";
         }
 
         VkMemoryRequirements memRequirements;
-        vkGetBufferMemoryRequirements(device, m_Buffer, &memRequirements);
+        vkGetBufferMemoryRequirements(device, mBuffer, &memRequirements);
 
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -42,42 +42,42 @@ namespace GHUD {
             }
         }
 
-        if (vkAllocateMemory(device, &allocInfo, nullptr, &m_Memory) != VK_SUCCESS) {
+        if (vkAllocateMemory(device, &allocInfo, nullptr, &mMemory) != VK_SUCCESS) {
             std::cerr << "[GHUD Vulkan] Failed to allocate Vulkan buffer memory!";
         }
 
-        vkBindBufferMemory(device, m_Buffer, m_Memory, 0);
+        vkBindBufferMemory(device, mBuffer, mMemory, 0);
     }
     Buffer::~Buffer() {
         Unmap();
-        vkDestroyBuffer(m_Device, m_Buffer, nullptr);
-        vkFreeMemory(m_Device, m_Memory, nullptr);
+        vkDestroyBuffer(mDevice, mBuffer, nullptr);
+        vkFreeMemory(mDevice, mMemory, nullptr);
     }
     VkResult Buffer::Map(VkDeviceSize size) {
-        assert(m_Buffer && m_Memory && "Called map on buffer before create");
-        return vkMapMemory(m_Device, m_Memory, 0, size, 0, &m_Mapped);
+        assert(mBuffer && mMemory && "Called map on buffer before create");
+        return vkMapMemory(mDevice, mMemory, 0, size, 0, &mMapped);
     }
     void Buffer::Unmap()  {
-        if (m_Mapped) {
-            vkUnmapMemory(m_Device, m_Memory);
-            m_Mapped = nullptr;
+        if (mMapped) {
+            vkUnmapMemory(mDevice, mMemory);
+            mMapped = nullptr;
         }
     }
     void Buffer::WriteToBuffer(void* data) {
-        assert(m_Mapped && "Cannot copy to unmapped buffer");
-        memcpy(m_Mapped, data, m_BufferSize); 
+        assert(mMapped && "Cannot copy to unmapped buffer");
+        memcpy(mMapped, data, mBufferSize); 
     }
     VkResult Buffer::Flush(VkDeviceSize size, VkDeviceSize offset) {
         VkMappedMemoryRange mappedRange = {};
         mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-        mappedRange.memory = m_Memory;
+        mappedRange.memory = mMemory;
         mappedRange.offset = offset;
         mappedRange.size = size;
-        return vkFlushMappedMemoryRanges(m_Device, 1, &mappedRange);
+        return vkFlushMappedMemoryRanges(mDevice, 1, &mappedRange);
     }
     VkDescriptorBufferInfo Buffer::GetDescriptorInfo(VkDeviceSize size, VkDeviceSize offset) {
         return VkDescriptorBufferInfo{
-            m_Buffer,
+            mBuffer,
             offset,
             size,
         };
@@ -85,9 +85,9 @@ namespace GHUD {
     VkResult Buffer::Invalidate(VkDeviceSize size, VkDeviceSize offset) {
         VkMappedMemoryRange mappedRange = {};
         mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
-        mappedRange.memory = m_Memory;
+        mappedRange.memory = mMemory;
         mappedRange.offset = offset;
         mappedRange.size = size;
-        return vkInvalidateMappedMemoryRanges(m_Device, 1, &mappedRange);
+        return vkInvalidateMappedMemoryRanges(mDevice, 1, &mappedRange);
     }
 }

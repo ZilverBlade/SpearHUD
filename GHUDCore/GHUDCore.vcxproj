@@ -106,6 +106,7 @@
     <ClInclude Include="include\ghudcpp\draw\draw_list.h" />
     <ClInclude Include="include\ghudcpp\draw\draw_vector.h" />
     <ClInclude Include="include\ghudcpp\draw\element.h" />
+    <ClInclude Include="include\ghudcpp\draw\push_stack.h" />
     <ClInclude Include="include\ghudcpp\draw\state.h" />
     <ClInclude Include="include\ghudcpp\ghud.h" />
     <ClInclude Include="include\ghudcpp\platform.h" />

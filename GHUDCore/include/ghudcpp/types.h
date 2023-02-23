@@ -116,11 +116,11 @@ namespace GHUD {
 
         inline uint8& operator[](size_t i) noexcept {
             assert(i < 4 && "Array index out of vector range");
-            return *reinterpret_cast<uint8*>(this + i);
+            return reinterpret_cast<uint8*>(this)[i];
         }
         inline const uint8& operator[](size_t i) const noexcept {
             assert(i < 4 && "Array index out of vector range");
-            return *reinterpret_cast<const uint8*>(this + i);
+            return reinterpret_cast<const uint8*>(this)[i];
         }
     };
 
@@ -174,6 +174,14 @@ namespace GHUD {
         Vec<T, N> result;
         for (size_t i = 0; i < N; i++) {
             result[i] = a[i] - b[i];
+        }
+        return result;
+    }
+    template<typename T, size_t N>
+    constexpr inline Vec<T, N> operator-(const Vec<T, N>& a) {
+        Vec<T, N> result;
+        for (size_t i = 0; i < N; i++) {
+            result[i] = -a[i]
         }
         return result;
     }

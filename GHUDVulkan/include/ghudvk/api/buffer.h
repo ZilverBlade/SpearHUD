@@ -25,20 +25,20 @@ namespace GHUD {
         VkDescriptorBufferInfo GetDescriptorInfo(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
         VkResult Invalidate(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
 
-        VkBuffer GetBuffer() const { return m_Buffer; }
-        void* GetMappedMemory() const { return m_Mapped; }
-        VkBufferUsageFlags GetUsageFlags() const { return m_UsageFlags; }
-        VkMemoryPropertyFlags GetMemoryPropertyFlags() const { return m_MemoryPropertyFlags; }
-        VkDeviceSize GetBufferSize() const { return m_BufferSize; }
+        VkBuffer GetBuffer() const { return mBuffer; }
+        void* GetMappedMemory() const { return mMapped; }
+        VkBufferUsageFlags GetUsageFlags() const { return mUsageFlags; }
+        VkMemoryPropertyFlags GetMemoryPropertyFlags() const { return mMemoryPropertyFlags; }
+        VkDeviceSize GetBufferSize() const { return mBufferSize; }
 
     private:
-        VkDevice m_Device;
-        void* m_Mapped = nullptr;
-        VkBuffer m_Buffer = nullptr;
-        VkDeviceMemory m_Memory = nullptr;
+        VkDevice mDevice;
+        void* mMapped = nullptr;
+        VkBuffer mBuffer = nullptr;
+        VkDeviceMemory mMemory = nullptr;
 
-        VkDeviceSize m_BufferSize;
-        VkBufferUsageFlags m_UsageFlags;
-        VkMemoryPropertyFlags m_MemoryPropertyFlags;
+        VkDeviceSize mBufferSize;
+        VkBufferUsageFlags mUsageFlags;
+        VkMemoryPropertyFlags mMemoryPropertyFlags;
     };
 }
