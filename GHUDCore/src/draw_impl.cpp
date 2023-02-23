@@ -104,7 +104,7 @@ namespace GHUD {
 		unApplyTransform.mTransform = unApplyTransform.mTransform * Math::Inverse(backTransform.mTransform);
 		unApplyTransform.mAnchorOffset = unApplyTransform.mAnchorOffset - backTransform.mAnchorOffset;
 		unApplyTransform.mLayerOffset -= backTransform.mLayerOffset;
-		
+
 		unApplyTransform.mAnchorAreaScale = unApplyTransform.mAnchorAreaScale / backTransform.mAnchorAreaScale;
 		mStackTransform.Pop(unApplyTransform);
 	}
@@ -113,7 +113,8 @@ namespace GHUD {
 		// apply stack pushes
 		StackPushTransform applyTransform = mStackTransform.GetApplyData();
 		drawInfo.mData.mRotationMatrix = drawInfo.mData.mRotationMatrix * applyTransform.mTransform;
-		if (applyTransform.mAnchorOffset.x != 0.0 || applyTransform.mAnchorOffset.y != 0.0) {
+
+		if (mStackTransform.HasStack()) {
 			// override anchor if a transform is applying one to prioritize the positioning
 			drawInfo.mData.mPosition = drawInfo.mData.mPosition + drawInfo.mData.mAnchorOffset;
 			drawInfo.mData.mAnchorOffset = applyTransform.mAnchorOffset;

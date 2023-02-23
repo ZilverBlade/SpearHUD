@@ -24,6 +24,9 @@ namespace GHUD {
 		const T& GetApplyData() {
 			return mBaseApply;
 		}
+		bool HasStack() {
+			return mStack.size() != 0;
+		}
 	private:
 		T mBaseApply{};
 		std::vector<StackPushData> mStack{};

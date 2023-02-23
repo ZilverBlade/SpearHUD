@@ -55,7 +55,7 @@ namespace GHUD {
             Transform2x2(fvec2 column0, fvec2 column1) : mColumn0(column0), mColumn1(column1) 
             {
             }
-            inline const fvec2& operator[] (size_t i) const noexcept {
+            const inline fvec2& operator[] (size_t i) const noexcept {
                 assert(i < 2 && "Array index out of vector range");
                 return reinterpret_cast<const fvec2*>(this)[i];
             }

@@ -634,8 +634,6 @@ namespace GHUD {
 		vkDestroyImage(mDevice, mEImage, nullptr);
 		vkFreeMemory(mDevice, mEImageMemory, nullptr);
 
-		vkDestroyShaderModule(mDevice, mVshModule, nullptr);
-		vkDestroyShaderModule(mDevice, mFshModule, nullptr);
 		vkDestroyPipeline(mDevice, mGraphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(mDevice, mPipelineLayout, nullptr);
 
@@ -795,6 +793,9 @@ namespace GHUD {
 
 		VkResult pipelineResult = vkCreateGraphicsPipelines(mDevice, nullptr, 1, &pipelineInfo, nullptr, &mGraphicsPipeline);
 		assert(pipelineResult == VK_SUCCESS && "Failed to create graphics pipeline!");
+
+		vkDestroyShaderModule(mDevice, mVshModule, nullptr);
+		vkDestroyShaderModule(mDevice, mFshModule, nullptr);
 	}
 
 	void VulkanContext::Render(const VulkanFrameInfoStruct* frameInfoStruct) {

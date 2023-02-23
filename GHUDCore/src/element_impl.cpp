@@ -28,8 +28,8 @@ namespace GHUD {
 			data.mColor = Utils::ConvertHexColorToFloat4Color(mColor);
 			return data;
 		}
-
-		 const DrawData Rect::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
+		// 0 - 1
+		const DrawData Rect::GenerateDrawData(const GlobalContextInfo* ctxInfo) const {
 			DrawData data{};
 			data.mAnchorOffset = mAnchorOffset;
 			data.mPosition = Utils::ConvertScreenCoordToGPUCoord(mTransform.mPosition);
