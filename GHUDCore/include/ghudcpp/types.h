@@ -181,7 +181,7 @@ namespace GHUD {
     constexpr inline Vec<T, N> operator-(const Vec<T, N>& a) {
         Vec<T, N> result;
         for (size_t i = 0; i < N; i++) {
-            result[i] = -a[i]
+            result[i] = -a[i];
         }
         return result;
     }

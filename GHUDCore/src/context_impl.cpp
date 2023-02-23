@@ -7,7 +7,7 @@ namespace GHUD {
 	}
 
 	Context::~Context() {
-		delete m_DrawList;
+		delete mDrawList;
 	}
 
 	void Context::SetGamma(float gamma) {

@@ -14,12 +14,8 @@ namespace GHUD {
 	}
 
 	void DrawList::FrameStart() {
-<<<<<<< HEAD
-		assert(m_DrawList.size() == 0 && "Draw List must be cleared before frame start!");
-		m_DrawList.get_allocator().allocate(m_PreviousSize);
-=======
 		assert(mDrawList.size() == 0 && "Draw List must be cleared before frame start!");
->>>>>>> 2c9f03cdecc6f6ddbddb97a93cad5aa7df7af018
+		mDrawList.get_allocator().allocate(mPreviousSize);
 	}
 
 	void DrawList::FrameEnd() {
@@ -51,11 +47,8 @@ namespace GHUD {
 		return rect;
 	}
 
-<<<<<<< HEAD
-	const Element::Rect DrawList::DrawRect(const Transform& m_Transform, RGBAColor m_Color, LayerIndex m_Layer, fvec2 m_AnchorOffset) {
-=======
+
 	const Element::Rect DrawList::DrawRect(const Transform& mTransform, RGBAColor mColor, LayerIndex mLayer, fvec2 mAnchorOffset) {
->>>>>>> 2c9f03cdecc6f6ddbddb97a93cad5aa7df7af018
 		Element::Rect obj{};
 		obj.mTransform = mTransform;
 		obj.mColor = mColor;
@@ -70,47 +63,6 @@ namespace GHUD {
 		return img;
 	}
 
-<<<<<<< HEAD
-	const Element::Image DrawList::DrawImage(const Transform& m_Transform, const TextureObject& m_Texture, RGBAColor m_Color, LayerIndex m_Layer, fvec2 m_AnchorOffset, fvec2 m_UVMin, fvec2 m_UVMax) {
-		Element::Image obj{};
-		obj.m_Transform = m_Transform;
-		obj.m_Transform.m_Position += m_TransformOffset.m_Position;
-		obj.m_Transform.m_Rotation += m_TransformOffset.m_Rotation;
-		obj.m_Transform.m_Scale += m_TransformOffset.m_Scale;
-		obj.m_Transform.m_TransformOffset += m_TransformOffset.m_TransformOffset;
-		obj.m_Color = m_Color;
-		obj.m_Layer = m_Layer + m_LayerOffset;
-		obj.m_UVMin = m_UVMin;
-		obj.m_UVMax = m_UVMax;
-		obj.m_AnchorOffset = m_AnchorOffset + m_AnchorOffsetOffset;
-		return DrawImage(obj);
-	}
-
-	const Element::Panel DrawList::BeginPanel(const Transform& m_Transform, LayerIndex m_Layer, fvec2 m_AnchorOffset) {
-		m_TransformOffset.m_Position += m_Transform.m_Position;
-		m_TransformOffset.m_Rotation += m_Transform.m_Rotation;
-		m_TransformOffset.m_Scale += m_Transform.m_Scale;
-		m_TransformOffset.m_TransformOffset += m_Transform.m_TransformOffset;
-
-		m_LayerOffset += m_Layer;
-		m_AnchorOffsetOffset += m_AnchorOffset;
-		
-		Element::Panel obj{};
-		obj.m_AnchorOffset = m_AnchorOffset;
-		obj.m_Layer = m_Layer;
-		obj.m_Transform = m_Transform;
-		return obj;
-	}
-
-	const void DrawList::EndPanel(const Element::Panel& panel) {
-		m_TransformOffset.m_Position -= panel.m_Transform.m_Position;
-		m_TransformOffset.m_Rotation -= panel.m_Transform.m_Rotation;
-		m_TransformOffset.m_Scale -= panel.m_Transform.m_Scale;
-		m_TransformOffset.m_TransformOffset -= panel.m_Transform.m_TransformOffset;
-
-		m_LayerOffset -= panel.m_Layer;
-		m_AnchorOffsetOffset -= panel.m_AnchorOffset;
-=======
 	const Element::Image DrawList::DrawImage(const Transform& mTransform, const TextureObject& mTexture, RGBAColor mColor, LayerIndex mLayer, fvec2 mAnchorOffset, fvec2 mGlobalUVOffsetMin, fvec2 mGlobalUVOffsetMax) {
 		Element::Image obj{};
 		obj.mTransform = mTransform;
@@ -166,8 +118,6 @@ namespace GHUD {
 		drawInfo.mData.mAnchorOffset = drawInfo.mData.mAnchorOffset * mStackTransform.GetApplyData().mAnchorOffset;
 		drawInfo.mLayer += mStackTransform.GetApplyData().mLayerOffset;
 		mDrawList.emplace(drawInfo);
-
->>>>>>> 2c9f03cdecc6f6ddbddb97a93cad5aa7df7af018
 	}
 
 }
