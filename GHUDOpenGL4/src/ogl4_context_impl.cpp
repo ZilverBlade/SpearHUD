@@ -99,9 +99,9 @@ namespace GHUD {
 	void OpenGL4Context::Render(const OpenGLFrameInfoStruct* frameInfoStruct) {
 		const OpenGLFrameInfo& frameInfo = *reinterpret_cast<const OpenGLFrameInfo*>(frameInfoStruct);
 
-		for (const DrawInfo& draw : m_DrawList->GetList()) {
-			if (draw.m_Data.m_HasTexture == 1) {
-				const GLuint texture = *reinterpret_cast<const GLuint*>(&draw.m_TextureID);
+		for (const DrawInfo& draw : mDrawList->GetList()) {
+			if (draw.mData.mFlags & GHUD_DRAW_DATA_FLAG_HAS_TEXTURE) {
+				const GLuint texture = *reinterpret_cast<const GLuint*>(&draw.mTextureID);
 				glBindTexture(GL_RGBA8, texture);
 			}
 			

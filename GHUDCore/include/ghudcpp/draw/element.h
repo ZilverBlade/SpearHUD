@@ -5,26 +5,28 @@
 #include <ghudcpp/draw/draw_data.h>
 #include <ghudcpp/resources/texture_object.h>
 #include <ghudcpp/resources/font_object.h>
+#include <xhash>
 
 namespace GHUD {
 	class DrawList;
 	struct GlobalContextInfo;
 
 	namespace Element {
-		enum class Type {
-			None,
-			UserDefined,
-			Line, // Line is a lightweight element with 2 points and a colour
-			Rect, // Rect is a lightweight element with a transform (position and scale) and a color
-			Image, // Image is a lightweight element with a transform (position and scale) texture and color
-			Button, // Button is an interactive Image element.
-			Text, // Text is an element to display text with a color.
-			TextButton, // TextButton is an interactive Text element.
-			TextInput, // TextInput is an interactive box to input text.
-			Window, // Window is a movable (may be configured to drag) rect that may contain other elements.
-			Panel, 
-			Scrollbar,
-			Rotor
+		enum class Type : uint32 {
+			None = 0,
+			UserDefined = 1,
+			Line = 2, // Line is a lightweight element with 2 points and a colour
+			Rect = 3, // Rect is a lightweight element with a transform (position and scale) and a color
+			Image = 4, // Image is a lightweight element with a transform (position and scale) texture and color
+			Button = 5, // Button is an interactive Image element.
+			Text = 6, // Text is an element to display text with a color.
+			TextButton = 7, // TextButton is an interactive Text element.
+			TextInput = 8, // TextInput is an interactive box to input text.
+			Window = 9, // Window is a movable (may be configured to drag) rect that may contain other elements.
+			Panel = 10, // Panel is a way to group elements together, has it's own transform, anchor offset, and layer
+			Grid = 11, // Grid is a way to efficiently tile elements in a grid like pattern.
+			Scrollbar = 12,
+			Rotor = 13
 		};
 
 		struct Base {
@@ -47,9 +49,14 @@ namespace GHUD {
 
 		struct InteractiveDrawableBase : public virtual DrawableBase {
 			uint32 mTabIndex = 0;
-			inline PressState GetPressState() const { return mState.mPressState; }
+			size_t mElementID = 0x00;
+			PressState GetPressState() const { return PressState(mPressState); }
+			void SetUniqueTag(const std::string& string) {
+				static std::hash<std::string> hashFunc{};
+				mElementID = hashFunc(string);
+			}
 		protected:
-			State mState;
+			PressStateFlags mPressState = GHUD_PRESS_STATE_FLAG_NONE;
 			friend class DrawList;
 		};
 
@@ -63,7 +70,7 @@ namespace GHUD {
 			fvec2 mPointA = { 0.0f, 0.0f };
 			fvec2 mPointB = { 1.0f, 1.0f };
 			float mWidth = 1.0f;
-			RGBAColor mColor{};
+			RGBAColor mColor = 0xFFFFFFFF;
 		};
 
 		struct Rect : public DrawableBase {
@@ -74,7 +81,7 @@ namespace GHUD {
 			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
 
 			Transform mTransform{};
-			RGBAColor mColor{};
+			RGBAColor mColor = 0xFFFFFFFF;
 		};
 
 		struct Image : public DrawableBase {
@@ -88,7 +95,7 @@ namespace GHUD {
 			TextureObject mTexture{};
 			fvec2 mGlobalUVOffsetMin = { 0.f, 0.f };
 			fvec2 mGlobalUVOffsetMax = { 1.f, 1.f };
-			RGBAColor mColor{};
+			RGBAColor mColor = 0xFFFFFFFF;
 		};
 
 		struct Button : public InteractiveDrawableBase {
@@ -98,7 +105,8 @@ namespace GHUD {
 
 			Transform mTransform{};
 			TextureObject mTexture{};
-			RGBAColor mColor{};
+			float mAlphaButtonCutoff = 0.5f;
+			RGBAColor mColor = 0xFFFFFFFF;
 		};
 
 		struct Rotor : public InteractiveDrawableBase {
@@ -109,7 +117,7 @@ namespace GHUD {
 			Transform mTransform{};
 			float mRotation{};
 			TextureObject mTexture{};
-			RGBAColor mColor{};
+			RGBAColor mColor = 0xFFFFFFFF;
 		};
 
 		struct Text : public DrawableBase {
@@ -119,7 +127,7 @@ namespace GHUD {
 
 			Transform mTransform{};
 			FontObject mFont{};
-			RGBAColor mColor{};
+			RGBAColor mColor = 0xFFFFFFFF;
 			char* mText{};
 		};
 		struct TextButton : public InteractiveDrawableBase {
@@ -129,7 +137,7 @@ namespace GHUD {
 
 			Transform mTransform{};
 			FontObject mFont{};
-			RGBAColor mColor{};
+			RGBAColor mColor = 0xFFFFFFFF;
 			char* mText{};
 		};
 
@@ -137,6 +145,15 @@ namespace GHUD {
 			Panel() : Base(Type::Panel) {}
 			Transform mTransform{};
 		};
+
+		struct Grid : public NonDrawableBase {
+			Grid() : Base(Type::Grid) {}
+			fvec2 mPosition = { 0.5f, 0.5f };
+			fvec2 mMaxGridArea = { 0.5f, 0.25f };
+			uint32 mElementSizePX = 64u;
+			bool mTryCenterElements = false;
+		};
+
 
 		struct Window : public InteractiveDrawableBase {
 			Window() : Base(Type::TextButton) {}

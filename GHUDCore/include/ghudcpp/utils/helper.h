@@ -4,8 +4,11 @@
 
 namespace GHUD {
     namespace Utils {
-        static inline fvec2 ConvertScreenCoordToGPUCoord(fvec2 coord) {
-            return fvec2(coord.x - 0.5, -(coord.y - 0.5)) * 2.0f;
+        static inline fvec2 ConvertScreenCoordToGPUCoord(fvec2 coord, fvec2 invResolution) {
+            return fvec2(coord.x * invResolution.x, -coord.y * invResolution.y);
+        }
+        static inline fvec2 ConvertPixelScaleToUVScale(fvec2 scalepx, fvec2 invResolution) {
+            return scalepx * invResolution;
         }
         static inline fvec2 FlipYCoord(fvec2 coord) {
             return fvec2(coord.x, -coord.y);
@@ -18,8 +21,8 @@ namespace GHUD {
                 float(color.a) / 255.0f
             );
         }
-        static inline fvec2 GetAbsoluteCoord(fvec2 coord, float aspectRatio) {
-            return fvec2(((coord.x - 0.5) * 2.0 * aspectRatio) * 0.5 + 0.5, coord.y);
+        static inline fvec2 GetAnchorCorrectedPosition(fvec2 absoluteCoord, fvec2 resolution, fvec2 anchorOffset) {
+            return ((absoluteCoord / resolution) - 0.5f + anchorOffset) * resolution * 2.f;
         }
     };
 }

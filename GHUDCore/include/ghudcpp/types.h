@@ -37,6 +37,9 @@ namespace GHUD {
         T x{}, y{};
         Vec() = default;
 
+        constexpr Vec<T, 2>(float v) noexcept :
+            x(v), y(v)
+        {}
         constexpr Vec<T, 2>(float vx, float vy) noexcept :
             x(vx), y(vy)
         {}
@@ -56,6 +59,9 @@ namespace GHUD {
         T x{}, y{}, z{};
         Vec() = default;
 
+        constexpr Vec<T, 3>(float v) noexcept :
+            x(v), y(v), z(v)
+        {}
         constexpr Vec<T, 3>(float vx, float vy, float vz) noexcept :
             x(vx), y(vy), z(vz)
         {}
@@ -75,6 +81,9 @@ namespace GHUD {
         T x{}, y{}, z{}, w{};
         Vec() = default;
 
+        constexpr Vec<T, 4>(float v) noexcept :
+            x(v), y(v), z(v), w(v)
+        {}
         constexpr Vec<T, 4>(float vx, float vy, float vz, float vw) noexcept :
             x(vx), y(vy), z(vz), w(vw)
         {}

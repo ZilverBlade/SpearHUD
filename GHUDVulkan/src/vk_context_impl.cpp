@@ -515,7 +515,20 @@ namespace GHUD {
 
 #pragma endregion
 
+	struct ShaderUBO {
+		fvec2 mCursorCoord{};
+		fvec2 mResolution;
+		fvec2 mInvResolution;
+		float mAspectRatio;
+		float mInvAspectRatio;
+
+		float mDisplayGamma;
+		float mInvDisplayGamma;
+	};
+
 	VulkanContext::VulkanContext(const VulkanContextCreateInfo& createInfo) : mDevice(createInfo.mDevice), mPhysicalDevice(createInfo.mPhysicalDevice), mSwapChainImageCount(createInfo.mSwapChainImageCount) {
+		mVtblAssert = this;
+
 		VkDescriptorPoolSize poolSizes[] = {
 			{ VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1024 },
 			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1 },
@@ -583,8 +596,8 @@ namespace GHUD {
 		mIDSSBO.resize(createInfo.mSwapChainImageCount);
 		mBufferDescriptorSets.resize(createInfo.mSwapChainImageCount);
 		for (uint32 i = 0; i < createInfo.mSwapChainImageCount; i++) {
-			mGlobalUBO[i] = new Buffer(createInfo.mDevice, createInfo.mPhysicalDevice, sizeof(GlobalContextInfo), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
-			mIDSSBO[i] = new Buffer(createInfo.mDevice, createInfo.mPhysicalDevice, sizeof(uint32), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			mGlobalUBO[i] = new Buffer(createInfo.mDevice, createInfo.mPhysicalDevice, sizeof(ShaderUBO), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
+			mIDSSBO[i] = new Buffer(createInfo.mDevice, createInfo.mPhysicalDevice, sizeof(uint64), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT);
 			mGlobalUBO[i]->Map();
 			mIDSSBO[i]->Map();
 
@@ -640,6 +653,12 @@ namespace GHUD {
 		vkDestroyDescriptorSetLayout(mDevice, mTextureDescriptorSetLayout, nullptr);
 		vkDestroyDescriptorSetLayout(mDevice, mBufferDescriptorSetLayout, nullptr);
 		vkDestroyDescriptorPool(mDevice, mDescriptorPool, nullptr);
+	}
+
+	void VulkanContext::Pick() {
+		size_t id = *reinterpret_cast<size_t*>(mIDSSBO[mLastImageIndex]->GetMappedMemory());
+		mCtxInfo.selectedObject = id;
+		//std::cout << id << " is reported id\n";
 	}
 
 	void VulkanContext::CreateGraphicsPipeline(const VulkanContextCreateInfo& createInfo) {
@@ -801,8 +820,22 @@ namespace GHUD {
 	void VulkanContext::Render(const VulkanFrameInfoStruct* frameInfoStruct) {
 		const VulkanFrameInfo& frameInfo = *reinterpret_cast<const VulkanFrameInfo*>(frameInfoStruct);
 		
-		mGlobalUBO[frameInfo.mFrameIndex]->WriteToBuffer(&mCtxInfo);
+		ShaderUBO ubo{};
+		ubo.mAspectRatio = mCtxInfo.mAspectRatio;
+		ubo.mInvAspectRatio = mCtxInfo.mInvAspectRatio;
+		ubo.mCursorCoord = mIO.mCursorPosition;
+		ubo.mDisplayGamma = mCtxInfo.mDisplayGamma;
+		ubo.mInvDisplayGamma = mCtxInfo.mInvDisplayGamma;
+		ubo.mResolution = mCtxInfo.mResolution;
+		ubo.mInvResolution = mCtxInfo.mInvResolution;
+
+		mGlobalUBO[frameInfo.mFrameIndex]->WriteToBuffer(&ubo);
 		mGlobalUBO[frameInfo.mFrameIndex]->Flush();
+
+		// reset ID for next frame to avoid "ghost selection"
+		size_t clearID = 0x00;
+		mIDSSBO[frameInfo.mFrameIndex]->WriteToBuffer(&clearID);
+		mIDSSBO[frameInfo.mFrameIndex]->Flush();
 
 		vkCmdBindPipeline(frameInfo.mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mGraphicsPipeline);
 
@@ -823,7 +856,7 @@ namespace GHUD {
 		);
 
 		for (const DrawInfo& draw : mDrawList->GetList()) {
-			if (draw.mData.mHasTexture == 1) {
+			if (draw.mData.mFlags & GHUD_DRAW_DATA_FLAG_HAS_TEXTURE) {
 				const VkDescriptorSet textureDescriptor = *reinterpret_cast<const VkDescriptorSet*>(&draw.mTextureID);
 				vkCmdBindDescriptorSets(
 					frameInfo.mCommandBuffer,
@@ -839,6 +872,8 @@ namespace GHUD {
 			vkCmdPushConstants(frameInfo.mCommandBuffer, mPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(DrawData), &draw.mData);
 			vkCmdDraw(frameInfo.mCommandBuffer, 6, 1, 0, 0);
 		}
+
+		mLastImageIndex = frameInfo.mFrameIndex;
 	}
 
 	ResourceObject VulkanContext::CreateTexture(const VkDescriptorImageInfo& imageInfo) {

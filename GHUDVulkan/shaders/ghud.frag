@@ -8,23 +8,23 @@ layout (location = 0) in vec2 fragUV;
 layout (location = 0) out vec4 outColor;
 
 layout (set = 0, binding = 1) buffer IDSSBO {
-	uint mPickID;
+	uint mPickID[2]; // fake uint64 due to performance and compatibility
 } idssbo;
 layout (set = 1, binding = 0) uniform sampler2D textureAtlas;
 
 void main() {
-	vec4 color = vec4(1.0);
-	if (push.mHasTexture == 1) {
+	vec4 color = unpackCol32(push.mColorCompressed);
+	if (bool(push.mFlags & GHUD_DRAW_DATA_FLAG_HAS_TEXTURE)) {
 		vec2 BminA = push.mSubUVOffsetB - push.mSubUVOffsetA;
 		vec2 textureCoord = mod(fragUV * BminA, BminA) + push.mSubUVOffsetA;
-		color = textureLod(textureAtlas, textureCoord, 1.0).rgba * push.mColor;
-		if (color.a < 0.01) discard; // masked objects to avoid unintended button presses
-	} else {
-		color = push.mColor;
+		color *= textureLod(textureAtlas, textureCoord, 0.0).rgba;
 	}
-	if (push.mHasInteraction == 1) 
-		if (distance(fragUV, ubo.mCursorCoord) < 0.00001) 
-			idssbo.mPickID = push.mID;
+	if (bool(push.mFlags & GHUD_DRAW_DATA_FLAG_HAS_INTERACTION)) {
+		if (distance(gl_FragCoord.xy, ubo.mCursorPosition) <= 1.0 && color.a > push.mInteractableAlphaCutoff) {
+			idssbo.mPickID[0] = push.mID[0];
+			idssbo.mPickID[1] = push.mID[1];
+		}
+	}
 	
-	outColor = vec4(pow(color.rgb, vec3(ubo.mInvGamma)), color.a);
+	outColor = vec4(pow(color.rgb, vec3(ubo.mInvGamma)), 1.0);
 }

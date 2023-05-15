@@ -1,6 +1,5 @@
 #pragma once
 
-
 #ifdef _WIN32
 #define GHUD_PLATFORM_WINDOWS
 #ifdef GHUD_DYNAMIC_LIBRARY

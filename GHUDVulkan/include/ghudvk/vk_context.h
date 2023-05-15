@@ -30,6 +30,7 @@ namespace GHUD {
 	public:
 		GHUDVK_API VulkanContext(const VulkanContextCreateInfo& createInfo);
 		GHUDVK_API ~VulkanContext();
+		GHUDVK_API virtual void Pick() override;
 		GHUDVK_API virtual void Render(const VulkanFrameInfoStruct* frameInfoStruct) override;
 		GHUDVK_API ResourceObject CreateTexture(const VkDescriptorImageInfo& imageInfo);
 		GHUDVK_API void CreateResources(VkCommandBuffer singleTimeCommandBuffer);
@@ -57,6 +58,8 @@ namespace GHUD {
 		VkDescriptorSet mETexture;
 
 		uint32 mSwapChainImageCount;
+
+		uint32 mLastImageIndex = 0;
 		std::vector<Buffer*> mGlobalUBO;
 		std::vector<Buffer*> mIDSSBO;
 		std::vector<VkDescriptorSet> mBufferDescriptorSets;

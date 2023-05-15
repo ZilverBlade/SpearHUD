@@ -12,17 +12,26 @@ namespace GHUD {
 
 	void Context::SetGamma(float gamma) {
 		mCtxInfo.mDisplayGamma = gamma;
-		mCtxInfo.mDisplayInverseGamma = 1.0 / gamma;
+		mCtxInfo.mInvDisplayGamma = 1.0 / gamma;
 	}
-	void Context::Pick(fvec2 cursorCoord) {
-		mCtxInfo.mCursorPosition = cursorCoord;
+	void Context::UpdateIOFrame() {
+		mIOLastFrame = mIO;
 	}
-	void Context::Resize(fvec2 screenSize) {
-		mCtxInfo.mScreenSize = screenSize;
+	IO& Context::GetIO() {
+		return mIO;
+	}
+	GHUD_API const IO& Context::GetIOLastFrame() {
+		return mIOLastFrame;
+	}
+	void Context::Pick() {
+	}
+	void Context::SetResolution(fvec2 screenSize) {
+		mCtxInfo.mResolution = screenSize;
+		mCtxInfo.mInvResolution = fvec2(1.0f) / screenSize;
 		mCtxInfo.mAspectRatio = screenSize.x / screenSize.y;
-		mCtxInfo.mInverseAspectRatio = screenSize.y / screenSize.x;
+		mCtxInfo.mInvAspectRatio = screenSize.y / screenSize.x;
 	}
 	void Context::Render(const void* frameInfoStruct) {
-
+		assert(mVtblAssert != nullptr && "Render function is not implemented!");
 	}
 }

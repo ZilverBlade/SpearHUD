@@ -69,6 +69,15 @@
     <ClInclude Include="include\ghudcpp\draw\push_stack.h">
       <Filter>include\ghudcpp\draw</Filter>
     </ClInclude>
+    <ClInclude Include="include\ghudcpp\ghuddef.h">
+      <Filter>include\ghudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\io.h">
+      <Filter>include\ghudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\input.h">
+      <Filter>include\ghudcpp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\context_impl.cpp">
@@ -80,5 +89,6 @@
     <ClCompile Include="src\element_impl.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="include\ghudcpp\draw\element.cpp" />
   </ItemGroup>
 </Project>

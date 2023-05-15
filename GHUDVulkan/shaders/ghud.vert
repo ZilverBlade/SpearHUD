@@ -21,7 +21,7 @@ void main() {
 	vec2 vtx = VERTICES[ind];
 	vec2 offsetVTX = vtx - push.mTransformAnchorOffset;
 	vec2 transform = vec2(push.mRotationMatrix * offsetVTX) + push.mPosition;
-	vec2 position = transform * arTransform + push.mPositionAnchorOffset; // i want to kms
+	vec2 position = transform + push.mPositionAnchorOffset; // i want to kms
 
 	vec2 texCoords[4] = vec2[](
 		vec2(push.mUVOffsetA.x, push.mUVOffsetB.y),

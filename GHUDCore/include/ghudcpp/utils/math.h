@@ -4,9 +4,9 @@
 
 namespace GHUD {
     struct Transform {
-        fvec2 mTransformOffset = { 0.0f, 0.0f };
-        fvec2 mPosition = { 0.5f, 0.5f };
-        fvec2 mScale = { 1.0f, 1.0f };
+        fvec2 mTransformOffset = { 0.0f, 0.0f }; // transform offset px
+        fvec2 mPosition = { 0.f, 0.f }; // position px
+        fvec2 mScale = { 64.0f, 64.0f }; // size px
     };
 	namespace Math {
         template<typename T, size_t N>
