@@ -95,14 +95,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\ghudvk\api\buffer.h" />
+    <ClInclude Include="include\ghudvk\api\vk_calls.h" />
+    <ClInclude Include="include\ghudvk\api\vk_definitions.h" />
     <ClInclude Include="include\ghudvk\core.h" />
+    <ClInclude Include="include\ghudvk\implementation.h" />
     <ClInclude Include="include\ghudvk\platform.h" />
+    <ClInclude Include="include\ghudvk\src_impl\api_impl.hh" />
+    <ClInclude Include="include\ghudvk\src_impl\vk_context_impl.hh" />
     <ClInclude Include="include\ghudvk\vk_context.h" />
     <ClInclude Include="include\ghudvk\vk_resources.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\api_impl.cpp" />
-    <ClCompile Include="src\vk_context_impl.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

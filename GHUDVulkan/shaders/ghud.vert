@@ -14,6 +14,7 @@ const uint INDICES[6] = uint[](
 );
 layout (location = 0) out vec2 fragUV;
 
+
 void main() {
 	vec2 arTransform = vec2(ubo.mInvAspectRatio, 1.0);
 	vec2 invArTransform = vec2(ubo.mAspectRatio, 1.0);

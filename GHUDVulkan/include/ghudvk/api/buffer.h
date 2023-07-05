@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
+#include <ghudvk/api/vk_definitions.h>
 
 namespace GHUD {
     class Buffer {
@@ -20,7 +20,8 @@ namespace GHUD {
         VkResult Map(VkDeviceSize size = VK_WHOLE_SIZE);
         void Unmap();
 
-        void WriteToBuffer(void* data);
+        void WriteToBuffer(const void* data);
+        void WriteToBuffer(const void* data, VkDeviceSize size, VkDeviceSize offset = 0);
         VkResult Flush(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
         VkDescriptorBufferInfo GetDescriptorInfo(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);
         VkResult Invalidate(VkDeviceSize size = VK_WHOLE_SIZE, VkDeviceSize offset = 0);

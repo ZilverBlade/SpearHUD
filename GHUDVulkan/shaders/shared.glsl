@@ -2,7 +2,9 @@
 #define SHARED_GLSL
 // contents are shared between vertex and fragment shader
 
-layout (set = 0, binding = 0) uniform GlobalUBO {
+const uint ANY_SIZE = 1;
+
+layout (std140, set = 0, binding = 0) uniform GlobalUBO {
 	vec2 mCursorPosition;
 	
 	vec2 mResolution;
@@ -31,14 +33,15 @@ layout (push_constant) uniform Push {
 } push;
 
 //enum DrawDataFlagBits : uint32 
-const uint GHUD_DRAW_DATA_FLAG_NONE = 0;
+const uint GHUD_DRAW_DATA_FLAG_NONE = 0x00;
 const uint GHUD_DRAW_DATA_FLAG_HAS_TEXTURE = 0x01;
 const uint GHUD_DRAW_DATA_FLAG_HAS_INTERACTION = 0x02;
-const uint GHUD_DRAW_DATA_FLAG_SAMPLER_FILTER_MODE_NEAREST = 0x04;
-const uint GHUD_DRAW_DATA_FLAG_SAMPLER_FILTER_MODE_LINAER = 0x08;
-const uint GHUD_DRAW_DATA_FLAG_SAMPLER_ADDRESS_MODE_REPEAT = 0x10;
-const uint GHUD_DRAW_DATA_FLAG_SAMPLER_ADDRESS_MODE_CLAMP = 0x20;
-const uint GHUD_DRAW_DATA_FLAG_SAMPLER_ADDRESS_MODE_REPEAT_MIRROR = 0x40;
+const uint GHUD_DRAW_DATA_FLAG_IS_MSDF_TEXT = 0x04;
+const uint GHUD_DRAW_DATA_FLAG_SAMPLER_FILTER_MODE_NEAREST = 0x08;
+const uint GHUD_DRAW_DATA_FLAG_SAMPLER_FILTER_MODE_LINAER = 0x10;
+const uint GHUD_DRAW_DATA_FLAG_SAMPLER_ADDRESS_MODE_REPEAT = 0x20;
+const uint GHUD_DRAW_DATA_FLAG_SAMPLER_ADDRESS_MODE_CLAMP = 0x40;
+const uint GHUD_DRAW_DATA_FLAG_SAMPLER_ADDRESS_MODE_REPEAT_MIRROR = 0x80;
 
 vec4 unpackCol32(uint cmp) {
 	return vec4(

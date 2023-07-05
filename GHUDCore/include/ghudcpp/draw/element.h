@@ -4,12 +4,12 @@
 #include <ghudcpp/draw/state.h>
 #include <ghudcpp/draw/draw_data.h>
 #include <ghudcpp/resources/texture_object.h>
-#include <ghudcpp/resources/font_object.h>
+#include <ghudcpp/resources/text_object.h>
 #include <xhash>
 
 namespace GHUD {
 	class DrawList;
-	struct GlobalContextInfo;
+	struct GlobalContextData;
 
 	namespace Element {
 		enum class Type : uint32 {
@@ -38,7 +38,7 @@ namespace GHUD {
 			Base() = default;
 		};
 		struct DrawableBase : public virtual Base {
-			virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const = 0;
+			virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const = 0;
 		protected:
 			DrawableBase() = default;
 		};
@@ -65,7 +65,7 @@ namespace GHUD {
 			Line(const Line& other) : mPointA(other.mPointA), mPointB(other.mPointB), mColor(other.mColor) {}
 			Line& operator=(const Line& other) { return Line(other); }
 
-			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 
 			fvec2 mPointA = { 0.0f, 0.0f };
 			fvec2 mPointB = { 1.0f, 1.0f };
@@ -78,7 +78,7 @@ namespace GHUD {
 			Rect(const Rect& other) : mTransform(other.mTransform), mColor(other.mColor) {}
 			Rect& operator=(const Rect& other) { return Rect(other); }
 
-			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 
 			Transform mTransform{};
 			RGBAColor mColor = 0xFFFFFFFF;
@@ -89,7 +89,7 @@ namespace GHUD {
 			Image(const Image& other) : mTransform(other.mTransform), mTexture(other.mTexture), mColor(other.mColor) {}
 			Image& operator=(const Image& other) { return Image(other); }
 
-			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 
 			Transform mTransform{};
 			TextureObject mTexture{};
@@ -101,7 +101,7 @@ namespace GHUD {
 		struct Button : public InteractiveDrawableBase {
 			Button() : Base(Type::Button) {}
 
-			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 
 			Transform mTransform{};
 			TextureObject mTexture{};
@@ -112,7 +112,7 @@ namespace GHUD {
 		struct Rotor : public InteractiveDrawableBase {
 			Rotor() : Base(Type::Rotor) {}
 
-			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 
 			Transform mTransform{};
 			float mRotation{};
@@ -123,22 +123,20 @@ namespace GHUD {
 		struct Text : public DrawableBase {
 			Text() : Base(Type::Text) {}
 
-			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 
 			Transform mTransform{};
-			FontObject mFont{};
+			std::string mText;
 			RGBAColor mColor = 0xFFFFFFFF;
-			char* mText{};
 		};
 		struct TextButton : public InteractiveDrawableBase {
 			TextButton() : Base(Type::TextButton) {}
 
-			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 
 			Transform mTransform{};
-			FontObject mFont{};
+			std::string mText;
 			RGBAColor mColor = 0xFFFFFFFF;
-			char* mText{};
 		};
 
 		struct Panel : public NonDrawableBase {
@@ -159,7 +157,7 @@ namespace GHUD {
 			Window() : Base(Type::TextButton) {}
 			Transform mTransform{};
 
-			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextInfo* ctxInfo) const override;
+			GHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 		protected:
 			std::vector<Element::Base*> elements{}; // this will hold a reference to our elements inside the window
 		};

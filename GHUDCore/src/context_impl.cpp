@@ -11,11 +11,23 @@ namespace GHUD {
 	}
 
 	void Context::SetGamma(float gamma) {
-		mCtxInfo.mDisplayGamma = gamma;
-		mCtxInfo.mInvDisplayGamma = 1.0 / gamma;
+		mCtxData.mDisplayGamma = gamma;
+		mCtxData.mInvDisplayGamma = 1.0 / gamma;
 	}
 	void Context::UpdateIOFrame() {
 		mIOLastFrame = mIO;
+	}
+
+	void Context::RunGarbageCollector() {
+		assert(mVtblAssert != nullptr && "Cleanup function is not implemented!");
+	}
+
+	BufferID Context::AllocateTextBuffer(size_t id, const std::string& characters) {
+		assert(mVtblAssert != nullptr && "Text allocation function is not implemented!");
+		return 0;
+	}
+	void Context::DeallocateTextBuffer(size_t id) {
+		assert(mVtblAssert != nullptr && "Text deallocation function is not implemented!");
 	}
 	IO& Context::GetIO() {
 		return mIO;
@@ -23,13 +35,16 @@ namespace GHUD {
 	GHUD_API const IO& Context::GetIOLastFrame() {
 		return mIOLastFrame;
 	}
+	GHUD_API const TextureID Context::GetFontAtlasTextureID() {
+		return mDefaultFontAtlas;
+	}
 	void Context::Pick() {
 	}
 	void Context::SetResolution(fvec2 screenSize) {
-		mCtxInfo.mResolution = screenSize;
-		mCtxInfo.mInvResolution = fvec2(1.0f) / screenSize;
-		mCtxInfo.mAspectRatio = screenSize.x / screenSize.y;
-		mCtxInfo.mInvAspectRatio = screenSize.y / screenSize.x;
+		mCtxData.mResolution = screenSize;
+		mCtxData.mInvResolution = fvec2(1.0f) / screenSize;
+		mCtxData.mAspectRatio = screenSize.x / screenSize.y;
+		mCtxData.mInvAspectRatio = screenSize.y / screenSize.x;
 	}
 	void Context::Render(const void* frameInfoStruct) {
 		assert(mVtblAssert != nullptr && "Render function is not implemented!");

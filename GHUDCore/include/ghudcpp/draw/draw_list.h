@@ -30,6 +30,9 @@ namespace GHUD {
 		GHUD_API const Element::Image DrawImage(const Element::Image& img);
 		GHUD_API const Element::Image DrawImage(const Transform& mTransform, const TextureObject& mTexture, RGBAColor mColor, LayerIndex mLayer, fvec2 mAnchorOffset = { 0.0, 0.0 }, fvec2 mGlobalUVOffsetMin = { 0.f, 0.f }, fvec2 mGlobalUVOffsetMax = { 1.f, 1.f });
 		
+		GHUD_API const Element::Text DrawText(const Element::Text& txt);
+		GHUD_API const Element::Text DrawText(const Transform& mTransform, RGBAColor mColor, LayerIndex mLayer, const std::string& text, fvec2 mAnchorOffset = { 0.0, 0.0 });
+
 		GHUD_API const Element::Button DrawButton(const Element::Button& btn);
 		GHUD_API void BeginPanel(const Element::Panel& mPanel);
 		GHUD_API void EndPanel();

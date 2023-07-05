@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClInclude Include="include\ghudcpp\context.h" />
     <ClInclude Include="include\ghudcpp\core.h" />
+    <ClInclude Include="include\ghudcpp\default_msdf_atlas.h" />
     <ClInclude Include="include\ghudcpp\draw\draw_data.h" />
     <ClInclude Include="include\ghudcpp\draw\draw_list.h" />
     <ClInclude Include="include\ghudcpp\draw\draw_vector.h" />
@@ -113,15 +114,14 @@
     <ClInclude Include="include\ghudcpp\input.h" />
     <ClInclude Include="include\ghudcpp\io.h" />
     <ClInclude Include="include\ghudcpp\platform.h" />
-    <ClInclude Include="include\ghudcpp\resources\font_object.h" />
     <ClInclude Include="include\ghudcpp\resources\resource_object.h" />
+    <ClInclude Include="include\ghudcpp\resources\text_object.h" />
     <ClInclude Include="include\ghudcpp\resources\texture_object.h" />
     <ClInclude Include="include\ghudcpp\types.h" />
     <ClInclude Include="include\ghudcpp\utils\helper.h" />
     <ClInclude Include="include\ghudcpp\utils\math.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\ghudcpp\draw\element.cpp" />
     <ClCompile Include="src\context_impl.cpp" />
     <ClCompile Include="src\draw_impl.cpp" />
     <ClCompile Include="src\element_impl.cpp" />

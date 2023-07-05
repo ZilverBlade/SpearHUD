@@ -70,7 +70,7 @@ project "GHUDVulkan"
    
    files {
       "./GHUDVulkan/include/ghudvk/**.h",
-      "./GHUDVulkan/src/**.cpp"
+      "./GHUDVulkan/include/ghudvk/src_impl/**.hh"
    }
 
    includedirs {

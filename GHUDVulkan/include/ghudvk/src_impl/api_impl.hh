@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ghudvk/api/buffer.h>
+#include <ghudvk/api/vk_calls.h>
 #include <iostream>
 #include <cassert>
 
@@ -63,9 +64,13 @@ namespace GHUD {
             mMapped = nullptr;
         }
     }
-    void Buffer::WriteToBuffer(void* data) {
+    void Buffer::WriteToBuffer(const void* data) {
         assert(mMapped && "Cannot copy to unmapped buffer");
         memcpy(mMapped, data, mBufferSize); 
+    }
+    void Buffer::WriteToBuffer(const void* data, VkDeviceSize size, VkDeviceSize offset) {
+        assert(mMapped && "Cannot copy to unmapped buffer");
+        memcpy((char*)mMapped + offset, data, size);
     }
     VkResult Buffer::Flush(VkDeviceSize size, VkDeviceSize offset) {
         VkMappedMemoryRange mappedRange = {};

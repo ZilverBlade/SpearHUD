@@ -27,6 +27,9 @@
     <ClInclude Include="include\ghudcpp\core.h">
       <Filter>include\ghudcpp</Filter>
     </ClInclude>
+    <ClInclude Include="include\ghudcpp\default_msdf_atlas.h">
+      <Filter>include\ghudcpp</Filter>
+    </ClInclude>
     <ClInclude Include="include\ghudcpp\draw\draw_data.h">
       <Filter>include\ghudcpp\draw</Filter>
     </ClInclude>
@@ -39,19 +42,31 @@
     <ClInclude Include="include\ghudcpp\draw\element.h">
       <Filter>include\ghudcpp\draw</Filter>
     </ClInclude>
+    <ClInclude Include="include\ghudcpp\draw\push_stack.h">
+      <Filter>include\ghudcpp\draw</Filter>
+    </ClInclude>
     <ClInclude Include="include\ghudcpp\draw\state.h">
       <Filter>include\ghudcpp\draw</Filter>
     </ClInclude>
     <ClInclude Include="include\ghudcpp\ghud.h">
       <Filter>include\ghudcpp</Filter>
     </ClInclude>
+    <ClInclude Include="include\ghudcpp\ghuddef.h">
+      <Filter>include\ghudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\input.h">
+      <Filter>include\ghudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ghudcpp\io.h">
+      <Filter>include\ghudcpp</Filter>
+    </ClInclude>
     <ClInclude Include="include\ghudcpp\platform.h">
       <Filter>include\ghudcpp</Filter>
     </ClInclude>
-    <ClInclude Include="include\ghudcpp\resources\font_object.h">
+    <ClInclude Include="include\ghudcpp\resources\resource_object.h">
       <Filter>include\ghudcpp\resources</Filter>
     </ClInclude>
-    <ClInclude Include="include\ghudcpp\resources\resource_object.h">
+    <ClInclude Include="include\ghudcpp\resources\text_object.h">
       <Filter>include\ghudcpp\resources</Filter>
     </ClInclude>
     <ClInclude Include="include\ghudcpp\resources\texture_object.h">
@@ -66,18 +81,6 @@
     <ClInclude Include="include\ghudcpp\utils\math.h">
       <Filter>include\ghudcpp\utils</Filter>
     </ClInclude>
-    <ClInclude Include="include\ghudcpp\draw\push_stack.h">
-      <Filter>include\ghudcpp\draw</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ghudcpp\ghuddef.h">
-      <Filter>include\ghudcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ghudcpp\io.h">
-      <Filter>include\ghudcpp</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ghudcpp\input.h">
-      <Filter>include\ghudcpp</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\context_impl.cpp">
@@ -89,6 +92,5 @@
     <ClCompile Include="src\element_impl.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="include\ghudcpp\draw\element.cpp" />
   </ItemGroup>
 </Project>

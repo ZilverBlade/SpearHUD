@@ -29,7 +29,7 @@ namespace GHUD {
 	}
 
 	const Element::Line DrawList::DrawLine(const Element::Line& line) {
-		Draw(DrawInfo{ line.mLayer, 0, line.GenerateDrawData(&ctx->GetGlobalContextInfo()) });
+		Draw(DrawInfo{ line.mLayer, 0, 0, line.GenerateDrawData(&ctx->GetContextData()) });
 		return line;
 	}
 	const Element::Line DrawList::DrawLine(fvec2 mPointA, fvec2 mPointB, RGBAColor mColor, LayerIndex mLayer, fvec2 mAnchorOffset) {
@@ -43,8 +43,8 @@ namespace GHUD {
 	}
 
 	const Element::Rect DrawList::DrawRect(const Element::Rect& rect) {
-		DrawData data = rect.GenerateDrawData(&ctx->GetGlobalContextInfo());
-		Draw(DrawInfo{ rect.mLayer, 0, std::move(data) });
+		DrawData data = rect.GenerateDrawData(&ctx->GetContextData());
+		Draw(DrawInfo{ rect.mLayer, 0, 0, std::move(data) });
 		return rect;
 	}
 
@@ -58,8 +58,8 @@ namespace GHUD {
 		return DrawRect(obj);
 	}
 	const Element::Image DrawList::DrawImage(const Element::Image& img) {
-		DrawData data = img.GenerateDrawData(&ctx->GetGlobalContextInfo());
-		Draw(DrawInfo{ img.mLayer, img.mTexture.mAtlas.GetTextureID(), std::move(data) });
+		DrawData data = img.GenerateDrawData(&ctx->GetContextData());
+		Draw(DrawInfo{ img.mLayer, img.mTexture.mAtlas.GetTextureID(), 0, std::move(data) });
 		return img;
 	}
 
@@ -74,11 +74,29 @@ namespace GHUD {
 		return DrawImage(obj);
 	}
 
+	GHUD_API const Element::Text DrawList::DrawText(const Element::Text& txt) {
+		static std::hash<std::string> hasher = std::hash<std::string>();
+		void* bufferID = (void*)ctx->AllocateTextBuffer(hasher(txt.mText), txt.mText);
+		DrawData data = txt.GenerateDrawData(&ctx->GetContextData());
+		Draw(DrawInfo{ txt.mLayer, ctx->GetFontAtlasTextureID(), (BufferID)bufferID, std::move(data) });
+		return txt;
+	}
+
+	GHUD_API const Element::Text DrawList::DrawText(const Transform& mTransform, RGBAColor mColor, LayerIndex mLayer, const std::string& text, fvec2 mAnchorOffset) {
+		Element::Text  obj{};
+		obj.mTransform = mTransform;
+		obj.mColor = mColor;
+		obj.mLayer = mLayer;
+		obj.mAnchorOffset = mAnchorOffset;
+		obj.mText = text;
+		return DrawText(obj);
+	}
+
 	const Element::Button DrawList::DrawButton(const Element::Button& btn) {
-		DrawData data = btn.GenerateDrawData(&ctx->GetGlobalContextInfo());
+		DrawData data = btn.GenerateDrawData(&ctx->GetContextData());
 		data.mID = btn.mElementID;
 		Element::Button btncpy = btn;
-		if (ctx->GetGlobalContextInfo().selectedObject == btn.mElementID) {
+		if (ctx->GetContextData().selectedObject == btn.mElementID) {
 			if (ctx->GetIO().mButtonState[(int)MouseButtonCode::Button_Left] == true) {
 				data.mSubUVOffsetA = btncpy.mTexture.mPressTextureCoords.mUVOffsetMin;
 				data.mSubUVOffsetB = btncpy.mTexture.mPressTextureCoords.mUVOffsetMax;
@@ -92,15 +110,15 @@ namespace GHUD {
 				btncpy.mPressState |= GHUD_PRESS_STATE_FLAG_HOVERING;
 			}
 		}
-		Draw(DrawInfo{ btn.mLayer, btn.mTexture.mAtlas.GetTextureID(), std::move(data) });
+		Draw(DrawInfo{ btn.mLayer, btn.mTexture.mAtlas.GetTextureID(), 0, std::move(data) });
 		return btncpy;
 	}
 
 	void DrawList::BeginPanel(const Element::Panel& mPanel) {
 		StackPushTransform pushTransform{};
-		fvec2 uvScale = Utils::ConvertPixelScaleToUVScale(mPanel.mTransform.mScale, ctx->GetGlobalContextInfo().mInvResolution);
+		fvec2 uvScale = Utils::ConvertPixelScaleToUVScale(mPanel.mTransform.mScale, ctx->GetContextData().mInvResolution);
 		pushTransform.mTransform = Math::Transform2x2(uvScale, 0.0);
-		pushTransform.mAbsPosition = Utils::ConvertScreenCoordToGPUCoord(mPanel.mTransform.mPosition, ctx->GetGlobalContextInfo().mInvResolution);
+		pushTransform.mAbsPosition = Utils::ConvertScreenCoordToGPUCoord(mPanel.mTransform.mPosition, ctx->GetContextData().mInvResolution);
 		pushTransform.mLayerOffset = mPanel.mLayer;
 
 		pushTransform.mAnchorAreaScale = uvScale;

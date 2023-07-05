@@ -1,42 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="include">
-      <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
+    <Filter Include="api">
+      <UniqueIdentifier>{5F5E880B-CB67-887C-54E3-9E7CC0EB937C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\ghudvk">
-      <UniqueIdentifier>{6111074F-4DDF-FA54-3673-6B7B22E0D6B9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\ghudvk\api">
-      <UniqueIdentifier>{2A4B1EB5-162F-DF0A-7F8F-D95D6B92C98C}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src">
-      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    <Filter Include="src_impl">
+      <UniqueIdentifier>{7E3996D2-6A06-F1DD-931F-DF857F4B266C}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ghudvk\api\buffer.h">
-      <Filter>include\ghudvk\api</Filter>
+      <Filter>api</Filter>
     </ClInclude>
-    <ClInclude Include="include\ghudvk\core.h">
-      <Filter>include\ghudvk</Filter>
+    <ClInclude Include="include\ghudvk\api\vk_calls.h">
+      <Filter>api</Filter>
     </ClInclude>
-    <ClInclude Include="include\ghudvk\platform.h">
-      <Filter>include\ghudvk</Filter>
+    <ClInclude Include="include\ghudvk\api\vk_definitions.h">
+      <Filter>api</Filter>
     </ClInclude>
-    <ClInclude Include="include\ghudvk\vk_context.h">
-      <Filter>include\ghudvk</Filter>
+    <ClInclude Include="include\ghudvk\core.h" />
+    <ClInclude Include="include\ghudvk\platform.h" />
+    <ClInclude Include="include\ghudvk\src_impl\api_impl.hh">
+      <Filter>src_impl</Filter>
     </ClInclude>
-    <ClInclude Include="include\ghudvk\vk_resources.h">
-      <Filter>include\ghudvk</Filter>
+    <ClInclude Include="include\ghudvk\src_impl\vk_context_impl.hh">
+      <Filter>src_impl</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\api_impl.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\vk_context_impl.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
+    <ClInclude Include="include\ghudvk\vk_context.h" />
+    <ClInclude Include="include\ghudvk\vk_resources.h" />
+    <ClInclude Include="include\ghudvk\implementation.h" />
   </ItemGroup>
 </Project>
