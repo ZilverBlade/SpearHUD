@@ -17,7 +17,7 @@ layout (std140, set = 2, binding = 0) uniform MSDFData {
 	float mKerningPx; // TODO: sample texture twice if overlapping
 	uint mCharCount;
 	uint padding;
-	uint mCharBlock4[ANY_SIZE]; // 4 chars per index
+	uvec4 mCharBlock4[ANY_SIZE]; // 16 chars per index
 } msdfData;
 
 float median(float r, float g, float b) {
@@ -25,46 +25,22 @@ float median(float r, float g, float b) {
 }
 
 vec2 warpUV(vec2 uv, float warpSize) {
-	
 	return uv;
 }
 
-vec4 sampleChar(uint idx, sampler2D msdfAtlas, vec2 UV) {
-	if (idx >= msdfData.mCharCount) return vec4(1.0, 0.0, 0.0, 1.0); // out of bounds
-	uint char = (msdfData.mCharBlock4[uint(floor(float(idx) * 0.25))] >> ((idx % 4) * 8)) & 0x000000FF;
-	MSDFCoord cd = msdfLUT.mUV[char];
+uint getChar(uint idx) {
+	if (idx >= msdfData.mCharCount) return 0; // out of bounds
+	uint arrayBlock = uint(floor(float(idx) / 16.0));
+	uint vecIndex = (uint(floor(float(idx) / 4.0)) % 4);
+	uint byteIndex = (idx % 4) * 0x00000008;
 	
-	UV.y = 1.0 - UV.y;
-	vec2 BminA = cd.maxAtlas - cd.minAtlas;
-	float m = 1.0 / float(msdfData.mCharCount);
-	UV.x = mod(UV.x, m) / m;
-	
-	vec2 DminC = cd.maxPlane - cd.minPlane;
-	//UV = cd.minPlane;
-	UV = UV * 2.0 - 1.0;
-	UV /= cd.maxPlane;
-	UV = 0.5 * (UV + 1.0);
-	
-	vec2 x = clamp(BminA * (UV) + cd.minAtlas, cd.minAtlas, cd.maxAtlas);
-	
-	vec3 msdf = textureLod(msdfAtlas, x, 0.0).rgb;//sampleAtlas(msdfAtlas, newV, cd.min, cd.max).rgb;
-	
-	vec2 sz = textureSize(msdfAtlas, 0).xy;
-    float dx = dFdx(UV.x) * sz.x; 
-    float dy = dFdy(UV.y) * sz.y;
-    float toPixels = 8.0 * inversesqrt(dx * dx + dy * dy);
-    float sigDist = median(msdf.r, msdf.g, msdf.b);
-    float w = fwidth(sigDist);
-    float opacity = smoothstep(0.5 - w, 0.5 + w, sigDist);
-	
-	return vec4(1.0, 1.0, 1.0, opacity);
-	
-	//return vec4( msdf, 1.0);
+	return (msdfData.mCharBlock4[arrayBlock][vecIndex] >> byteIndex) & 0x000000FF;
 }
 
-uint calcCharIndex(vec2 UV) {
-	float block = floor(UV.x * float(msdfData.mCharCount));
-	return uint(block);
-}
+
+//uint calcCharIndex(vec2 UV) {
+//	float block = floor(UV.x * float(msdfData.mCharCount));
+//	return uint(block);
+//}
 
 #endif

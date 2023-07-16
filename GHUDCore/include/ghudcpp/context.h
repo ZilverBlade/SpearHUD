@@ -52,7 +52,6 @@ namespace GHUD {
 
 		GHUD_API virtual const TextureID GetFontAtlasTextureID() final;
 
-		GHUD_API virtual void RunGarbageCollector();
 		GHUD_API virtual BufferID AllocateTextBuffer(size_t id, const std::string& characters);
 		GHUD_API virtual void DeallocateTextBuffer(size_t id);
 	protected:

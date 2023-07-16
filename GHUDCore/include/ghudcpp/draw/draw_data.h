@@ -36,6 +36,7 @@ namespace GHUD {
 		TextureID mTextureID;
 		BufferID mBufferID;
 		DrawData mData;
+		uint32_t mInstanceCount;
 
 		// for the std::multi_set
 		inline bool operator<(const DrawInfo& other) const {

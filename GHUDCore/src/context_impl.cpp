@@ -18,10 +18,6 @@ namespace GHUD {
 		mIOLastFrame = mIO;
 	}
 
-	void Context::RunGarbageCollector() {
-		assert(mVtblAssert != nullptr && "Cleanup function is not implemented!");
-	}
-
 	BufferID Context::AllocateTextBuffer(size_t id, const std::string& characters) {
 		assert(mVtblAssert != nullptr && "Text allocation function is not implemented!");
 		return 0;

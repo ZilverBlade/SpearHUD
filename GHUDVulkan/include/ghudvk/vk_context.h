@@ -42,35 +42,37 @@ namespace GHUD {
 
 	class VulkanTextShaderBufferObject : public TextShaderBuffer {
 	public:
-		GHUDVK_API ~VulkanTextShaderBufferObject();
+		~VulkanTextShaderBufferObject();
 	private:
 		Buffer* buffer;
 	};
 
 	class VulkanContext : public Context {
 	public:
-		GHUDVK_API VulkanContext(const VulkanContextCreateInfo& createInfo);
-		GHUDVK_API ~VulkanContext();
-		GHUDVK_API virtual void Pick() override;
-		GHUDVK_API virtual void Render(const VulkanFrameInfoStruct* frameInfoStruct) override;
-		GHUDVK_API ResourceObject CreateTexture(const VkDescriptorImageInfo& imageInfo);
-		GHUDVK_API void FreeTexture(const ResourceObject resource);
+		VulkanContext(const VulkanContextCreateInfo& createInfo);
+		~VulkanContext();
+		virtual void Pick() override;
+		virtual void Render(const VulkanFrameInfoStruct* frameInfoStruct) override;
+		ResourceObject CreateTexture(const VkDescriptorImageInfo& imageInfo);
+		void FreeTexture(const ResourceObject resource);
 
 		// Creates uniform buffer for text data, or returns an existing buffer if already exists
-		GHUDVK_API virtual BufferID AllocateTextBuffer(size_t id, const std::string& characters) override;
-
+		virtual BufferID AllocateTextBuffer(size_t id, const std::string& characters) override;
 		// Marks text buffer free for deletion
-		GHUDVK_API virtual void DeallocateTextBuffer(size_t id);
-
+		virtual void DeallocateTextBuffer(size_t id);
+	
 		// Destroys left over objects, must be called AFTER Render();
-		GHUDVK_API virtual void Cleanup();
-		GHUDVK_API void CreateResources(VkCommandBuffer singleTimeCommandBuffer);
-		GHUDVK_API void FreeDescriptor(VkDescriptorSet descriptor);
+		virtual void Cleanup();
+
+		void CreateResources(VkCommandBuffer singleTimeCommandBuffer);
+		void FreeDescriptor(VkDescriptorSet descriptor);
+
+
 	private:
-		GHUDVK_API void CreateGraphicsPipeline(const VulkanContextCreateInfo& createInfo);
-		GHUDVK_API void LoadFontMSDF(VkCommandBuffer singleTimeCommandBuffer);
-		GHUDVK_API void CreateMSDFLUT();
-		GHUDVK_API void CreateBuffers();
+		void CreateGraphicsPipeline(const VulkanContextCreateInfo& createInfo);
+		void LoadFontMSDF(VkCommandBuffer singleTimeCommandBuffer);
+		void CreateMSDFLUT();
+		void CreateBuffers();
 
 		std::vector<Buffer*> mGlobalUBO;
 		std::vector<Buffer*> mIDSSBO;

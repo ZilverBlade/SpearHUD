@@ -29,7 +29,7 @@ namespace GHUD {
 	}
 
 	const Element::Line DrawList::DrawLine(const Element::Line& line) {
-		Draw(DrawInfo{ line.mLayer, 0, 0, line.GenerateDrawData(&ctx->GetContextData()) });
+		Draw(DrawInfo{ line.mLayer, 0, 0, line.GenerateDrawData(&ctx->GetContextData()), 1 });
 		return line;
 	}
 	const Element::Line DrawList::DrawLine(fvec2 mPointA, fvec2 mPointB, RGBAColor mColor, LayerIndex mLayer, fvec2 mAnchorOffset) {
@@ -44,7 +44,7 @@ namespace GHUD {
 
 	const Element::Rect DrawList::DrawRect(const Element::Rect& rect) {
 		DrawData data = rect.GenerateDrawData(&ctx->GetContextData());
-		Draw(DrawInfo{ rect.mLayer, 0, 0, std::move(data) });
+		Draw(DrawInfo{ rect.mLayer, 0, 0, std::move(data), 1 });
 		return rect;
 	}
 
@@ -59,7 +59,7 @@ namespace GHUD {
 	}
 	const Element::Image DrawList::DrawImage(const Element::Image& img) {
 		DrawData data = img.GenerateDrawData(&ctx->GetContextData());
-		Draw(DrawInfo{ img.mLayer, img.mTexture.mAtlas.GetTextureID(), 0, std::move(data) });
+		Draw(DrawInfo{ img.mLayer, img.mTexture.mAtlas.GetTextureID(), 0, std::move(data), 1 });
 		return img;
 	}
 
@@ -78,7 +78,7 @@ namespace GHUD {
 		static std::hash<std::string> hasher = std::hash<std::string>();
 		void* bufferID = (void*)ctx->AllocateTextBuffer(hasher(txt.mText), txt.mText);
 		DrawData data = txt.GenerateDrawData(&ctx->GetContextData());
-		Draw(DrawInfo{ txt.mLayer, ctx->GetFontAtlasTextureID(), (BufferID)bufferID, std::move(data) });
+		Draw(DrawInfo{ txt.mLayer, ctx->GetFontAtlasTextureID(), (BufferID)bufferID, std::move(data), static_cast<uint32_t>(txt.mText.size()) });
 		return txt;
 	}
 
@@ -110,7 +110,7 @@ namespace GHUD {
 				btncpy.mPressState |= GHUD_PRESS_STATE_FLAG_HOVERING;
 			}
 		}
-		Draw(DrawInfo{ btn.mLayer, btn.mTexture.mAtlas.GetTextureID(), 0, std::move(data) });
+		Draw(DrawInfo{ btn.mLayer, btn.mTexture.mAtlas.GetTextureID(), 0, std::move(data), 1 });
 		return btncpy;
 	}
 

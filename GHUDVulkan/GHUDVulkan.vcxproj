@@ -99,7 +99,6 @@
     <ClInclude Include="include\ghudvk\api\vk_definitions.h" />
     <ClInclude Include="include\ghudvk\core.h" />
     <ClInclude Include="include\ghudvk\implementation.h" />
-    <ClInclude Include="include\ghudvk\platform.h" />
     <ClInclude Include="include\ghudvk\src_impl\api_impl.hh" />
     <ClInclude Include="include\ghudvk\src_impl\vk_context_impl.hh" />
     <ClInclude Include="include\ghudvk\vk_context.h" />

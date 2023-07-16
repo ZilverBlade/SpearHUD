@@ -28,7 +28,7 @@ layout (push_constant) uniform Push {
 	vec2 mSubUVOffsetB; // max atlas
 	uint mColorCompressed;
 	uint mFlags;
-	uint mID[2]; // avoid uint64 due to performance and compatibility
+	uvec2 mID; // avoid uint64 due to performance and compatibility
 	float mInteractableAlphaCutoff;
 } push;
 

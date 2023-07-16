@@ -19,7 +19,7 @@
       <Filter>api</Filter>
     </ClInclude>
     <ClInclude Include="include\ghudvk\core.h" />
-    <ClInclude Include="include\ghudvk\platform.h" />
+    <ClInclude Include="include\ghudvk\implementation.h" />
     <ClInclude Include="include\ghudvk\src_impl\api_impl.hh">
       <Filter>src_impl</Filter>
     </ClInclude>
@@ -28,6 +28,5 @@
     </ClInclude>
     <ClInclude Include="include\ghudvk\vk_context.h" />
     <ClInclude Include="include\ghudvk\vk_resources.h" />
-    <ClInclude Include="include\ghudvk\implementation.h" />
   </ItemGroup>
 </Project>
