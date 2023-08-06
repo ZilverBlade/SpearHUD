@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="api">
+      <UniqueIdentifier>{5F5E880B-CB67-887C-54E3-9E7CC0EB937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src_impl">
+      <UniqueIdentifier>{7E3996D2-6A06-F1DD-931F-DF857F4B266C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\shudvk\api\buffer.h">
+      <Filter>api</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudvk\api\vk_calls.h">
+      <Filter>api</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudvk\api\vk_definitions.h">
+      <Filter>api</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudvk\core.h" />
+    <ClInclude Include="include\shudvk\implementation.h" />
+    <ClInclude Include="include\shudvk\src_impl\api_impl.hh">
+      <Filter>src_impl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudvk\src_impl\vk_context_impl.hh">
+      <Filter>src_impl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudvk\vk_context.h" />
+    <ClInclude Include="include\shudvk\vk_resources.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\shudvk\vk_shader_binary.h" />
+  </ItemGroup>
+</Project>

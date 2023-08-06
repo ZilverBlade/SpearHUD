@@ -1,5 +1,5 @@
-# GammaHUD
-## GHUD - Fast, lightweight, multi-API and multiplatform HUD system.
+# SpearHUD
+## SHUD - Fast, lightweight, multi-API and multiplatform HUD system.
 
 ### Setup (Windows): 
 - Run premake.bat

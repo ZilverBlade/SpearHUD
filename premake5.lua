@@ -1,14 +1,14 @@
-workspace "GammaHUD"
+workspace "SpearHUD"
    architecture "x86_64"
    preferredtoolarchitecture "x86_64"
    configurations { "Debug", "Release" }
 
 local VULKAN_SDK = os.getenv("VULKAN_SDK") -- 
 
-project "GHUDCore"
-   location "./GHUDCore"
+project "SHUDCore"
+   location "./SHUDCore"
    debugdir "./"
-   local bin = "./GHUDCore/lib"
+   local bin = "./SHUDCore/lib"
 
    kind "StaticLib"
    language "C++"
@@ -19,14 +19,14 @@ project "GHUDCore"
    disablewarnings { "26812;4244;4996;4005" }
    
    files {
-      "./GHUDCore/include/ghudcpp/**.h",
-      "./GHUDCore/include/ghudcpp/draw/**.h",
-      "./GHUDCore/include/ghudcpp/resources/**.h",
-      "./GHUDCore/src/**.cpp",
+      "./SHUDCore/include/shudcpp/**.h",
+      "./SHUDCore/include/shudcpp/draw/**.h",
+      "./SHUDCore/include/shudcpp/resources/**.h",
+      "./SHUDCore/src/**.cpp",
    }
 
    includedirs {
-	  "./GHUDCore/include"
+	  "./SHUDCore/include"
    }
    libdirs {
    }
@@ -39,7 +39,7 @@ project "GHUDCore"
       }
 	
    filter "configurations:Debug"
-      targetname "GHUDCore_d"
+      targetname "SHUDCore_d"
       defines { "_DEBUG", "_LIB" }
       runtime "Debug"
       symbols "On"
@@ -47,7 +47,7 @@ project "GHUDCore"
 	  }
 
    filter "configurations:Release"
-      targetname "GHUDCore"
+      targetname "SHUDCore"
 	  defines { "NDEBUG" }
       runtime "Release"
       optimize "Speed"
@@ -55,10 +55,10 @@ project "GHUDCore"
 	  }
 	  
 
-project "GHUDVulkan"
-   location "./GHUDVulkan"
+project "SHUDVulkan"
+   location "./SHUDVulkan"
    debugdir "./"
-   local bin = "./GHUDVulkan/lib"
+   local bin = "./SHUDVulkan/lib"
 
    kind "StaticLib"
    language "C++"
@@ -69,14 +69,14 @@ project "GHUDVulkan"
    disablewarnings { "26812;4244;4996;4005" }
    
    files {
-      "./GHUDVulkan/include/ghudvk/**.h",
-      "./GHUDVulkan/include/ghudvk/src_impl/**.hh"
+      "./SHUDVulkan/include/shudvk/**.h",
+      "./SHUDVulkan/include/shudvk/src_impl/**.hh"
    }
 
    includedirs {
       VULKAN_SDK.."/Include",
-	  "./GHUDCore/include",
-	  "./GHUDVulkan/include"
+	  "./SHUDCore/include",
+	  "./SHUDVulkan/include"
    }
    libdirs {
    }
@@ -84,7 +84,7 @@ project "GHUDVulkan"
    }
 	
    filter "configurations:Debug"
-      targetname "GHUDVulkan_d"
+      targetname "SHUDVulkan_d"
       defines { "_DEBUG" }
       runtime "Debug"
       symbols "On"
@@ -92,17 +92,17 @@ project "GHUDVulkan"
 	  }
 
    filter "configurations:Release"
-      targetname "GHUDVulkan"
+      targetname "SHUDVulkan"
 	  defines { "NDEBUG" }
       runtime "Release"
       optimize "Speed"
 	  links {
 	  }
 	  
-project "GHUDOpenGL4"
-   location "./GHUDOpenGL4"
+project "SHUDOpenGL4"
+   location "./SHUDOpenGL4"
    debugdir "./"
-   local bin = "./GHUDOpenGL4/lib"
+   local bin = "./SHUDOpenGL4/lib"
 
    kind "StaticLib"
    language "C++"
@@ -113,13 +113,13 @@ project "GHUDOpenGL4"
    disablewarnings { "26812;4244;4996;4005" }
    
    files {
-      "./GHUDOpenGL4/include/ghudgl4/**.h",
-      "./GHUDOpenGL4/src/**.cpp"
+      "./SHUDOpenGL4/include/shudgl4/**.h",
+      "./SHUDOpenGL4/src/**.cpp"
    }
 
    includedirs {
-	  "./GHUDCore/include",
-	  "./GHUDOpenGL4/include"
+	  "./SHUDCore/include",
+	  "./SHUDOpenGL4/include"
    }
    libdirs {
    }
@@ -127,7 +127,7 @@ project "GHUDOpenGL4"
    }
 	
    filter "configurations:Debug"
-      targetname "GHUDOpenGL4_d"
+      targetname "SHUDOpenGL4_d"
       defines { "_DEBUG" }
       runtime "Debug"
       symbols "On"
@@ -135,7 +135,7 @@ project "GHUDOpenGL4"
 	  }
 
    filter "configurations:Release"
-      targetname "GHUDOpenGL4"
+      targetname "SHUDOpenGL4"
 	  defines { "NDEBUG" }
       runtime "Release"
       optimize "Speed"

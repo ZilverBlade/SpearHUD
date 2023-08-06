@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SHUDCore", "SHUDCore\SHUDCore.vcxproj", "{A209A886-8ED6-0292-B7EF-F039A31B3820}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SHUDOpenGL4", "SHUDOpenGL4\SHUDOpenGL4.vcxproj", "{F2281B88-5EDE-937D-E7D2-8D5453878A81}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SHUDVulkan", "SHUDVulkan\SHUDVulkan.vcxproj", "{4A6D8CFD-3625-CE4A-9F2C-A7A68B03693B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A209A886-8ED6-0292-B7EF-F039A31B3820}.Debug|x64.ActiveCfg = Debug|x64
+		{A209A886-8ED6-0292-B7EF-F039A31B3820}.Debug|x64.Build.0 = Debug|x64
+		{A209A886-8ED6-0292-B7EF-F039A31B3820}.Release|x64.ActiveCfg = Release|x64
+		{A209A886-8ED6-0292-B7EF-F039A31B3820}.Release|x64.Build.0 = Release|x64
+		{F2281B88-5EDE-937D-E7D2-8D5453878A81}.Debug|x64.ActiveCfg = Debug|x64
+		{F2281B88-5EDE-937D-E7D2-8D5453878A81}.Debug|x64.Build.0 = Debug|x64
+		{F2281B88-5EDE-937D-E7D2-8D5453878A81}.Release|x64.ActiveCfg = Release|x64
+		{F2281B88-5EDE-937D-E7D2-8D5453878A81}.Release|x64.Build.0 = Release|x64
+		{4A6D8CFD-3625-CE4A-9F2C-A7A68B03693B}.Debug|x64.ActiveCfg = Debug|x64
+		{4A6D8CFD-3625-CE4A-9F2C-A7A68B03693B}.Debug|x64.Build.0 = Debug|x64
+		{4A6D8CFD-3625-CE4A-9F2C-A7A68B03693B}.Release|x64.ActiveCfg = Release|x64
+		{4A6D8CFD-3625-CE4A-9F2C-A7A68B03693B}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

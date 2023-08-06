@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\shudcpp">
+      <UniqueIdentifier>{CFC6A3CB-3B52-1190-4463-9484B06D6D90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\shudcpp\draw">
+      <UniqueIdentifier>{ACA7564D-9836-E016-4155-F4112DC3F0BC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\shudcpp\resources">
+      <UniqueIdentifier>{191BB9F0-85DD-EC7A-CE8D-7B073A8FC558}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\shudcpp\utils">
+      <UniqueIdentifier>{8F7760F9-FBE3-1BF4-C4D7-B35130033E5C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\shudcpp\context.h">
+      <Filter>include\shudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\core.h">
+      <Filter>include\shudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\default_msdf_atlas.h">
+      <Filter>include\shudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\draw\draw_data.h">
+      <Filter>include\shudcpp\draw</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\draw\draw_list.h">
+      <Filter>include\shudcpp\draw</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\draw\draw_vector.h">
+      <Filter>include\shudcpp\draw</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\draw\element.h">
+      <Filter>include\shudcpp\draw</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\draw\push_stack.h">
+      <Filter>include\shudcpp\draw</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\draw\state.h">
+      <Filter>include\shudcpp\draw</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\input.h">
+      <Filter>include\shudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\io.h">
+      <Filter>include\shudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\platform.h">
+      <Filter>include\shudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\resources\resource_object.h">
+      <Filter>include\shudcpp\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\resources\text_object.h">
+      <Filter>include\shudcpp\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\resources\texture_object.h">
+      <Filter>include\shudcpp\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\shud.h">
+      <Filter>include\shudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\shuddef.h">
+      <Filter>include\shudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\types.h">
+      <Filter>include\shudcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\utils\helper.h">
+      <Filter>include\shudcpp\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shudcpp\utils\math.h">
+      <Filter>include\shudcpp\utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\context_impl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\draw_impl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\element_impl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
