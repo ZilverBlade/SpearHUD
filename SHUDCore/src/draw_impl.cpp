@@ -15,7 +15,7 @@ namespace SHUD {
 
 	void DrawList::FrameStart() {
 		assert(mDrawList.size() == 0 && "Draw List must be cleared before frame start!");
-		mDrawList.get_allocator().allocate(mPreviousSize);
+	//	mDrawList.get_allocator().allocate(mPreviousSize);
 	}
 
 	void DrawList::FrameEnd() {

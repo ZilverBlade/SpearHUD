@@ -36,7 +36,7 @@ float median(float r, float g, float b) {
 uint getChar(uint idx) {
 	if (idx >= msdfData.mCharCount) return 0; // out of bounds
 	uint arrayBlock = uint(floor(float(idx) / 16.0));
-	uint vecIndex = (uint(floor(float(idx) / 4.0)) % 4);
+	uint vecIndex = uint(floor(float(idx) / 4.0)) % 4;
 	uint byteIndex = (idx % 4) * 0x00000008;
 	
 	return (msdfData.mCharBlock4[arrayBlock][vecIndex] >> byteIndex) & 0x000000FF;
