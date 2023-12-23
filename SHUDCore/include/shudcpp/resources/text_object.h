@@ -70,6 +70,8 @@ namespace SHUD {
 		bool mBold = false;
 		bool mItalic = false;
 		float mOutlineWidth = 0.0f;
+		float mSizePx = 16.0f;
+		float mLineSpacing = 0.07f;
 		RGBAColor mOutlineColor = 0x000000FF;
 	};
 

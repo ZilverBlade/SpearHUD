@@ -1,5 +1,5 @@
 # SpearHUD
-## SHUD - Fast, lightweight, multi-API and multiplatform HUD system.
+## SHUD - Fast, lightweight, multi-API and multiplatform UI system.
 
 ### Setup (Windows): 
 - Run premake.bat

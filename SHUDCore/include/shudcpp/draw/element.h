@@ -109,7 +109,9 @@ namespace SHUD {
 		};
 
 		struct Text : public DrawableBase {
-			Text() : Base(Type::Text) {}
+			Text() : Base(Type::Text) {
+				mTransform.mScale = { 1.f, 1.f }; // scale is multiplied by font size, reset to 1;
+			}
 
 			SHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 

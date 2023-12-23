@@ -10,6 +10,11 @@
 
 #include <chrono>
 
+// stop intrusive win api from creating colliding macros
+#if defined DrawText
+#undef DrawText
+#endif
+
 namespace SHUD {
 	struct ShaderUBO {
 		fvec2 mCursorCoord{};
@@ -27,6 +32,14 @@ namespace SHUD {
 	VulkanContext::VulkanContext(const VulkanContextCreateInfo& createInfo) : mDevice(createInfo.mDevice), mPhysicalDevice(createInfo.mPhysicalDevice), mSwapChainImageCount(createInfo.mSwapChainImageCount) {
 		mVtblAssert = this;
 		mStatistics = {};
+
+
+		assert(createInfo.mDevice != VK_NULL_HANDLE && "Vulkan device not defined in create info struct!");
+		assert(createInfo.mPhysicalDevice != VK_NULL_HANDLE && "Vulkan physical device not defined in create info struct!");
+		assert(createInfo.mRenderPass != VK_NULL_HANDLE && "Vulkan render pass not defined in create info struct!");
+		assert(createInfo.mFramebufferFormat != VK_FORMAT_UNDEFINED && "Vulkan framebuffer format not defined in create info struct!");
+		assert(createInfo.mSwapChainImageCount != 0 && "Swap chain image count must be at least 1 or more!");
+
 
 		mMaxAllowedTextDescriptors = 2000;
 		VkDescriptorPoolSize poolSizes[] = {
@@ -80,7 +93,7 @@ namespace SHUD {
 		bufferBindings[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 		bufferBindings[0].descriptorCount = 1;
 		bufferBindings[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-					  
+
 		bufferBindings[1].binding = 1;
 		bufferBindings[1].stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 		bufferBindings[1].descriptorCount = 1;
@@ -260,7 +273,7 @@ namespace SHUD {
 		rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
 		rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;
 		rasterizationInfo.lineWidth = 1.0f;
-		rasterizationInfo.cullMode = VK_CULL_MODE_BACK_BIT;
+		rasterizationInfo.cullMode = createInfo.mDrawCullMode;
 		rasterizationInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
 		rasterizationInfo.depthBiasEnable = VK_FALSE;
 		rasterizationInfo.depthBiasConstantFactor = 0.0f;
@@ -284,18 +297,18 @@ namespace SHUD {
 		colorBlendAttachments[0].dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
 		colorBlendAttachments[0].colorBlendOp = VK_BLEND_OP_ADD;
 		colorBlendAttachments[0].srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-		colorBlendAttachments[0].dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+		colorBlendAttachments[0].dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 		colorBlendAttachments[0].alphaBlendOp = VK_BLEND_OP_ADD;
 
 		colorBlendInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 		colorBlendInfo.logicOpEnable = VK_FALSE;
-		colorBlendInfo.logicOp = VK_LOGIC_OP_COPY; 
+		colorBlendInfo.logicOp = VK_LOGIC_OP_COPY;
 		colorBlendInfo.attachmentCount = 1;
 		colorBlendInfo.pAttachments = colorBlendAttachments.data();
-		colorBlendInfo.blendConstants[0] = 0.0f; 
-		colorBlendInfo.blendConstants[1] = 0.0f; 
-		colorBlendInfo.blendConstants[2] = 0.0f; 
-		colorBlendInfo.blendConstants[3] = 0.0f; 
+		colorBlendInfo.blendConstants[0] = 0.0f;
+		colorBlendInfo.blendConstants[1] = 0.0f;
+		colorBlendInfo.blendConstants[2] = 0.0f;
+		colorBlendInfo.blendConstants[3] = 0.0f;
 
 		depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 		depthStencilInfo.depthTestEnable = VK_FALSE; // no depth test
@@ -305,8 +318,8 @@ namespace SHUD {
 		depthStencilInfo.minDepthBounds = 0.0f;
 		depthStencilInfo.maxDepthBounds = 1.0f;
 		depthStencilInfo.stencilTestEnable = VK_FALSE;
-		depthStencilInfo.front = {}; 
-		depthStencilInfo.back = {};  
+		depthStencilInfo.front = {};
+		depthStencilInfo.back = {};
 
 		dynamicStateEnables = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
 		dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
@@ -331,7 +344,7 @@ namespace SHUD {
 
 		const VulkanFrameInfo& frameInfo = *reinterpret_cast<const VulkanFrameInfo*>(frameInfoStruct);
 		mLastImageIndex = frameInfo.mFrameIndex;
-		
+
 		ShaderUBO ubo{};
 		ubo.mAspectRatio = mCtxData.mAspectRatio;
 		ubo.mInvAspectRatio = mCtxData.mInvAspectRatio;
@@ -436,7 +449,7 @@ namespace SHUD {
 			writes[2].dstSet = set;
 			writes[2].pBufferInfo = &msdfLut;
 			writes[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			
+
 			vkUpdateDescriptorSets(mDevice, 3, writes, 0, nullptr);
 
 			mBufferDescriptorSets[i] = set;
@@ -488,13 +501,11 @@ namespace SHUD {
 		uint16_t fOutput = 0;
 		unsigned int uiInput = reinterpret_cast<unsigned int&>(float_);
 
-		if (0.0f == float_)
-		{
+		if (0.0f == float_) {
 			return 0;
 		}
 
-		else if (-0.0f == float_)
-		{
+		else if (-0.0f == float_) {
 			return 0x8000;
 		}
 
@@ -508,7 +519,9 @@ namespace SHUD {
 
 		int iExponent = iExpBits - 127 + 15;
 
-		if (iExponent < 0) { iExponent = 0; } else if (iExponent > 31) iExponent = 31;
+		if (iExponent < 0) {
+			iExponent = 0;
+		} else if (iExponent > 31) iExponent = 31;
 
 		fOutput = ((((uiSignBit) << 15) & 0x8000) | ((fOutput) & (0x7C00 | 0x03FF)));
 		fOutput = ((((iExponent) << 10) & 0x7C00) | ((fOutput) & (0x8000 | 0x03FF)));
@@ -520,7 +533,7 @@ namespace SHUD {
 
 
 	BufferID VulkanContext::AllocateTextBuffer(size_t id, const std::string& characters, const TextFormatting& formatting) {
-		assert(characters.size() <= 1024U && "Too many characters in this text!");
+		assert(characters.size() <= 16000u && "Too many characters in this text element!");
 		mRequestedTextObjects.push_back(id);
 		auto seek = mTextBuffers.find(id);
 		if (seek != mTextBuffers.end()) {
@@ -532,7 +545,7 @@ namespace SHUD {
 		//	FONT_FORMATTING_FLAG_ITALIC
 		MSDFTextData data;
 		data.char_count = characters.length();
-		data.fontSizePx = 16.0f;
+		data.fontSizePx = formatting.mSizePx;
 		data.flags = 0;
 		if (formatting.mBold) {
 			data.flags |= FONT_FORMATTING_FLAG_BOLD;
@@ -544,10 +557,10 @@ namespace SHUD {
 		TextShaderBuffer* tbuffer = new TextShaderBuffer();
 		mTextBuffers[id] = tbuffer;
 		Buffer* charBuffer = new Buffer(
-			mDevice, 
+			mDevice,
 			mPhysicalDevice,
 			sizeof(MSDFTextData) + std::min(uint64_t(ceil(characters.length() * 0.25f) * 4), 16000ui64),
-			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, 
+			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 		);
 		charBuffer->Map();
@@ -566,55 +579,88 @@ namespace SHUD {
 		Buffer* offsetBuffer = new Buffer(
 			mDevice,
 			mPhysicalDevice,
-			+ std::min(uint64_t(ceil(characters.length() * 0.25f) * 4) * sizeof(offsets_), 16384ui64),
+			+std::min(uint64_t(ceil(characters.length() * 0.25f) * 4) * sizeof(offsets_), 16384ui64),
 			VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
 		);
 		offsetBuffer->Map();
 
 		std::vector<offsets_> offsets = std::vector<offsets_>(characters.length());
+		std::vector<std::pair<float, size_t>> lfOffsets;
 		for (int i = 0; i < offsets.size(); i++) {
-			auto& uvfl = s3dfontdefault_uvlookup[static_cast<size_t>(characters[i])];
-			offsets[i].topleft = { uvfl.planeBounds.x, uvfl.planeBounds.w };
-			offsets[i].bottomleft = { uvfl.planeBounds.x, uvfl.planeBounds.y };
-			offsets[i].topright = { uvfl.planeBounds.z, uvfl.planeBounds.w };
-			offsets[i].bottomright = { uvfl.planeBounds.z, uvfl.planeBounds.y };
+			const char charCode = characters[i];
+			constexpr char CR_Code = 0x0D;
+			constexpr char LF_Code = 0x0A;
+			size_t prevCharIndex = i - 1;
+			size_t currCharIndex = i;
+			if (charCode == CR_Code || charCode == LF_Code) {
+				// check for windows CRLF standard 
+				if (i < offsets.size() - 1) {
+					if (characters[i + 1] == LF_Code) {
+						i++;
+					}
+				}
+				if (currCharIndex > 0) {
+					lfOffsets.push_back({ offsets[prevCharIndex].topright.x, prevCharIndex });
+					offsets[currCharIndex] = { {},{},{},{} };
+				}
+				continue;
+			}
+
+			auto& uvfl = s3dfontdefault_uvlookup[static_cast<size_t>(charCode)];
+			offsets[currCharIndex].topleft = { uvfl.planeBounds.x, uvfl.planeBounds.w };
+			offsets[currCharIndex].bottomleft = { uvfl.planeBounds.x, uvfl.planeBounds.y };
+			offsets[currCharIndex].topright = { uvfl.planeBounds.z, uvfl.planeBounds.w };
+			offsets[currCharIndex].bottomright = { uvfl.planeBounds.z, uvfl.planeBounds.y };
 
 			if (i > 0) {
-				offsets[i].topleft.x += offsets[i - 1].topright.x;
-				offsets[i].bottomleft.x += offsets[i - 1].topright.x;
-				offsets[i].topright.x += offsets[i - 1].topright.x;
-				offsets[i].bottomright.x += offsets[i - 1].topright.x;
+				offsets[currCharIndex].topleft.x += offsets[prevCharIndex].topright.x;
+				offsets[currCharIndex].bottomleft.x += offsets[prevCharIndex].topright.x;
+				offsets[currCharIndex].topright.x += offsets[prevCharIndex].topright.x;
+				offsets[currCharIndex].bottomright.x += offsets[prevCharIndex].topright.x;
+			}
+
+			if (i == offsets.size() - 1) {
+				lfOffsets.push_back({ offsets[currCharIndex].topright.x, currCharIndex });
 			}
 		}
 		std::vector<MSDFCharacterOffsetData> offsetShader = std::vector<MSDFCharacterOffsetData>(characters.length());
-		float maxX = offsets.back().topright.x;
-		float shift = 0.0;
-		switch (formatting.mHAlignment) {
-		case (TextFormattingHAlignment::Left): 
-			shift = 0.0;
-			break;
-		case (TextFormattingHAlignment::Center):
-			shift = -maxX / 2.0;
-			break;
-		case (TextFormattingHAlignment::Right):
-			shift - maxX;
-			break;
-			// TODO: justified
-		}
-		for (int i = 0; i < offsetShader.size(); i++) {
-			auto& offs = offsets[i];
+		size_t nextCharLine = 0;
+		for (int i = 0; i < lfOffsets.size(); i++) {
+			auto& pair = lfOffsets[i];
+			float length = pair.first;
+			size_t finalCharIndex = pair.second;
 
-			offsetShader[i].topleft_h[0] = ConvertToFloat16(offs.topleft[0] + shift);
-			offsetShader[i].topleft_h[1] = ConvertToFloat16(offs.topleft[1]);
-			offsetShader[i].bottomleft_h[0] = ConvertToFloat16(offs.bottomleft[0] + shift);
-			offsetShader[i].bottomleft_h[1] = ConvertToFloat16(offs.bottomleft[1]);
-			offsetShader[i].topright_h[0] = ConvertToFloat16(offs.topright[0] + shift);
-			offsetShader[i].topright_h[1] = ConvertToFloat16(offs.topright[1]);
-			offsetShader[i].bottomright_h[0] = ConvertToFloat16(offs.bottomright[0] + shift);
-			offsetShader[i].bottomright_h[1] = ConvertToFloat16(offs.bottomright[1]);
-		}
+			float maxX = length;
+			float horizontalShift = 0.0;
+			float verticalShift = -static_cast<float>(i) * (formatting.mLineSpacing);
+			switch (formatting.mHAlignment) {
+			case (TextFormattingHAlignment::Left):
+				horizontalShift = 0.0;
+				break;
+			case (TextFormattingHAlignment::Center):
+				horizontalShift = -maxX / 2.0;
+				break;
+			case (TextFormattingHAlignment::Right):
+				horizontalShift = -maxX;
+				break;
+				// TODO: justified
+			}
 
+			for (int i = nextCharLine; i <= finalCharIndex; i++) {
+				auto& offs = offsets[i];
+
+				offsetShader[i].topleft_h[0] = ConvertToFloat16(offs.topleft[0] + horizontalShift);
+				offsetShader[i].topleft_h[1] = ConvertToFloat16(offs.topleft[1] + verticalShift);
+				offsetShader[i].bottomleft_h[0] = ConvertToFloat16(offs.bottomleft[0] + horizontalShift);
+				offsetShader[i].bottomleft_h[1] = ConvertToFloat16(offs.bottomleft[1] + verticalShift);
+				offsetShader[i].topright_h[0] = ConvertToFloat16(offs.topright[0] + horizontalShift);
+				offsetShader[i].topright_h[1] = ConvertToFloat16(offs.topright[1] + verticalShift);
+				offsetShader[i].bottomright_h[0] = ConvertToFloat16(offs.bottomright[0] + horizontalShift);
+				offsetShader[i].bottomright_h[1] = ConvertToFloat16(offs.bottomright[1] + verticalShift);
+			}
+			nextCharLine = finalCharIndex + 1;
+		}
 		offsetBuffer->WriteToBuffer(offsetShader.data(), std::min(offsetShader.size() * sizeof(MSDFCharacterOffsetData), 16384ui64));
 		offsetBuffer->Flush();
 
@@ -708,7 +754,7 @@ namespace SHUD {
 
 		std::vector<unsigned char> alignedData;
 		alignedData.resize(imageSize);
-		for (int i = 0; i < sizeof(s3dfontdefault); i+=3) {
+		for (int i = 0; i < sizeof(s3dfontdefault); i += 3) {
 			int stdIndex = i;
 			int alignedIndex = (i / 3) * 4;
 			alignedData[alignedIndex + 0] = s3dfontdefault[stdIndex + 0];
@@ -752,8 +798,8 @@ namespace SHUD {
 		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
 			if ((memRequirements.memoryTypeBits & (1 << i)) &&
 				(memProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) == VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) {
-				 allocInfo.memoryTypeIndex = i;
-				 break;
+				allocInfo.memoryTypeIndex = i;
+				break;
 			}
 		}
 
@@ -787,7 +833,7 @@ namespace SHUD {
 
 			sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 			destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-			
+
 			vkCmdPipelineBarrier(
 				singleTimeCommandBuffer,
 				sourceStage,
@@ -879,11 +925,11 @@ namespace SHUD {
 		if (vkCreateImageView(mDevice, &viewInfo, nullptr, &mFontImageView) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create texture image view!");
 		}
-		
+
 		VkSamplerCreateInfo samplerInfo{};
 		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 		samplerInfo.magFilter = VK_FILTER_LINEAR;
-		samplerInfo.minFilter = VK_FILTER_LINEAR; 
+		samplerInfo.minFilter = VK_FILTER_LINEAR;
 
 		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
 		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
@@ -969,10 +1015,11 @@ namespace SHUD {
 		formatting.mVAlignment = TextFormattingVAlignment::Bottom;
 		formatting.mOutlineColor = 0x000000AA;
 		formatting.mOutlineWidth = 4.0f;
+		formatting.mSizePx = 16.0f;
 
 		Transform dbgtrans;
 		dbgtrans.mPosition = { 20, 50 };
-		dbgtrans.mScale = { 32, 32 };
+		dbgtrans.mScale = { 1, 1 };
 		dbgtrans.mTransformOffset = SHUD_ANCHOR_OFFSET_LEFT;
 
 		drawList->DrawText(dbgtrans, 0xFFFFFFAA, UINT16_MAX, formatting, "SHUDVK Statistics:", SHUD_ANCHOR_OFFSET_TOP_LEFT);

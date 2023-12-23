@@ -17,7 +17,7 @@ namespace SHUD {
 		SHUD_API void FrameStart();
 		SHUD_API void FrameEnd();
 		SHUD_API void Clear();
-		const std::multiset<DrawInfo>& GetList() {
+		std::multiset<DrawInfo>& GetList() {
 			return mDrawList;
 		}
 

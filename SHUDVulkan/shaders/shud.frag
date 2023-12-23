@@ -15,7 +15,6 @@ layout (std140, set = 0, binding = 1) buffer IDSSBO {
 } idssbo;
 layout (set = 1, binding = 0) uniform sampler2D textureAtlas;
 
-
 float applyFontWidth(float w, float sigDist, float width) {
 	float smoothC = smoothstep(0.5 - w, 0.5 + w, sigDist + width);
 	return smoothC ;
@@ -42,9 +41,9 @@ vec4 sampleChar(uint char, uint flags, sampler2D msdfAtlas, vec2 UV) {
 	vec3 msdf = textureLod(msdfAtlas, x, 0.0).rgb;
 	
 	vec2 sz = textureSize(msdfAtlas, 0).xy;
-    float dx = dFdx(UV.x) * sz.x; 
-    float dy = dFdy(UV.y) * sz.y;
-    float toPixels = 8.0 * inversesqrt(dx * dx + dy * dy);
+   //float dx = dFdx(UV.x) * sz.x; 
+   //float dy = dFdy(UV.y) * sz.y;
+   //float toPixels = 8.0 * inversesqrt(dx * dx + dy * dy);
     float sigDist = median(msdf.r, msdf.g, msdf.b);
     float w = fwidth(sigDist);
     float opacity = applyFontWidth(w, sigDist, bold ? FONT_BOLD_FACTOR : 0.0); 

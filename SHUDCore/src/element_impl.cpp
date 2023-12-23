@@ -23,11 +23,11 @@ namespace SHUD {
 			const float w = mWidth * ctxData->mInvResolution.y ;
 			data.mAnchorOffset = mAnchorOffset;
 			
-			data.mRotationMatrix[0][0] = v.x * 0.5f * ctxData->mInvAspectRatio;
-			data.mRotationMatrix[0][1] = v.y * 0.5f ;
+			data.mRotationMatrix[0][0] = v.x * ctxData->mInvAspectRatio;
+			data.mRotationMatrix[0][1] = v.y;
 			data.mRotationMatrix[1][0] = -u.y * w * ctxData->mInvAspectRatio;
 			data.mRotationMatrix[1][1] = u.x * w;
-			data.mPosition = (ptA + ptB) * 0.5f;
+			data.mPosition = (ptA + ptB);
 			data.mPosition.x *= ctxData->mInvAspectRatio;
 			data.mColorCompressed = Utils::RGBAColorToUnsigned32(mColor);
 
@@ -121,7 +121,7 @@ namespace SHUD {
 			data.mAnchorOffset = mAnchorOffset;
 			data.mTransformOffset = mTransform.mTransformOffset;
 			data.mPosition = Utils::ConvertScreenCoordToGPUCoord(mTransform.mPosition, ctxData->mInvResolution);
-			fvec2 uvScale = Utils::ConvertPixelScaleToUVScale(mTransform.mScale, ctxData->mInvResolution);
+			fvec2 uvScale = Utils::ConvertPixelScaleToUVScale(mTransform.mScale * mFormatting.mSizePx * 2.0f, ctxData->mInvResolution);
 			if (fmodf(mTransform.mRotation * mTransform.mRotation, 6.28318530718f * 6.28318530718f) > 1e-10f) {
 				const float s = sin(mTransform.mRotation);
 				const float c = cos(mTransform.mRotation);
@@ -139,7 +139,7 @@ namespace SHUD {
 			data.mUVOffsetB = { 1.f, 1.f };
 			data.mSubUVOffsetA = { 0.f, 0.f };
 			data.mSubUVOffsetB = { 1.f, 1.f };
-			data.mColorCompressed = *reinterpret_cast<const uint32*>(&mColor);
+			data.mColorCompressed = Utils::RGBAColorToUnsigned32(mColor);
 
 			return data;
 		}

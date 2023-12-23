@@ -37,7 +37,7 @@ namespace SHUD {
 		DrawData mData;
 		uint32_t mInstanceCount;
 
-		// for the std::multi_set
+		// for the std::multiset
 		inline bool operator<(const DrawInfo& other) const {
 			return mLayer < other.mLayer;
 		}

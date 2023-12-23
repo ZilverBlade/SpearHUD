@@ -15,7 +15,7 @@ namespace SHUD {
 
 	void DrawList::FrameStart() {
 		assert(mDrawList.size() == 0 && "Draw List must be cleared before frame start!");
-		mDrawList.get_allocator().allocate(mPreviousSize);
+	//	mDrawList.get_allocator().allocate(mPreviousSize);
 	}
 
 	void DrawList::FrameEnd() {
@@ -76,6 +76,7 @@ namespace SHUD {
 	}
 
 	SHUD_API const Element::Text DrawList::DrawText(const Element::Text& txt) {
+		assert(txt.mText.size() > 0 && "Text element must not have empty text string!");
 		static std::hash<std::string> hasher = std::hash<std::string>();
 		size_t hash = hasher(txt.mText) + 0xAE * static_cast<uint32_t>(txt.mFormatting.mVAlignment) - 0x6B * static_cast<uint32_t>(txt.mFormatting.mHAlignment);
 		void* bufferID = (void*)ctx->AllocateTextBuffer(hash, txt.mText, txt.mFormatting);

@@ -42,13 +42,30 @@ const uint GHUD_DRAW_DATA_FLAG_SAMPLER_ADDRESS_MODE_REPEAT = 0x20;
 const uint GHUD_DRAW_DATA_FLAG_SAMPLER_ADDRESS_MODE_CLAMP = 0x40;
 const uint GHUD_DRAW_DATA_FLAG_SAMPLER_ADDRESS_MODE_REPEAT_MIRROR = 0x80;
 
+float tosRGBSpace(float val) {
+    const float inv_12_92 = 0.0773993808;
+    return val <= 0.04045
+        ? val * inv_12_92
+        : pow((val + 0.055) / 1.055, 2.4);
+}
+
+vec4 tosRGBSpaceV4(vec4 val) {
+    return vec4(
+		tosRGBSpace(val.x),
+		tosRGBSpace(val.y),
+		tosRGBSpace(val.z),
+		val.w
+	);
+}
+
+
 vec4 unpackCol32(uint cmp) {
-	return vec4(
+	return tosRGBSpaceV4(vec4(
 		float((cmp & 0xFF000000) >> 24) / 255.0,
 		float((cmp & 0x00FF0000) >> 16) / 255.0,
 		float((cmp & 0x0000FF00) >> 8) / 255.0,
 		float((cmp & 0x000000FF) >> 0) / 255.0
-	);
+	));
 }
 
 #endif

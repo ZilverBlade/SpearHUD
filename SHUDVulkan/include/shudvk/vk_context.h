@@ -6,13 +6,15 @@
 
 namespace SHUD {
 	struct VulkanContextCreateInfo {
-		VkDevice mDevice;
-		VkPhysicalDevice mPhysicalDevice;
-		VkRenderPass mRenderPass;
-		uint32 mSubPass;
-		VkFormat mFrameBufferFormat;
-		uint32 mSwapChainImageCount;
-		VkSampleCountFlagBits mMSAASamples;
+		VkDevice mDevice = VK_NULL_HANDLE;
+		VkPhysicalDevice mPhysicalDevice = VK_NULL_HANDLE;
+		VkRenderPass mRenderPass = VK_NULL_HANDLE;
+		uint32 mSubPass = 0;
+		VkFormat mFramebufferFormat = VK_FORMAT_UNDEFINED;
+		uint32 mSwapChainImageCount = 0;
+		VkSampleCountFlagBits mMSAASamples = VK_SAMPLE_COUNT_1_BIT;
+
+		VkCullModeFlags mDrawCullMode = VK_CULL_MODE_NONE;
 
 		void* mVshCodeOverride = nullptr;
 		size_t mVshCodeOverrideSize;
