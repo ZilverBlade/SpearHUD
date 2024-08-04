@@ -170,9 +170,15 @@ namespace SHUD {
 	}
 
 	void VulkanContext::Pick() {
-		size_t id = *reinterpret_cast<size_t*>(mIDSSBO[mLastImageIndex]->GetMappedMemory());
+		uint32_t pickFrame = (mLastImageIndex + 1) % mSwapChainImageCount;
+		size_t id = *reinterpret_cast<size_t*>(mIDSSBO[pickFrame]->GetMappedMemory());
 		mCtxData.selectedObject = id;
 		//	std::cout << id << " is reported id\n";
+
+		// reset ID for next frame to avoid "ghost selection"
+		size_t clearID = 0x00;
+		mIDSSBO[pickFrame]->WriteToBuffer(&clearID);
+		mIDSSBO[pickFrame]->Flush();
 	}
 
 	void VulkanContext::CreateGraphicsPipeline(const VulkanContextCreateInfo& createInfo) {
@@ -350,11 +356,6 @@ namespace SHUD {
 
 		mGlobalUBO[frameInfo.mFrameIndex]->WriteToBuffer(&ubo);
 		mGlobalUBO[frameInfo.mFrameIndex]->Flush();
-
-		// reset ID for next frame to avoid "ghost selection"
-		size_t clearID = 0x00;
-		mIDSSBO[frameInfo.mFrameIndex]->WriteToBuffer(&clearID);
-		mIDSSBO[frameInfo.mFrameIndex]->Flush();
 
 		vkCmdBindPipeline(frameInfo.mCommandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mGraphicsPipeline);
 
