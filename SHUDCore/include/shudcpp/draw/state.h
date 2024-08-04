@@ -15,6 +15,7 @@ namespace SHUD {
 
 	class PressState {
 	public:
+		PressState() = default;
 		PressState(PressStateFlags f) : flags(f) {}
 		bool IsHovering() const {
 			return flags & SHUD_PRESS_STATE_FLAG_HOVERING;
@@ -29,7 +30,7 @@ namespace SHUD {
 			return flags & SHUD_PRESS_STATE_FLAG_SELECTED;
 		}
 	private:
-		PressStateFlags flags;
+		PressStateFlags flags = SHUD_PRESS_STATE_FLAG_NONE;
 	};
 
 }

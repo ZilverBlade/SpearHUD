@@ -10,7 +10,7 @@ layout (location = 1) in flat uint msdfCharIdx;
 
 layout (location = 0) out vec4 outColor;
 
-layout (std140, set = 0, binding = 1) buffer IDSSBO {
+layout (std140, set = 0, binding = 1) writeonly buffer IDSSBO {
 	uvec2 mPickID; // fake uint64 due to performance and compatibility
 } idssbo;
 layout (set = 1, binding = 0) uniform sampler2D textureAtlas;

@@ -35,6 +35,8 @@ namespace SHUD {
 			fvec2 mAnchorOffset = { 0.0f, 0.0f };
 		protected:
 			Base() = default;
+		private:
+			virtual void dummy() {}
 		};
 		struct DrawableBase : public virtual Base {
 			virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const = 0;
@@ -46,10 +48,12 @@ namespace SHUD {
 			NonDrawableBase() = default;
 		};
 
-		struct InteractiveDrawableBase : public virtual DrawableBase {
+		struct InteractiveDrawableBase : public DrawableBase {
 			uint32 mTabIndex = 0;
 			size_t mElementID = 0x00;
-			PressState GetPressState() const { return PressState(mPressState); }
+			PressState GetPressState() const {
+				return PressState(mPressState);
+			}
 			void SetUniqueTag(const std::string& string) {
 				static std::hash<std::string> hashFunc{};
 				mElementID = hashFunc(string);
@@ -62,7 +66,9 @@ namespace SHUD {
 		struct Line : public DrawableBase {
 			Line() : Base(Type::Line) {}
 			Line(const Line& other) : mPointA(other.mPointA), mPointB(other.mPointB), mColor(other.mColor) {}
-			Line& operator=(const Line& other) { return Line(other); }
+			Line& operator=(const Line& other) {
+				return Line(other);
+			}
 
 			SHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 
@@ -75,7 +81,9 @@ namespace SHUD {
 		struct Rect : public DrawableBase {
 			Rect() : Base(Type::Rect) {}
 			Rect(const Rect& other) : mTransform(other.mTransform), mColor(other.mColor) {}
-			Rect& operator=(const Rect& other) { return Rect(other); }
+			Rect& operator=(const Rect& other) {
+				return Rect(other);
+			}
 
 			SHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 
@@ -86,7 +94,9 @@ namespace SHUD {
 		struct Image : public DrawableBase {
 			Image() : Base(Type::Image) {}
 			Image(const Image& other) : mTransform(other.mTransform), mTexture(other.mTexture), mColor(other.mColor) {}
-			Image& operator=(const Image& other) { return Image(other); }
+			Image& operator=(const Image& other) {
+				return Image(other);
+			}
 
 			SHUD_API virtual const DrawData GenerateDrawData(const GlobalContextData* ctxData) const override;
 
@@ -105,6 +115,7 @@ namespace SHUD {
 			Transform mTransform{};
 			TextureObject mTexture{};
 			float mAlphaButtonCutoff = 0.5f;
+			bool mEnabled = true;
 			RGBAColor mColor = 0xFFFFFFFF;
 		};
 
